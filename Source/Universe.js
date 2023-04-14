@@ -58,7 +58,7 @@ class Universe
 				console.write("Game over.  Press the Enter key to quit: ");
 				console.readLine
 				(
-					(commandText) =>
+					() =>
 					{
 						universe.update();
 					}

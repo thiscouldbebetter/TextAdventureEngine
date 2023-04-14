@@ -6,7 +6,7 @@ class UiEventHandler
 		this.universe = universe;
 	}
 
-	body_KeyPressed(event)
+	body_KeyDown(event)
 	{
 		event.preventDefault();
 
@@ -30,6 +30,6 @@ class UiEventHandler
 	{
 		var d = document;
 		var body = d.body;
-		body.onkeypress = this.body_KeyPressed.bind(this);
+		body.onkeydown = this.body_KeyDown.bind(this);
 	}
 }

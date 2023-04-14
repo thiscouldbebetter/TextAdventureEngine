@@ -86,7 +86,7 @@ class Game
 						else
 						{
 							u.console.writeLine("You put the key in the keyhole and turn to unlock the chest.");
-							target.isUnlocked = true;
+							target.stateWithNameSetToValue(StateNames.isUnlocked(), true);
 						}
 					}
 				)
@@ -116,7 +116,7 @@ class Game
 						else
 						{
 							u.console.writeLine("You stroke the edge of the sword with the whetstone, sharpening it.");
-							target.isSharpened = true;
+							target.stateWithNameSetToValue(StateNames.isSharpened(), true);
 							target.description = "This is a sharp steel sword.";
 						}
 					}
@@ -153,7 +153,8 @@ class Scripts
 	static emplacementChestUse(u, w, place, emplacement)
 	{
 		var message;
-		if (emplacement.isUnlocked)
+		var isUnlocked = emplacement.stateGetByName(StateNames.isUnlocked());
+		if (isUnlocked)
 		{
 			u.console.writeLine("You open the chest and see a sword.");
 			var itemSword = new Item
@@ -180,7 +181,7 @@ class Scripts
 		{
 			u.console.writeLine("That would only dull the sword.");
 		}
-		else if (item.isSharpened != true) // hack
+		else if (item.stateGetByName(StateName.isSharpened()) != true) // hack
 		{
 			u.console.writeLine("The dull sword bounces off the troll's skin.  He retaliates by killing you.");
 			u.world = null;
@@ -213,4 +214,17 @@ class Scripts
 		}
 	}
 
+}
+
+class StateNames
+{
+	static isSharpened()
+	{
+		return "isSharpened";
+	}
+
+	static isUnlocked()
+	{
+		return "isUnlocked";
+	}
 }

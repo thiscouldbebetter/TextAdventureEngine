@@ -267,7 +267,7 @@ class Command_Instances
 			"get <name> - The player attempts to pick up the item named.",
 			"inventory - Displays a list of the player's possessions.",
 			"quit - Quit the Command_Instances.",
-			"talk <name> - The player attempts to talk to someone or something.",
+			"talk to <name> - The player attempts to talk to someone or something.",
 			"use <name> - The player attempts to use something.",
 			"use <name> on <name2> - The player attempts to use something on something.",
 			"wait - The player does nothing, and simply waits for something to happen."
@@ -356,7 +356,7 @@ class Command_Instances
 
 		var commandText = this.text;
 
-		var targetName = commandText.substr("talk to ".length + 1);
+		var targetName = commandText.substr("talk to ".length);
 
 		place = world.placeCurrent();
 
