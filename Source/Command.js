@@ -36,6 +36,15 @@ class Command
 		);
 	}
 
+	static Instances()
+	{
+		if (Command._instances == null)
+		{
+			Command._instances = new Command_Instances();
+		}
+		return Command._instances;
+	}
+
 	clone()
 	{
 		return new Command(this.text, this._execute);
@@ -54,5 +63,94 @@ class Command
 	{
 		this.text = value;
 		return this;
+	}
+}
+
+class Command_Instances
+{
+	constructor()
+	{
+		this.DropSomething = new Command
+		(
+			"drop ",
+			Game.commandDropSomethingExecute
+		);
+
+		this.GetSomething = new Command
+		(
+			"get ",
+			Game.commandGetSomethingExecute
+		);
+
+		this.GoSomewhere = new Command
+		(
+			"go ",
+			Game.commandGoSomewhereExecute
+		);
+
+		this.Help = new Command
+		(
+			"?",
+			Game.commandHelpExecute
+		);
+
+		this.InventoryView = new Command
+		(
+			"inventory",
+			Game.commandInventoryViewExecute
+		);
+
+		this.LookAround = new Command
+		(
+			"look",
+			Game.commandLookAroundExecute
+		);
+
+		this.LookAtSomething = new Command
+		(
+			"look ",
+			Game.commandLookAtSomethingExecute
+		);
+
+		this.Quit = new Command
+		(
+			"quit",
+			Game.commandQuitExecute
+		);
+
+		this.TalkToSomething = new Command
+		(
+			"talk to ",
+			Game.commandTalkToSomethingExecute
+		);
+
+		this.UseSomething = new Command
+		(
+			"use ",
+			Game.commandUseSomethingExecute
+		);
+
+		this.Wait = new Command
+		(
+			"wait",
+			Game.commandWaitExecute
+		);
+
+		this._All =
+		[
+			this.DropSomething,
+			this.GetSomething,
+			this.GoSomewhere,
+			this.Help,
+			this.InventoryView,
+			this.LookAround,
+			this.LookAtSomething,
+			this.Quit,
+			this.TalkToSomething,
+			this.UseSomething,
+			this.Wait
+		];
+
+		this._AllByName = new Map(this._All.map(x => [x.name, x] ) )
 	}
 }

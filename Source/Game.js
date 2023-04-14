@@ -1,5 +1,5 @@
 
-class Demo
+class Game
 {
 	static worldBuild()
 	{
@@ -174,86 +174,7 @@ class Demo
 			),
 		];
 
-		var commandDropSomething = new Command
-		(
-			"drop ",
-			Demo.commandDropSomethingExecute
-		);
-
-		var commandGetSomething = new Command
-		(
-			"get ",
-			Demo.commandGetSomethingExecute
-		);
-
-		var commandGoSomewhere = new Command
-		(
-			"go ",
-			Demo.commandGoSomewhereExecute
-		);
-
-		var commandHelp = new Command
-		(
-			"?",
-			Demo.commandHelpExecute
-		);
-
-		var commandInventoryView = new Command
-		(
-			"inventory",
-			Demo.commandInventoryViewExecute
-		);
-
-		var commandLookAround = new Command
-		(
-			"look",
-			Demo.commandLookAroundExecute
-		);
-
-		var commandLookAtSomething = new Command
-		(
-			"look ",
-			Demo.commandLookAtSomethingExecute
-		);
-
-		var commandQuit = new Command
-		(
-			"quit",
-			Demo.commandQuitExecute
-		);
-
-		var commandTalkToSomething = new Command
-		(
-			"talk to ",
-			Demo.commandTalkToSomethingExecute
-		);
-
-		var commandUseSomething = new Command
-		(
-			"use ",
-			Demo.commandUseSomethingExecute
-		);
-
-		var commandWait = new Command
-		(
-			"wait",
-			Demo.commandWaitExecute
-		);
-
-		var commands =
-		[
-			commandDropSomething,
-			commandGetSomething,
-			commandGoSomewhere,
-			commandHelp,
-			commandInventoryView,
-			commandLookAround,
-			commandLookAtSomething,
-			commandQuit,
-			commandTalkToSomething,
-			commandUseSomething,
-			commandWait
-		];
+		var commands = Command.Instances()._All;
 
 		var returnValue = new World
 		(
