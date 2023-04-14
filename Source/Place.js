@@ -58,6 +58,16 @@ class Place
 		this.agents.splice(this.agents.indexOf(agent), 1);
 	}
 
+	emplacementAdd(emplacement)
+	{
+		this.emplacements.push(emplacement);
+	}
+
+	emplacementRemove(emplacement)
+	{
+		this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
+	}
+
 	itemAdd(item)
 	{
 		this.items.push(item);

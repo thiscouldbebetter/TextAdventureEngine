@@ -157,7 +157,7 @@ class Command_Instances
 	dropSomething(universe, world, place)
 	{
 		var commandText = this.text;
-		var targetName = commandText.split(" ")[1];
+		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var message = null;
 
 		var player = world.player;
@@ -180,7 +180,7 @@ class Command_Instances
 	getSomething(universe, world, place)
 	{
 		var commandText = this.text;
-		var targetName = commandText.split(" ")[1];
+		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var message = null;
 
 		place = world.placeCurrent();
@@ -231,7 +231,8 @@ class Command_Instances
 		place = world.placeCurrent();
 		var portals = place.portals;
 		var commandText = this.text;
-		var portalNameFromCommand = commandText.split(" ")[1];
+		var portalNameFromCommand =
+			commandText.substr(commandText.indexOf(" ") + 1);
 		var portalMatchingName =
 			portals.find(x => x.name == portalNameFromCommand);
 		var console = universe.console;
@@ -296,7 +297,7 @@ class Command_Instances
 	lookAtSomething(universe, world, place)
 	{
 		var commandText = this.text;
-		var targetName = commandText.split(" ")[1];
+		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var targetDescription = null;
 
 		var player = world.player;
@@ -351,9 +352,11 @@ class Command_Instances
 
 	talkToSomething(universe, world, place)
 	{
-		var commandText = this.text;
-		var targetName = commandText.split(" ")[2];
 		var message = null;
+
+		var commandText = this.text;
+
+		var targetName = commandText.substr("talk to ".length + 1);
 
 		place = world.placeCurrent();
 
@@ -388,10 +391,22 @@ class Command_Instances
 
 	useSomething(universe, world, place)
 	{
-		var commandText = this.text;
-		var commandParts = commandText.split(" ");
-		var objectName = commandParts[1];
 		var message = null;
+
+		var commandText = this.text;
+
+		var objectName;
+		var textOn = " on ";
+		var indexOfOn = commandText.indexOf(" on ");
+		if (indexOfOn < 0)
+		{
+			objectName = commandText.substring("use ".length);
+		}
+		else
+		{
+			objectName = commandText.substr(0, indexOfOn).split(" ")[1];
+		}
+
 		var objectToUse = null;
 
 		place = world.placeCurrent();
@@ -440,59 +455,49 @@ class Command_Instances
 		{
 			console.writeLine(message);
 		}
+		else if (objectToUse.canBeUsed() == false)
+		{
+			message = "The " + objectToUse.name + " cannot be used.";
+			console.writeLine(message);
+		}
 		else
 		{
-			if (objectToUse.canBeUsed() == false)
+			var target = null;
+			if (indexOfOn >= 0)
 			{
-				message = "The " + objectToUse.name + " cannot be used.";
-				console.writeLine(message);
-			}
-			else
-			{
-				var target = null;
-
-				var targetToUseObjectOnName = commandParts[3];
+				var targetToUseObjectOnName =
+					commandText.substr(indexOfOn + textOn.length);
 				if (targetToUseObjectOnName != null)
 				{
-					var textOn = commandParts[2];
-					if (textOn != "on")
+					var player = world.player;
+					target = player.itemByName(targetToUseObjectOnName);
+					if (target == null)
 					{
-						console.writeLine("Unrecognized command part: '" + textOn + "'.");
-						objectToUse = null;
-					}
-					else
-					{
-						var player = world.player;
-						target = player.itemByName(targetToUseObjectOnName);
+						target = place.objectByName(targetToUseObjectOnName);
 						if (target == null)
 						{
-							target = place.objectByName(targetToUseObjectOnName);
-							if (target == null)
-							{
-								console.writeLine
-								(
-									"You don't see any " + targetToUseObjectOnName + " here."
-								);
-								objectToUse = null;
-							}
+							console.writeLine
+							(
+								"You don't see any " + targetToUseObjectOnName + " here."
+							);
+							objectToUse = null;
 						}
 					}
 				}
+			}
 
-				if (objectToUse != null)
+			if (objectToUse != null)
+			{
+				if (target == objectToUse)
 				{
-					if (target == objectToUse)
-					{
-						console.writeLine("That cannot be used on itself!");
-					}
-					else
-					{
-						objectToUse.use(universe, world, place, target);
-					}
+					console.writeLine("That cannot be used on itself!");
+				}
+				else
+				{
+					objectToUse.use(universe, world, place, target);
 				}
 			}
 		}
-
 	}
 
 	wait(universe, world, place)

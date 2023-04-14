@@ -189,13 +189,13 @@ class Scripts
 		{
 			u.console.writeLine("The sword slices the troll's head off, killing it.");
 			place.agentRemove(target);
-			var itemTrollCorpse = new Item
+			var emplacementTrollCorpse = new Emplacement
 			(
 				"troll corpse",
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
 				Scripts.itemTrollCorpseUse
 			);
-			place.itemAdd(itemTrollCorpse);
+			place.emplacementAdd(emplacementTrollCorpse);
 		}
 	}
 
