@@ -3,14 +3,16 @@ class Game
 {
 	static worldBuild()
 	{
-		var player = new Player
+		var player = new Agent
 		(
-			"Demo Player",
+			"self",
+			"This is you.",
+			null, // scriptUpdateForTurnName
 			[
 				Item.fromNameAndDescription
 				(
 					"locket",
-					"This small gold locket contains a picture of your sweetie."
+					"This small copper locket contains a picture of your sweetie."
 				)
 			]
 		);
@@ -28,15 +30,29 @@ class Game
 		var placeSouthernRoomName = "Southern Room";
 		var placeWesternRoomName = "Western Room";
 
-		var placeCenterRoom = p
+		var placeCenterRoom = Place.fromNameDescriptionScriptNameAndObjects
 		(
 			placeCenterRoomName,
-			"This room is in the center.  There are doors to the north, south, east, and west.",
+			"This is the room you landed in when your captor threw you down here."
+				+ "  There are doors to the north, south, east, and west.",
+			scriptsCustom.PlaceCenterRoomUpdate.name,
 			[
+				new Emplacement("pool", "This is a shallow, dirty, foul-smelling pool of water."),
 				new Portal("east", portalDescription, placeEasternRoomName),
 				new Portal("north", portalDescription, placeNorthernRoomName),
 				new Portal("south", portalDescription, placeSouthernRoomName),
-				new Portal("west", portalDescription, placeWesternRoomName)
+				new Portal("west", portalDescription, placeWesternRoomName),
+				new Agent
+				(
+					"captor",
+					"Your captor lingers by the trap door, waiting for you to retrieve his property.",
+					scriptsCustom.AgentCaptorUpdate.name,
+					null, // items
+					[
+						new Command( [ "talk to captor" ], scriptsCustom.AgentCaptorTalkTo.name),
+						new Command( [ "give coin to captor" ], scriptsCustom.ItemCoinGiveToCaptor.name)
+					]
+				)
 			]
 		);
 
@@ -133,20 +149,54 @@ class Scripts
 	{
 		var s = (a, b) => new Script(a, b);
 
+		this.AgentCaptorTalkTo = s("AgentCaptorTalkTo", this.agentCaptorTalkTo);
+		this.AgentCaptorUpdate = s("AgentCaptorUpdate", this.agentCaptorUpdate);
 		this.EmplacementChestUse = s("EmplacementChestUse", this.emplacementChestUse);
-		this.EmplacementTrollCorpseUse = s("EmplacementTrollCorpseUse", this.emplacementTrollCorpseUse);
+		this.EmplacementTrollBodyUse = s("EmplacementTrollBodyUse", this.emplacementTrollBodyUse);
+		this.ItemCoinGiveToCaptor = s("ItemCoinGiveToCaptor", this.itemCoinGiveToCaptor);
 		this.ItemKeyUse = s("ItemKeyUse", this.itemKeyUse);
 		this.ItemSwordUse = s("ItemSwordUse", this.itemSwordUse);
+		this.ItemTrollHeadTalkTo = s("ItemTrollHeadTalkTo", this.itemTrollHeadTalkTo);
 		this.ItemWhetstoneUse = s("ItemWhetstoneUse", this.itemWhetstoneUse);
+		this.PlaceCenterRoomUpdate = s("PlaceCenterRoomUpdate", this.placeCenterRoomUpdate);
 
 		this._All =
 		[
+			this.AgentCaptorTalkTo,
+			this.AgentCaptorUpdate,
 			this.EmplacementChestUse,
-			this.EmplacementTrollCorpseUse,
+			this.EmplacementTrollBodyUse,
+			this.ItemCoinGiveToCaptor,
 			this.ItemKeyUse,
 			this.ItemSwordUse,
-			this.ItemWhetstoneUse
+			this.ItemTrollHeadTalkTo,
+			this.ItemWhetstoneUse,
+			this.PlaceCenterRoomUpdate
 		];
+	}
+
+	agentCaptorTalkTo(u, w, p, agent)
+	{
+		var message;
+
+		var player = w.player;
+		var playerItems = player.items;
+		var playerHasCoin = playerItems.some(x => x.name == "coin");
+		if (playerHasCoin == false)
+		{
+			message = "Your captor says, 'Get me my coin back from the troll, and I'll throw you down a rope.'";
+		}
+		else
+		{
+			message = "Your captor says, 'Give that coin to me, and I'll throw you down a rope.'";
+		}
+
+		u.messageEnqueue(message);
+	}
+
+	agentCaptorUpdate(u, w, p, agent)
+	{
+		// todo
 	}
 
 	emplacementChestUse(u, w, place, emplacement)
@@ -176,19 +226,62 @@ class Scripts
 		}
 	}
 
-	emplacementTrollCorpseUse(u, w, place, item, target)
+	emplacementTrollBodyUse(u, w, place, emplacementTrollBody, target)
 	{
+		var message;
+
 		if (target != null)
 		{
-			u.messageEnqueue("You can't use the troll on anything.");
+			message = "You can't use the troll's body on anything.";
 		}
 		else
 		{
 			var message = "You find a gold coin in the troll's coin purse.";
-			u.messageEnqueue(message);
+
 			var itemCoin = new Item("coin", "This is a gold coin.");
 			place.itemAdd(itemCoin);
+
+			emplacementTrollBody._scriptUseName = null;
 		}
+
+		u.messageEnqueue(message);
+	}
+
+	itemCoinGiveToCaptor(universe, world, place)
+	{
+		var message;
+
+		var player = world.player;
+		var itemCoin = player.itemByName("coin");
+		if (itemCoin == null)
+		{
+			message = "You don't have any coin.";
+		}
+		else
+		{
+			player.itemRemove(itemCoin);
+
+			message =
+				"You throw the coin up to the captor.  He catches it, laughs, and says, "
+				+ "'A deal's a deal.  Here's that rope I promised you.'  "
+				+ "Without tying it to anything first, he throws down a coil of rope "
+				+ "and walks away.  You hear his laughter fade in the distance."
+
+			place = world.placeCurrent();
+
+			var agentCaptor = place.agentByName("captor");
+			agentCaptor.itemAdd(itemCoin);
+			place.agentRemove(agentCaptor);
+
+			var itemRope = new Item
+			(
+				"rope",
+				"This is a coil of weathered hempen rope."
+			);
+			place.itemAdd(itemRope);
+		}
+
+		universe.messageEnqueue(message);
 	}
 
 	itemKeyUse(u, w, p, i, target)
@@ -248,14 +341,37 @@ class Scripts
 				"The sharp sword slices the troll's head off, killing it.";
 			u.messageEnqueue(message);
 			place.agentRemove(target);
-			var emplacementTrollCorpse = new Emplacement
+
+			var emplacementTrollBody = new Emplacement
 			(
-				"troll corpse",
+				"troll body",
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
-				"EmplacementTrollCorpseUse"
+				"EmplacementTrollBodyUse"
 			);
-			place.emplacementAdd(emplacementTrollCorpse);
+			place.emplacementAdd(emplacementTrollBody);
+
+			var itemTrollHead = new Item
+			(
+				"troll head",
+				"This is the head of the troll you killed.",
+				null, // scriptNameUse
+				null, // stateGroup
+				[
+					new Command
+					(
+						[ "talk to troll", "talk to the troll", "talk to troll head", "talk to the troll head" ],
+						"ItemTrollHeadTalkTo"
+					)
+				]
+			);
+			place.itemAdd(itemTrollHead);
 		}
+	}
+
+	itemTrollHeadTalkTo(u, w, place, item, target)
+	{
+		var message = "The troll's head nods in agreement with what you're saying.";
+		u.messageEnqueue(message);
 	}
 
 	itemWhetstoneUse(u, w, p, i, target)
@@ -275,6 +391,27 @@ class Scripts
 			target.description = "This is a sharp steel sword.";
 		}
 	}
+
+	placeCenterRoomUpdate(u, w, p)
+	{
+		if (p.hasBeenVisited() == false)
+		{
+			var messageLines =
+			[
+				"You are thrown roughly through a hole, fall perhaps twelve feet, ",
+				"and land painfully in a dirty, shallow pool in an uneven stone floor.  ",
+				"As you stagger to your feet, dripping, and check yourself for injuries, ",
+				"your captor glares down at you from the rim of the hole ",
+				"and says, 'There's a troll somewhere down there.  ",
+				"He has my money.  Kill him, get it, and give it to me.  ",
+				"Maybe then I'll let you go.'",
+				"\n"
+			]
+			var message = messageLines.join("");
+			u.messageEnqueue(message);
+		}
+	}
+
 }
 
 class StateNames

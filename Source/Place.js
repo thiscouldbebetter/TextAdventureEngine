@@ -10,15 +10,17 @@ class Place
 		emplacements,
 		items,
 		agents,
+		stateGroup
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
-		this.portals = portals;
-		this.emplacements = emplacements;
-		this.items = items;
-		this.agents = agents;
+		this.portals = portals || [];
+		this.emplacements = emplacements || [];
+		this.items = items || [];
+		this.agents = agents || [];
+		this.stateGroup = stateGroup || new StateGroup();
 	}
 
 	static fromNameAndDescription(name, description)
@@ -27,11 +29,6 @@ class Place
 		(
 			name,
 			description,
-			null, // scriptUpdateForTurnName
-			[], // portals
-			[], // emplacements
-			[], // items
-			[], // agents
 		);
 	}
 
@@ -49,14 +46,47 @@ class Place
 		);
 	}
 
+	static fromNameDescriptionScriptNameAndObjects
+	(
+		name, description, scriptUpdateForTurnName, objects
+	)
+	{
+		return new Place
+		(
+			name,
+			description,
+			scriptUpdateForTurnName,
+			objects.filter(x => x.constructor.name == Portal.name),
+			objects.filter(x => x.constructor.name == Emplacement.name),
+			objects.filter(x => x.constructor.name == Item.name),
+			objects.filter(x => x.constructor.name == Agent.name)
+		);
+	}
+
 	agentAdd(agent)
 	{
 		this.agents.push(agent);
 	}
 
+	agentByName(name)
+	{
+		return this.agents.find(x => x.name == name);
+	}
+
 	agentRemove(agent)
 	{
 		this.agents.splice(this.agents.indexOf(agent), 1);
+	}
+
+	commands()
+	{
+		var commandsAll = [];
+
+		this.emplacements.forEach(x => commandsAll.push(...x.commands));
+		this.items.forEach(x => commandsAll.push(...x.commands));
+		this.agents.forEach(x => commandsAll.push(...x.commands));
+
+		return commandsAll;
 	}
 
 	draw(universe, world)
@@ -65,6 +95,13 @@ class Place
 		[
 			"Location: " + this.name
 		];
+
+		if (this.hasBeenVisited() == false)
+		{
+			linesToWrite.push(this.description);
+		}
+
+		this.visit(); // hack
 
 		var objectArraysPresent =
 		[
@@ -138,7 +175,7 @@ class Place
 		{
 			var scriptUpdateForTurn =
 				world.scriptByName(this.scriptUpdateForTurnName);
-			scriptUpdateForTurn.run(universe, world);
+			scriptUpdateForTurn.run(universe, world, this);
 		}
 	}
 
@@ -156,5 +193,17 @@ class Place
 			this.items.map(x => x.clone()),
 			this.agents.map(x => x.clone()),
 		);
+	}
+
+	// States.
+
+	hasBeenVisited()
+	{
+		return (this.stateGroup.valueGetByName("Visited") == true);
+	}
+
+	visit()
+	{
+		return this.stateGroup.stateWithNameSetToValue("Visited", true);
 	}
 }

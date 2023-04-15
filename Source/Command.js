@@ -116,6 +116,12 @@ class Command_Instances
 			new Script("AttackSomething", this.attackSomething)
 		);
 
+		this.BuySomething = Command.fromTextsAndScriptExecute
+		(
+			[ "give " ],
+			new Script("BuySomething", this.buySomething)
+		);
+
 		this.DropSomething = Command.fromTextsAndScriptExecute
 		(
 			[ "drop ", "discard", "dump " ],
@@ -126,6 +132,12 @@ class Command_Instances
 		(
 			[ "get ", "take ", "grab " ],
 			new Script("GetSomething", this.getSomething)
+		);
+
+		this.GiveSomething = Command.fromTextsAndScriptExecute
+		(
+			[ "give " ],
+			new Script("GiveSomething", this.giveSomething)
 		);
 
 		this.GoDirectionEast = Command.fromTextsAndScriptExecute
@@ -230,6 +242,12 @@ class Command_Instances
 			new Script("search ", this.searchSomething)
 		);
 
+		this.SellSomething = Command.fromTextsAndScriptExecute
+		(
+			[ "sell " ],
+			new Script("SellSomething", this.sellSomething)
+		);
+
 		this.StateDelete = Command.fromTextsAndScriptExecute
 		(
 			[ "delete " ],
@@ -281,8 +299,10 @@ class Command_Instances
 		this._All =
 		[
 			this.AttackSomething,
+			this.BuySomething,
 			this.DropSomething,
 			this.GetSomething,
+			this.GiveSomething,
 			this.GoDirectionEast,
 			this.GoDirectionNorth,
 			this.GoDirectionSouth,
@@ -300,6 +320,7 @@ class Command_Instances
 			this.Restart,
 			this.SaySomething,
 			this.SearchSomething,
+			this.SellSomething,
 			this.StateDelete,
 			this.StateSave,
 			this.StateLoad,
@@ -390,6 +411,47 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
+	giveSomething(universe, world, place, command)
+	{
+		var message = null;
+
+		var commandText = command.text();
+		var commandTextMinusVerb = commandText.substring("give ".length);
+
+		var textTo = " to ";
+		var indexOfTo = commandTextMinusVerb.indexOf(textTo);
+		if (indexOfTo < 0)
+		{
+			message = "You must specify a recipient to give it to."; 
+		}
+		else
+		{
+			var itemToGiveName = commandTextMinusVerb.substr(0, indexOfTo);
+			var playerItems = world.player.items;
+			var itemToGive = playerItems.find(itemToGiveName);
+			if (itemToGive == null)
+			{
+				message = "You don't have any " + itemToGive + "."; 
+			}
+			else
+			{
+				var recipientName =
+					commandTextMinusVerb.substr(indexOfTo + textTo.length);
+				var agents = place.agents;
+				var recipient = agents.find(x => x.name == recipientName);
+				if (recipient == null)
+				{
+					message = "You don't see any " + recipientName + " here."; 
+				}
+				else
+				{
+					// todo
+				}
+			}
+		}
+
+	}
+
 	goDirectionEast(universe, world, place, command)
 	{
 		this.goThroughPortalWithName(universe, world, "east");
@@ -435,7 +497,6 @@ class Command_Instances
 			var placeNextName = portalMatchingName.placeDestinationName;
 			var placeNext = world.placeByName(placeNextName);
 			world.placeCurrentSet(placeNext);
-			universe.messageEnqueue(placeNext.description);
 		}
 	}
 
@@ -797,7 +858,7 @@ class Command_Instances
 						target = place.objectByName(targetToUseObjectOnName);
 						if (target == null)
 						{
-							u.messageEnqueue
+							universe.messageEnqueue
 							(
 								"You don't see any " + targetToUseObjectOnName + " here."
 							);
@@ -811,7 +872,7 @@ class Command_Instances
 			{
 				if (target == objectToUse)
 				{
-					u.messageEnqueue("That cannot be used on itself!");
+					universe.messageEnqueue("That cannot be used on itself!");
 				}
 				else
 				{

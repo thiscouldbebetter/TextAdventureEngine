@@ -6,13 +6,15 @@ class Item
 		name,
 		description,
 		scriptUseName,
-		stateGroup
+		stateGroup,
+		commands
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup();
+		this.commands = commands || [];
 	}
 
 	static fromNameAndDescription(name, description)
@@ -58,7 +60,8 @@ class Item
 			this.name,
 			this.description,
 			this.scriptUseName,
-			this.states.map(x => x.clone())
+			this.stateGroup.clone(),
+			this.commands.map(x => x.clone() )
 		);
 	}
 }

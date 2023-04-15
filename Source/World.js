@@ -52,9 +52,21 @@ class World
 	{
 		if (commandText != null)
 		{
-			var commandRecognized =
-				Command.fromTextAndCommands(commandText, this.commands);
-			if (commandRecognized != null)
+			var commandsAll = [];
+			commandsAll.push(...this.commands);
+
+			var player = this.player;
+			var playerItems = player.items;
+			playerItems.forEach(x => commandsAll.push(...x.commands) );
+
+			var place = this.placeCurrent();
+			var placeCommands = place.commands();
+			commandsAll.push(...placeCommands);
+
+			this.commandToExecute =
+				Command.fromTextAndCommands(commandText, commandsAll);
+
+			if (this.commandToExecute != null)
 			{
 				if (this.isOver)
 				{
@@ -67,13 +79,13 @@ class World
 						var message =
 							"The game is over.  You can't do anything but load or restart.\n";
 						universe.messageEnqueue(message);
-						commandRecognized = null;
+						this.commandToExecute = null;
 					}
 				}
 
-				if (commandRecognized != null)
+				if (this.commandToExecute != null)
 				{
-					commandRecognized.execute(universe, this, null);
+					this.commandToExecute.execute(universe, this, null);
 					universe.messageEnqueue("");
 				}
 			}
