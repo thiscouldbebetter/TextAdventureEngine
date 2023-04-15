@@ -152,10 +152,19 @@ class Scripts
 	emplacementChestUse(u, w, place, emplacement)
 	{
 		var message;
+		var isEmpty = emplacement.stateGetByName(StateNames.isEmpty());
 		var isUnlocked = emplacement.stateGetByName(StateNames.isUnlocked());
-		if (isUnlocked)
+		if (isUnlocked != true)
 		{
-			u.console.writeLine("You open the chest and see a sword.");
+			u.console.writeLine("The chest is locked.");
+		}
+		else if (isEmpty)
+		{
+			u.console.writeLine("The chest is empty.");
+		}
+		else
+		{
+			u.console.writeLine("You open the chest and find a sword.");
 			var itemSword = new Item
 			(
 				"sword",
@@ -163,10 +172,7 @@ class Scripts
 				"ItemSwordUse"
 			);
 			place.itemAdd(itemSword);
-		}
-		else
-		{
-			u.console.writeLine("The chest is locked.");
+			emplacement.stateWithNameSetToValue(StateNames.isEmpty(), true);
 		}
 	}
 
@@ -195,34 +201,53 @@ class Scripts
 		{
 			u.console.writeLine("That does not have a keyhole!");
 		}
+		else if (target.stateGetByName(StateNames.isUnlocked() ) )
+		{
+			u.console.writeLine
+			(
+				"You use the key to lock the chest."
+			);
+			target.stateWithNameSetToValue(StateNames.isUnlocked(), false);
+		}
 		else
 		{
-			u.console.writeLine("You put the key in the keyhole and turn to unlock the chest.");
+			u.console.writeLine
+			(
+				"You put the key in the keyhole and turn to unlock the chest."
+			);
 			target.stateWithNameSetToValue(StateNames.isUnlocked(), true);
 		}
 	}
 
 	itemSwordUse(u, w, place, item, target)
 	{
+		var console = u.console;
+
 		if (target == null)
 		{
-			u.console.writeLine("You swing the sword around wildly.");
+			console.writeLine("You swing the sword around wildly.");
 		}
 		else if (target.name != "troll")
 		{
-			u.console.writeLine("That would only dull the sword.");
+			console.writeLine("That would only dull the sword.");
 		}
 		else if (item.stateGetByName(StateNames.isSharpened()) != true) // hack
 		{
-			var message =
-				"The dull sword bounces off the troll's skin.  He retaliates by killing you.";
-			u.console.writeLine(message);
-			u.world = null;
+			var messageLines =
+			[
+				"The dull sword bounces off the troll's thick, rubbery skin.",
+				"He retaliates by disemboweling you with his claws.",
+				"",
+				"You are dead."
+			]
+			w.isOver = true;
+			console.writeLines(messageLines);
 		}
 		else
 		{
-			var message = "The sword slices the troll's head off, killing it.";
-			u.console.writeLine(message);
+			var message =
+				"The sharp sword slices the troll's head off, killing it.";
+			console.writeLine(message);
 			place.agentRemove(target);
 			var emplacementTrollCorpse = new Emplacement
 			(
@@ -255,6 +280,11 @@ class Scripts
 
 class StateNames
 {
+	static isEmpty()
+	{
+		return "isEmpty";
+	}
+
 	static isSharpened()
 	{
 		return "isSharpened";

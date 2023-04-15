@@ -96,30 +96,6 @@ class Command_Instances
 			new Script("DropSomething", this.dropSomething)
 		);
 
-		this.StateDelete = Command.fromTextAndScriptExecute
-		(
-			"delete ",
-			new Script("StateDelete", this.stateDelete)
-		);
-
-		this.StateLoad = Command.fromTextAndScriptExecute
-		(
-			"load ",
-			new Script("StateLoad", this.stateLoad)
-		);
-
-		this.StateSave = Command.fromTextAndScriptExecute
-		(
-			"save ",
-			new Script("StateSave", this.stateSave)
-		);
-
-		this.StatesList = Command.fromTextAndScriptExecute
-		(
-			"list saves",
-			new Script("StatesList", this.statesList)
-		);
-
 		this.GetSomething = Command.fromTextAndScriptExecute
 		(
 			"get ",
@@ -168,6 +144,36 @@ class Command_Instances
 			new Script("Quit", this.quit)
 		);
 
+		this.Restart = Command.fromTextAndScriptExecute
+		(
+			"restart",
+			new Script("Restart", this.restart)
+		);
+
+		this.StateDelete = Command.fromTextAndScriptExecute
+		(
+			"delete ",
+			new Script("StateDelete", this.stateDelete)
+		);
+
+		this.StateLoad = Command.fromTextAndScriptExecute
+		(
+			"load ",
+			new Script("StateLoad", this.stateLoad)
+		);
+
+		this.StateSave = Command.fromTextAndScriptExecute
+		(
+			"save ",
+			new Script("StateSave", this.stateSave)
+		);
+
+		this.StatesList = Command.fromTextAndScriptExecute
+		(
+			"list saves",
+			new Script("StatesList", this.statesList)
+		);
+
 		this.TalkToSomething = Command.fromTextAndScriptExecute
 		(
 			"talk to ",
@@ -203,6 +209,7 @@ class Command_Instances
 			this.LookAtSomething,
 			this.LookSomewhere,
 			this.Quit,
+			this.Restart,
 			this.StateDelete,
 			this.StateSave,
 			this.StateLoad,
@@ -332,6 +339,7 @@ class Command_Instances
 			"list saves - Lists saved game states.",
 			"quit - Quit the game.",
 			"load <name> - Loads the saved game with the specified name.",
+			"restart - Restarts the game.", 
 			"save <name> - Saves the game using the specified name.",
 			"talk to <name> - The player attempts to talk to someone or something.",
 			"use <name> - The player attempts to use something.",
@@ -424,9 +432,16 @@ class Command_Instances
 
 	quit(universe, world, place, command)
 	{
-		universe.console.writeLine("Quitting.");
+		universe.console.writeLine("Quitting.  The game is now over.");
 
-		universe.world = null;
+		world.isOver = true;
+	}
+
+	restart(universe, world, place, command)
+	{
+		universe.console.writeLine("Restarting.");
+
+		universe.world = universe.worldCreate();
 	}
 
 	stateDelete(universe, world, place, command)

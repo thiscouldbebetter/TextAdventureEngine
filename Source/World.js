@@ -19,6 +19,8 @@ class World
 		this.scripts = scripts;
 		this.turnsSoFar = turnsSoFar || 0;
 		this.placeCurrentName = placeCurrentName || this.places[0].name;
+
+		this.isOver = false;
 	}
 
 	placeByName(name)
@@ -48,7 +50,8 @@ class World
 
 	updateForUniverseAndCommandText(universe, commandText)
 	{
-		universe.console.clear();
+		var console = universe.console;
+		console.clear();
 
 		if (commandText != null)
 		{
@@ -56,18 +59,39 @@ class World
 				Command.fromTextAndCommands(commandText, this.commands);
 			if (commandRecognized != null)
 			{
-				commandRecognized.execute(universe, this, null);
+				if (this.isOver)
+				{
+					if
+					(
+						commandText.startsWith("restore ") == false
+						&& commandText != "restart"
+					)
+					{
+						var message =
+							"The game is over.  You can't do anything but restore or restart.\n";
+						console.writeLine(message);
+						commandRecognized = null;
+					}
+				}
+
+				if (commandRecognized != null)
+				{
+					commandRecognized.execute(universe, this, null);
+				}
 			}
+
 		}
 
-		if (universe.world != null)
+		var world = universe.world; // Can't use "this" anymore: the command might have changed it.
+
+		if (world != null)
 		{
-			this.player.update(universe, this);
+			world.player.update(universe, this);
 
-			var placeCurrent = this.placeCurrent();
-			placeCurrent.update(universe, this);
+			var placeCurrent = world.placeCurrent();
+			placeCurrent.update(universe, world);
 
-			placeCurrent.draw(universe, this);
+			placeCurrent.draw(universe, world);
 		}
 	}
 
