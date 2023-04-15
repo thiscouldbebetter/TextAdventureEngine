@@ -46,9 +46,9 @@ class World
 		return this.scripts.find(x => x.name == name);
 	}
 
-	update(universe)
+	updateForUniverseAndCommandText(universe, commandText)
 	{
-		var commandText = universe.commandEnteredAsText;
+		universe.console.clear();
 
 		if (commandText != null)
 		{

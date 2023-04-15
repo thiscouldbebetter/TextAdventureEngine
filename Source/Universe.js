@@ -21,9 +21,37 @@ class Universe
 		this.console.writeLine("Session begins.");
 
 		this.commandEnteredAsText = null;
+
+		this.inputTracker = new InputTracker();
+
+		var universe = this;
+		this.timerManager = new TimerManager
+		(
+			24, // ticksPerSecond
+			() => universe.updateForTimerTick()
+		);
+		this.timerManager.start();
+
+		this.inputTracker.start();
 	}
 
-	update()
+	updateForTimerTick()
+	{
+		var console = this.console;
+		if (console.isReading() )
+		{
+			console.updateForTimerTick(this);
+		}
+		else
+		{
+			var commandText = this.console.textReadSoFar;
+			this.world.updateForUniverseAndCommandText(this, commandText);
+			console.write("Enter a command (? for help): ");
+			console.readLine();
+		}
+	}
+
+	update_Old()
 	{
 		var console = this.console;
 

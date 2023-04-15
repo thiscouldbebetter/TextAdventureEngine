@@ -6,6 +6,6 @@ class Program
 		var worldCreate = () => Game.worldBuild();
 		var universe = new Universe(worldCreate);
 		universe.initialize();
-		universe.update();
+		//universe.update();
 	}
 }

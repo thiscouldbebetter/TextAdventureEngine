@@ -454,6 +454,7 @@ class Command_Instances
 		{
 			saveStateManager.saveStateLoadByName(stateName);
 			universe.console.writeLine("Loaded state with name '" + stateName + "'.");
+			world = universe.world;
 			world.placeCurrent().draw(universe, world);
 		}
 		catch (ex)

@@ -81,7 +81,7 @@ class Place
 			}
 		}
 
-		var message = linesToWrite.join("\n\n");
+		var message = linesToWrite.join("\n\n") + "\n";
 
 		universe.console.writeLine(message);
 	}
