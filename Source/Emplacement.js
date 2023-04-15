@@ -6,13 +6,13 @@ class Emplacement
 		name,
 		description,
 		scriptUseName,
-		statesByName
+		stateGroup
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
-		this._statesByName = statesByName || new Map();
+		this.stateGroup = stateGroup || new StateGroup();
 	}
 
 	static fromNameAndDescription(name, description)
@@ -35,16 +35,6 @@ class Emplacement
 		return world.scriptByName(this._scriptUseName);
 	}
 
-	stateGetByName(name)
-	{
-		return this._statesByName.get(name);
-	}
-
-	stateWithNameSetToValue(name, value)
-	{
-		this._statesByName.set(name, value);
-	}
-
 	use(universe, world, place, target)
 	{
 		var scriptUse = this.scriptUse(world);
@@ -63,7 +53,7 @@ class Emplacement
 			this.name,
 			this.description,
 			this.scriptUseName,
-			this.statesByName // todo
+			this.states.map(x => x.clone())
 		);
 	}
 }

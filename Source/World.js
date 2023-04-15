@@ -87,10 +87,10 @@ class World
 
 		if (world != null)
 		{
-			world.player.update(universe, this);
+			world.player.updateForTurn(universe, this);
 
 			var placeCurrent = world.placeCurrent();
-			placeCurrent.update(universe, world);
+			placeCurrent.updateForTurn(universe, world);
 
 			placeCurrent.draw(universe, world);
 		}

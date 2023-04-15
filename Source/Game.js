@@ -152,8 +152,8 @@ class Scripts
 	emplacementChestUse(u, w, place, emplacement)
 	{
 		var message;
-		var isEmpty = emplacement.stateGetByName(StateNames.isEmpty());
-		var isUnlocked = emplacement.stateGetByName(StateNames.isUnlocked());
+		var isEmpty = emplacement.stateGroup.valueGetByName(StateNames.isEmpty());
+		var isUnlocked = emplacement.stateGroup.valueGetByName(StateNames.isUnlocked());
 		if (isUnlocked != true)
 		{
 			u.messageEnqueue("The chest is locked.");
@@ -172,7 +172,7 @@ class Scripts
 				"ItemSwordUse"
 			);
 			place.itemAdd(itemSword);
-			emplacement.stateWithNameSetToValue(StateNames.isEmpty(), true);
+			emplacement.stateGroup.stateWithNameSetToValue(StateNames.isEmpty(), true);
 		}
 	}
 
@@ -201,13 +201,13 @@ class Scripts
 		{
 			u.messageEnqueue("That does not have a keyhole!");
 		}
-		else if (target.stateGetByName(StateNames.isUnlocked() ) )
+		else if (target.stateGroup.valueGetByName(StateNames.isUnlocked() ) )
 		{
 			u.messageEnqueue
 			(
 				"You use the key to lock the chest."
 			);
-			target.stateWithNameSetToValue(StateNames.isUnlocked(), false);
+			target.stateGroup.stateWithNameSetToValue(StateNames.isUnlocked(), false);
 		}
 		else
 		{
@@ -215,7 +215,7 @@ class Scripts
 			(
 				"You put the key in the keyhole and turn to unlock the chest."
 			);
-			target.stateWithNameSetToValue(StateNames.isUnlocked(), true);
+			target.stateGroup.stateWithNameSetToValue(StateNames.isUnlocked(), true);
 		}
 	}
 
@@ -229,7 +229,7 @@ class Scripts
 		{
 			u.messageEnqueue("That would only dull the sword.");
 		}
-		else if (item.stateGetByName(StateNames.isSharpened()) != true) // hack
+		else if (item.stateGroup.valueGetByName(StateNames.isSharpened()) != true) // hack
 		{
 			var messageLines =
 			[
@@ -271,7 +271,7 @@ class Scripts
 		else
 		{
 			u.messageEnqueue("You stroke the edge of the sword with the whetstone, sharpening it.");
-			target.stateWithNameSetToValue(StateNames.isSharpened(), true);
+			target.stateGroup.stateWithNameSetToValue(StateNames.isSharpened(), true);
 			target.description = "This is a sharp steel sword.";
 		}
 	}

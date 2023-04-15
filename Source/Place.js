@@ -5,14 +5,16 @@ class Place
 	(
 		name,
 		description,
+		scriptUpdateForTurnName,
 		portals,
 		emplacements,
 		items,
-		agents
+		agents,
 	)
 	{
 		this.name = name;
 		this.description = description;
+		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
 		this.portals = portals;
 		this.emplacements = emplacements;
 		this.items = items;
@@ -23,12 +25,13 @@ class Place
 	{
 		return new Place
 		(
-			name, description,
+			name,
+			description,
+			null, // scriptUpdateForTurnName
 			[], // portals
 			[], // emplacements
 			[], // items
 			[], // agents
-			null // update
 		);
 	}
 
@@ -38,11 +41,11 @@ class Place
 		(
 			name,
 			description,
+			null, // scriptUpdateForTurnName
 			objects.filter(x => x.constructor.name == Portal.name),
 			objects.filter(x => x.constructor.name == Emplacement.name),
 			objects.filter(x => x.constructor.name == Item.name),
-			objects.filter(x => x.constructor.name == Agent.name),
-			null // update
+			objects.filter(x => x.constructor.name == Agent.name)
 		);
 	}
 
@@ -129,9 +132,14 @@ class Place
 		return objectFound;
 	}
 
-	update(universe, world)
+	updateForTurn(universe, world)
 	{
-		// todo
+		if (this.scriptUpdateForTurnName != null)
+		{
+			var scriptUpdateForTurn =
+				world.scriptByName(this.scriptUpdateForTurnName);
+			scriptUpdateForTurn.run(universe, world);
+		}
 	}
 
 	// Clonable.
@@ -142,6 +150,7 @@ class Place
 		(
 			this.name,
 			this.description,
+			this.scriptUpdateForTurnName,
 			this.portals.map(x => x.clone()),
 			this.emplacements.map(x => x.clone()),
 			this.items.map(x => x.clone()),

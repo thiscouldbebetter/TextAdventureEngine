@@ -22,9 +22,9 @@ class Player
 		this.items.splice(this.items.indexOf(item), 1);
 	}
 
-	update()
+	updateForTurn()
 	{
-		this.items.forEach(x => x.update());
+		this.items.forEach(x => x.updateForTurn());
 	}
 
 	// Clonable.

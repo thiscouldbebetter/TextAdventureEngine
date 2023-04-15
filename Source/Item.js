@@ -6,13 +6,13 @@ class Item
 		name,
 		description,
 		scriptUseName,
-		statesByName
+		stateGroup
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
-		this._statesByName = statesByName || new Map();
+		this.stateGroup = stateGroup || new StateGroup();
 	}
 
 	static fromNameAndDescription(name, description)
@@ -35,22 +35,9 @@ class Item
 		return world.scriptByName(this._scriptUseName);
 	}
 
-	stateGetByName(name)
+	updateForTurn()
 	{
-		return this._statesByName.get(name);
-	}
-
-	stateWithNameSetToValue(name, value)
-	{
-		this._statesByName.set(name, value);
-	}
-
-	update()
-	{
-		if (this._update != null)
-		{
-			this._update();
-		}
+		// todo
 	}
 
 	use(universe, world, place, target)
@@ -71,7 +58,7 @@ class Item
 			this.name,
 			this.description,
 			this.scriptUseName,
-			this.statesByName
+			this.states.map(x => x.clone())
 		);
 	}
 }
