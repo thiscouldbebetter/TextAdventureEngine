@@ -62,12 +62,10 @@ class Command
 
 	execute(universe, world, place, command)
 	{
-		var console = universe.console;
-		console.writeLine("Command entered: " + this.text());
-		console.writeLine();
+		var message = "Command entered: " + this.text() + "\n";
+		universe.messageEnqueue(message);
 		var scriptExecute = this.scriptExecute(world);
 		scriptExecute.run(universe, world, place, this);
-		console.writeLine("");
 	}
 
 	text()
@@ -277,7 +275,7 @@ class Command_Instances
 
 	attackSomething(universe, world, place, command)
 	{
-		universe.console.writeLine("You can attack something by using a weapon on it.");
+		universe.messageEnqueue("You can attack something by using a weapon on it.");
 	}
 
 	dropSomething(universe, world, place, command)
@@ -300,7 +298,7 @@ class Command_Instances
 			place.itemAdd(itemToDrop);
 		}
 
-		universe.console.writeLine(message);
+		universe.messageEnqueue(message);
 	}
 
 	getSomething(universe, world, place, command)
@@ -349,7 +347,7 @@ class Command_Instances
 			}
 		}
 
-		universe.console.writeLine(message);
+		universe.messageEnqueue(message);
 	}
 
 	goSomewhere(universe, world, place, command)
@@ -361,12 +359,11 @@ class Command_Instances
 			commandText.substr(commandText.indexOf(" ") + 1);
 		var portalMatchingName =
 			portals.find(x => x.name == portalNameFromCommand);
-		var console = universe.console;
 		if (portalMatchingName == null)
 		{
-			console.writeLine
+			universe.messageEnqueue
 			(
-				"Unrecognized exit: '" + portalNameFromCommand + "'."
+				"You can't go " + portalNameFromCommand + " here."
 			);
 		}
 		else
@@ -374,7 +371,7 @@ class Command_Instances
 			var placeNextName = portalMatchingName.placeDestinationName;
 			var placeNext = world.placeByName(placeNextName);
 			world.placeCurrentSet(placeNext);
-			console.writeLine(placeNext.description);
+			universe.messageEnqueue(placeNext.description);
 		}
 	}
 
@@ -403,8 +400,8 @@ class Command_Instances
 			"use <name> on <name2> - The player attempts to use something on something.",
 			"wait - The player does nothing, and simply waits for something to happen."
 		];
-		var console = universe.console;
-		console.writeLines(helpTextAsLines);
+		var helpText = helpTextAsLines.join("\n");
+		universe.messageEnqueue(helpText);
 	}
 
 	inventoryView(universe, world, place, command)
@@ -416,12 +413,12 @@ class Command_Instances
 			"Items Carried:"
 		];
 		items.forEach(x => linesToWrite.push(x.name) );
-		universe.console.writeLines(linesToWrite);
+		universe.messageEnqueues(linesToWrite);
 	}
 
 	lockOrUnlockSomething(universe, world, place, command)
 	{
-		universe.console.writeLine
+		universe.messageEnqueue
 		(
 			"You can lock or unlock things with keyholes by using the right key on them."
 		);
@@ -430,7 +427,7 @@ class Command_Instances
 	lookAround(universe, world, place, command)
 	{
 		place = world.placeCurrent();
-		universe.console.writeLine(place.description);
+		universe.messageEnqueue(place.description);
 	}
 
 	lookAtSomething(universe, world, place, command)
@@ -492,19 +489,19 @@ class Command_Instances
 			targetDescription = "You don't see any " + targetName + " here.";
 		}
 
-		universe.console.writeLine(targetDescription);
+		universe.messageEnqueue(targetDescription);
 	}
 
 	moveSomething(universe, world, place, command)
 	{
 		var commandText = command.text();
 		var verbUsed = commandText.split(" ")[0];
-		universe.console.writeLine("You cannot " + verbUsed + " that.");
+		universe.messageEnqueue("You cannot " + verbUsed + " that.");
 	}
 
 	openSomething(universe, world, place, command)
 	{
-		universe.console.writeLine
+		universe.messageEnqueue
 		(
 			"You can open containers by using them, or things like doors by just going there."
 		);
@@ -512,14 +509,14 @@ class Command_Instances
 
 	quit(universe, world, place, command)
 	{
-		universe.console.writeLine("Quitting.  The game is now over.");
+		universe.messageEnqueue("Quitting.  The game is now over.");
 
 		world.isOver = true;
 	}
 
 	restart(universe, world, place, command)
 	{
-		universe.console.writeLine("Restarting.");
+		universe.messageEnqueue("Restarting.");
 
 		universe.world = universe.worldCreate();
 	}
@@ -529,7 +526,7 @@ class Command_Instances
 		var commandText = command.text();
 		var thingToSay = commandText.substr(commandText.indexOf(" ") + 1);
 
-		universe.console.writeLine
+		universe.messageEnqueue
 		(
 			"You say, '" + thingToSay + "'.  There is no response." 
 		);
@@ -537,7 +534,7 @@ class Command_Instances
 
 	searchSomething(universe, world, place, command)
 	{
-		universe.console.writeLine
+		universe.messageEnqueue
 		(
 			"You can search objects by using them, or sometimes by just looking at them."
 		);
@@ -551,11 +548,11 @@ class Command_Instances
 		try
 		{
 			saveStateManager.saveStateDeleteByName(stateName);
-			universe.console.writeLine("Deleted state with name '" + stateName + "'.");
+			universe.messageEnqueue("Deleted state with name '" + stateName + "'.");
 		}
 		catch (ex)
 		{
-			universe.console.writeLine(ex.message);
+			universe.messageEnqueue(ex.message);
 		}
 	}
 
@@ -567,11 +564,11 @@ class Command_Instances
 		try
 		{
 			saveStateManager.saveStateLoadByName(stateName);
-			universe.console.writeLine("Loaded state with name '" + stateName + "'.");
+			universe.messageEnqueue("Loaded state with name '" + stateName + "'.");
 		}
 		catch (ex)
 		{
-			universe.console.writeLine(ex.message);
+			universe.messageEnqueue(ex.message);
 		}
 	}
 
@@ -584,11 +581,11 @@ class Command_Instances
 		try
 		{
 			saveStateManager.saveStateSave(stateToSave);
-			universe.console.writeLine("Saved state with name '" + stateName + "'.");
+			universe.messageEnqueue("Saved state with name '" + stateName + "'.");
 		}
 		catch (ex)
 		{
-			universe.console.writeLine(ex.message);
+			universe.messageEnqueue(ex.message);
 		}
 	}
 
@@ -600,7 +597,7 @@ class Command_Instances
 			+ saveStateNames.join("\n")
 			+ "\n\n"
 			+ saveStateNames.length + " states currently saved.";
-		universe.console.writeLine(message);
+		universe.messageEnqueue(message);
 	}
 
 	talkToSomething(universe, world, place, command)
@@ -639,12 +636,12 @@ class Command_Instances
 			}
 		}
 
-		universe.console.writeLine(message);
+		universe.messageEnqueue(message);
 	}
 
 	unrecognized(universe, world, place, command)
 	{
-		universe.console.writeLine
+		universe.messageEnqueue
 		(
 			"Unrecognized command: '" + command.text() + "'."
 		);
@@ -711,15 +708,14 @@ class Command_Instances
 			}
 		}
 
-		var console = universe.console;
 		if (objectToUse == null)
 		{
-			console.writeLine(message);
+			universe.messageEnqueue(message);
 		}
 		else if (objectToUse.canBeUsed() == false)
 		{
 			message = "The " + objectToUse.name + " cannot be used.";
-			console.writeLine(message);
+			universe.messageEnqueue(message);
 		}
 		else
 		{
@@ -737,7 +733,7 @@ class Command_Instances
 						target = place.objectByName(targetToUseObjectOnName);
 						if (target == null)
 						{
-							console.writeLine
+							u.messageEnqueue
 							(
 								"You don't see any " + targetToUseObjectOnName + " here."
 							);
@@ -751,7 +747,7 @@ class Command_Instances
 			{
 				if (target == objectToUse)
 				{
-					console.writeLine("That cannot be used on itself!");
+					u.messageEnqueue("That cannot be used on itself!");
 				}
 				else
 				{
@@ -763,7 +759,7 @@ class Command_Instances
 
 	wait(universe, world, place, command)
 	{
-		universe.console.writeLine("You wait a moment.");
+		universe.messageEnqueue("You wait a moment.");
 	}
 
 }

@@ -16,8 +16,6 @@ class Universe
 			d.getElementById("textareaConsole");
 		this.console = new Console(textareaConsole);
 
-		this.console.writeLine("Session begins.");
-
 		this.commandEnteredAsText = null;
 
 		this.inputTracker = new InputTracker();
@@ -33,6 +31,11 @@ class Universe
 		this.inputTracker.start();
 	}
 
+	messageEnqueue(message)
+	{
+		this.console.writeLine(message);
+	}
+
 	updateForTimerTick()
 	{
 		var console = this.console;
@@ -46,66 +49,6 @@ class Universe
 			this.world.updateForUniverseAndCommandText(this, commandText);
 			console.write("Enter a command (? for help): ");
 			console.readLine();
-		}
-	}
-
-	update_Old()
-	{
-		var console = this.console;
-
-		console.clear();
-		console.writeLine();
-
-		var universe = this;
-
-		if (this.world == null)
-		{
-			console.writeLine("The game is over.");
-			console.write("Enter 'restart' to start again: ");
-			console.readLine
-			(
-				(commandText) =>
-				{
-					if (commandText == "restart")
-					{
-						universe.initialize();
-					}
-
-					universe.update();
-				}
-			);
-		}
-		else
-		{
-			this.world.update(this);
-
-			console.writeLine();
-
-			if (this.world == null)
-			{
-				console.write("Game over.  Press the Enter key to quit: ");
-				console.readLine
-				(
-					() =>
-					{
-						universe.update();
-					}
-				)
-			}
-			else
-			{
-				console.write("Enter a command (? for help): ");
-
-				console.readLine
-				(
-					(commandText) =>
-					{
-						universe.commandEnteredAsText = commandText;
-
-						universe.update();
-					}
-				);
-			}
 		}
 	}
 }

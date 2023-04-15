@@ -69,7 +69,7 @@ class World
 					{
 						var message =
 							"The game is over.  You can't do anything but load or restart.\n";
-						console.writeLine(message);
+						universe.messageEnqueue(message);
 						commandRecognized = null;
 					}
 				}
@@ -77,6 +77,7 @@ class World
 				if (commandRecognized != null)
 				{
 					commandRecognized.execute(universe, this, null);
+					universe.messageEnqueue("");
 				}
 			}
 

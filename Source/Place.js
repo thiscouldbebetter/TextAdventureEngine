@@ -83,7 +83,7 @@ class Place
 
 		var message = linesToWrite.join("\n\n") + "\n";
 
-		universe.console.writeLine(message);
+		universe.messageEnqueue(message);
 	}
 
 	emplacementAdd(emplacement)
