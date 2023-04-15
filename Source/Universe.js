@@ -11,8 +11,6 @@ class Universe
 		this.world = this.worldCreate();
 		this.saveStateManager = new SaveStateManager(this);
 		this.storageManager = new StorageManager();
-		this.uiEventHandler = new UiEventHandler(this);
-		this.uiEventHandler.initialize();
 		var d = document;
 		var textareaConsole =
 			d.getElementById("textareaConsole");
