@@ -30,7 +30,19 @@ class Command
 		}
 		else
 		{
-			commandMatching = commandsMatching[0];
+			var commandMatchingExactly = commands.find
+			(
+				command => command.texts.some(text => text == commandTextToMatch)
+			);
+
+			if (commandMatchingExactly == null)
+			{
+				commandMatching = commandsMatching[0];
+			}
+			else
+			{
+				commandMatching = commandMatchingExactly;
+			}
 			commandMatching = commandMatching.clone();
 			commandMatching.textSet(commandTextToMatch);
 		}
@@ -114,6 +126,30 @@ class Command_Instances
 		(
 			[ "get ", "take ", "grab " ],
 			new Script("GetSomething", this.getSomething)
+		);
+
+		this.GoDirectionEast = Command.fromTextsAndScriptExecute
+		(
+			[ "e", "east", "go e", ],
+			new Script("GoEast", this.goDirectionEast.bind(this) )
+		);
+
+		this.GoDirectionNorth = Command.fromTextsAndScriptExecute
+		(
+			[ "n", "north", "go n" ],
+			new Script("GoNorth", this.goDirectionNorth.bind(this) )
+		);
+
+		this.GoDirectionSouth = Command.fromTextsAndScriptExecute
+		(
+			[ "s", "south", "go s" ],
+			new Script("GoSouth", this.goDirectionSouth.bind(this) )
+		);
+
+		this.GoDirectionWest = Command.fromTextsAndScriptExecute
+		(
+			[ "w", "west", "go w" ],
+			new Script("GoWest", this.goDirectionWest.bind(this) )
 		);
 
 		this.GoSomewhere = Command.fromTextsAndScriptExecute
@@ -247,6 +283,10 @@ class Command_Instances
 			this.AttackSomething,
 			this.DropSomething,
 			this.GetSomething,
+			this.GoDirectionEast,
+			this.GoDirectionNorth,
+			this.GoDirectionSouth,
+			this.GoDirectionWest,
 			this.GoSomewhere,
 			this.Help,
 			this.InventoryView,
@@ -350,20 +390,44 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
+	goDirectionEast(universe, world, place, command)
+	{
+		this.goThroughPortalWithName(universe, world, "east");
+	}
+
+	goDirectionNorth(universe, world, place, command)
+	{
+		this.goThroughPortalWithName(universe, world, "north");
+	}
+
+	goDirectionSouth(universe, world, place, command)
+	{
+		this.goThroughPortalWithName(universe, world, "south");
+	}
+
+	goDirectionWest(universe, world, place, command)
+	{
+		this.goThroughPortalWithName(universe, world, "west");
+	}
+
 	goSomewhere(universe, world, place, command)
 	{
-		place = world.placeCurrent();
-		var portals = place.portals;
-		var commandText = command.text();
 		var portalNameFromCommand =
 			commandText.substr(commandText.indexOf(" ") + 1);
+		this.goThroughPortalWithName(univers, world, portalNameFromCommand);
+	}
+
+	goThroughPortalWithName(universe, world, portalName)
+	{
+		var place = world.placeCurrent();
+		var portals = place.portals;
 		var portalMatchingName =
-			portals.find(x => x.name == portalNameFromCommand);
+			portals.find(x => x.name == portalName);
 		if (portalMatchingName == null)
 		{
 			universe.messageEnqueue
 			(
-				"You can't go " + portalNameFromCommand + " here."
+				"You can't go " + portalName + " here."
 			);
 		}
 		else
