@@ -3,6 +3,7 @@ class Console
 {
 	constructor(textarea)
 	{
+		this.textCurrent = "";
 		this.textarea = textarea;
 
 		this.textReadSoFar = null;
@@ -17,14 +18,36 @@ class Console
 			this.textReadSoFar =
 				this.textReadSoFar.substr(0, this.textReadSoFar.length - 1);
 
-			var textBefore = this.textarea.value;
-			this.textarea.value = textBefore.substr(0, textBefore.length - 1);
+			var textBefore = this.textCurrent;
+			this.textCurrent = textBefore.substr(0, textBefore.length - 1);
 		}
+
+		this.draw();
 	}
 
 	clear()
 	{
-		this.textarea.value = "";
+		this.textCurrent = "";
+		this.draw();
+	}
+
+	draw()
+	{
+		this.textarea.value = this.textCurrent;
+		if (this.isReading())
+		{
+			this.textarea.value += "_"
+		}
+	}
+
+	isReading()
+	{
+		var returnValue =
+		(
+			this.callbackForReadCharacter != null
+			|| this.callbackForReadLine != null
+		);
+		return returnValue;
 	}
 
 	readCharacter(callback)
@@ -43,21 +66,7 @@ class Console
 
 	write(textToWrite)
 	{
-		if (this.textReadSoFar != null)
-		{
-			// Remove the cursor.
-			var textareaValue = this.textarea.value;
-			this.textarea.value = textareaValue.substr(0, textareaValue.length -1);
-		}
-
-		this.textarea.value += textToWrite;
-
-		if (this.textReadSoFar != null)
-		{
-			// Add the cursor.
-			var textareaValue = this.textarea.value;
-			this.textarea.value += "_";
-		}
+		this.textCurrent += textToWrite;
 
 		if (this.textReadSoFar != null)
 		{
@@ -84,6 +93,7 @@ class Console
 				this.textReadSoFar += textToWrite;
 			}
 		}
+		this.draw();
 	}
 
 	writeLine(lineToWrite)

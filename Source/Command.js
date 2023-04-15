@@ -330,7 +330,7 @@ class Command_Instances
 			"get <name> - The player attempts to pick up the item named.",
 			"inventory - Displays a list of the player's possessions.",
 			"list saves - Lists saved game states.",
-			"quit - Quit the Command_Instances.",
+			"quit - Quit the game.",
 			"load <name> - Loads the saved game with the specified name.",
 			"save <name> - Saves the game using the specified name.",
 			"talk to <name> - The player attempts to talk to someone or something.",

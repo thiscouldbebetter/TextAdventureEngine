@@ -1,4 +1,4 @@
-hiTextAdventureEngine
+TextAdventureEngine
 ===================
 
 The code in this repository implements a rudimentary text adventure game engine.
