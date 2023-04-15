@@ -1,30 +1,35 @@
 
 class TimerManager
 {
-	constructor(ticksPerSecond, tick)
+	ticksPerSecond: number;
+	_tick: any;
+
+	systemTimer: any;
+
+	constructor(ticksPerSecond: number, tick: any)
 	{
 		this.ticksPerSecond = ticksPerSecond || 1000;
 		this._tick = tick;
 	}
 
-	millisecondsPerTick()
+	millisecondsPerTick(): number
 	{
 		return Math.round(1000 / this.ticksPerSecond);
 	}
 
-	stop()
+	stop(): void
 	{
 		clearInterval(this.systemTimer);
 		this.systemTimer = null;
 	}
 
-	start()
+	start(): void
 	{
 		this.systemTimer =
 			setInterval(this.tick.bind(this), this.millisecondsPerTick() );
 	}
 
-	tick()
+	tick(): void
 	{
 		this._tick();
 	}

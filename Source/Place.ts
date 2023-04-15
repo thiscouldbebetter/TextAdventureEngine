@@ -1,16 +1,25 @@
 
 class Place
 {
+	name: string;
+	description: string;
+	scriptUpdateForTurnName: string;
+	portals: Portal[];
+	emplacements: Emplacement[];
+	items: Item[];
+	agents: Agent[];
+	stateGroup: StateGroup;
+
 	constructor
 	(
-		name,
-		description,
-		scriptUpdateForTurnName,
-		portals,
-		emplacements,
-		items,
-		agents,
-		stateGroup
+		name: string,
+		description: string,
+		scriptUpdateForTurnName: string,
+		portals: Portal[],
+		emplacements: Emplacement[],
+		items: Item[],
+		agents: Agent[],
+		stateGroup: StateGroup
 	)
 	{
 		this.name = name;
@@ -20,19 +29,28 @@ class Place
 		this.emplacements = emplacements || [];
 		this.items = items || [];
 		this.agents = agents || [];
-		this.stateGroup = stateGroup || new StateGroup();
+		this.stateGroup = stateGroup || new StateGroup([]);
 	}
 
-	static fromNameAndDescription(name, description)
+	static fromNameAndDescription(name: string, description: string): Place
 	{
 		return new Place
 		(
 			name,
 			description,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
 		);
 	}
 
-	static fromNameDescriptionAndObjects(name, description, objects)
+	static fromNameDescriptionAndObjects
+	(
+		name: string, description: string, objects: any[]
+	): Place
 	{
 		return new Place
 		(
@@ -42,14 +60,18 @@ class Place
 			objects.filter(x => x.constructor.name == Portal.name),
 			objects.filter(x => x.constructor.name == Emplacement.name),
 			objects.filter(x => x.constructor.name == Item.name),
-			objects.filter(x => x.constructor.name == Agent.name)
+			objects.filter(x => x.constructor.name == Agent.name),
+			null // stateGroup
 		);
 	}
 
 	static fromNameDescriptionScriptNameAndObjects
 	(
-		name, description, scriptUpdateForTurnName, objects
-	)
+		name: string,
+		description: string,
+		scriptUpdateForTurnName: string,
+		objects: any[]
+	): Place
 	{
 		return new Place
 		(
@@ -59,28 +81,29 @@ class Place
 			objects.filter(x => x.constructor.name == Portal.name),
 			objects.filter(x => x.constructor.name == Emplacement.name),
 			objects.filter(x => x.constructor.name == Item.name),
-			objects.filter(x => x.constructor.name == Agent.name)
+			objects.filter(x => x.constructor.name == Agent.name),
+			null, // stateGroup
 		);
 	}
 
-	agentAdd(agent)
+	agentAdd(agent: Agent): void
 	{
 		this.agents.push(agent);
 	}
 
-	agentByName(name)
+	agentByName(name: string): Agent
 	{
 		return this.agents.find(x => x.name == name);
 	}
 
-	agentRemove(agent)
+	agentRemove(agent: Agent): void
 	{
 		this.agents.splice(this.agents.indexOf(agent), 1);
 	}
 
-	commands()
+	commands(): Command[]
 	{
-		var commandsAll = [];
+		var commandsAll = new Array<Command>();
 
 		this.emplacements.forEach(x => commandsAll.push(...x.commands));
 		this.items.forEach(x => commandsAll.push(...x.commands));
@@ -89,7 +112,7 @@ class Place
 		return commandsAll;
 	}
 
-	draw(universe, world)
+	draw(universe: Universe, world: World): string
 	{
 		var linesToWrite =
 		[
@@ -126,27 +149,27 @@ class Place
 		return message;
 	}
 
-	emplacementAdd(emplacement)
+	emplacementAdd(emplacement: Emplacement): void
 	{
 		this.emplacements.push(emplacement);
 	}
 
-	emplacementRemove(emplacement)
+	emplacementRemove(emplacement: Emplacement): void
 	{
 		this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
 	}
 
-	itemAdd(item)
+	itemAdd(item: Item): void
 	{
 		this.items.push(item);
 	}
 
-	itemRemove(item)
+	itemRemove(item: Item): void
 	{
 		this.items.splice(this.items.indexOf(item), 1);
 	}
 
-	objectByName(name)
+	objectByName(name: string): any
 	{
 		var objectFound = null;
 
@@ -158,18 +181,18 @@ class Place
 			this.agents
 		];
 
-		var objectArray =
-			objectArrays.find(oa => oa.some(x => x.name == name));
+		var objectArray: any[] =
+			objectArrays.find(oa => oa.some( (x: any) => x.name == name));
 
 		if (objectArray != null)
 		{
-			objectFound = objectArray.find(x => x.name == name);
+			objectFound = objectArray.find( (x: any) => x.name == name);
 		}
 
 		return objectFound;
 	}
 
-	updateForTurn(universe, world)
+	updateForTurn(universe: Universe, world: World): void
 	{
 		if (this.scriptUpdateForTurnName != null)
 		{
@@ -181,7 +204,7 @@ class Place
 
 	// Clonable.
 
-	clone()
+	clone(): Place
 	{
 		return new Place
 		(
@@ -192,17 +215,18 @@ class Place
 			this.emplacements.map(x => x.clone()),
 			this.items.map(x => x.clone()),
 			this.agents.map(x => x.clone()),
+			this.stateGroup.clone()
 		);
 	}
 
 	// States.
 
-	hasBeenVisited()
+	hasBeenVisited(): boolean
 	{
 		return (this.stateGroup.valueGetByName("Visited") == true);
 	}
 
-	visit()
+	visit(): void
 	{
 		return this.stateGroup.stateWithNameSetToValue("Visited", true);
 	}

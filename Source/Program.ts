@@ -1,7 +1,7 @@
 
 class Program
 {
-	main()
+	main(): void
 	{
 		var worldCreate = () => Game.worldBuild();
 		var universe = new Universe(worldCreate);

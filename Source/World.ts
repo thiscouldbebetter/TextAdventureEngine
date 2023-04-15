@@ -1,15 +1,26 @@
 
 class World
 {
+	name: string;
+	places: Place[];
+	player: Agent;
+	commands: Command[];
+	scripts: Script[];
+	turnsSoFar: number;
+	placeCurrentName: string;
+
+	commandToExecute: Command;
+	isOver: boolean;
+
 	constructor
 	(
-		name,
-		places,
-		player,
-		commands,
-		scripts,
-		turnsSoFar,
-		placeCurrentName
+		name: string,
+		places: Place[],
+		player: Agent,
+		commands: Command[],
+		scripts: Script[],
+		turnsSoFar: number,
+		placeCurrentName: string
 	)
 	{
 		this.name = name;
@@ -23,32 +34,32 @@ class World
 		this.isOver = false;
 	}
 
-	placeByName(name)
+	placeByName(name: string): Place
 	{
 		return this.places.find(x => x.name == name);
 	}
 
-	placeCurrent()
+	placeCurrent(): Place
 	{
 		return this.placeByName(this.placeCurrentName);
 	}
 
-	placeCurrentSet(value)
+	placeCurrentSet(value: Place): void
 	{
 		this.placeCurrentName = value.name;
 	}
 
-	scriptAdd(script)
+	scriptAdd(script: Script): void
 	{
 		this.scripts.push(script);
 	}
 
-	scriptByName(name)
+	scriptByName(name: string): Script
 	{
 		return this.scripts.find(x => x.name == name);
 	}
 
-	updateForUniverseAndCommandText(universe, commandText)
+	updateForUniverseAndCommandText(universe: Universe, commandText: string): void
 	{
 		if (commandText != null)
 		{
@@ -85,7 +96,7 @@ class World
 
 				if (this.commandToExecute != null)
 				{
-					this.commandToExecute.execute(universe, this, null);
+					this.commandToExecute.execute(universe, this, place, this.commandToExecute);
 					universe.messageEnqueue("");
 				}
 			}
@@ -93,9 +104,10 @@ class World
 
 		var world = universe.world; // Can't use "this" anymore: the command might have changed it.
 
-		world.player.updateForTurn(universe, this);
-
 		var placeCurrent = world.placeCurrent();
+
+		world.player.updateForTurn(universe, this, placeCurrent);
+
 		placeCurrent.updateForTurn(universe, world);
 
 		var messageForPlaceCurrent = placeCurrent.draw(universe, world);
@@ -113,7 +125,7 @@ class World
 
 	// Clonable.
 
-	clone()
+	clone(): World
 	{
 		return new World
 		(
@@ -122,8 +134,8 @@ class World
 			this.player.clone(),
 			this.commands.map(x => x.clone()),
 			this.scripts.map(x => x.clone()),
+			this.turnsSoFar,
 			this.placeCurrentName,
-			this.turnsSoFar
 		);
 	}
 }

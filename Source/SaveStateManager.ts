@@ -1,14 +1,17 @@
 
 class SaveStateManager
 {
-	constructor(universe)
+	universe: Universe;
+	saveStates: SaveState[];
+
+	constructor(universe: Universe)
 	{
 		this.universe = universe;
 
-		this.saveStates = [];
+		this.saveStates = new Array<SaveState>();
 	}
 
-	saveStateDeleteByName(stateName)
+	saveStateDeleteByName(stateName: string): void
 	{
 		if (this.saveStates.some(x => x.name == stateName) == false)
 		{
@@ -16,11 +19,12 @@ class SaveStateManager
 		}
 		else
 		{
-			this.saveStates.splice(this.saveStates.indexOf(stateName), 1);
+			var saveState = this.saveStates.find(x => x.name == stateName);
+			this.saveStates.splice(this.saveStates.indexOf(saveState), 1);
 		}
 	}
 
-	saveStateLoadByName(stateName)
+	saveStateLoadByName(stateName: string): void
 	{
 		if (this.saveStates.some(x => x.name == stateName) == false)
 		{
@@ -34,12 +38,12 @@ class SaveStateManager
 		}
 	}
 
-	saveStateNamesGet()
+	saveStateNamesGet(): string[]
 	{
 		return this.saveStates.map(x => x.name);
 	}
 
-	saveStateSave(saveStateToSave)
+	saveStateSave(saveStateToSave: SaveState): void
 	{
 		var stateName = saveStateToSave.name;
 

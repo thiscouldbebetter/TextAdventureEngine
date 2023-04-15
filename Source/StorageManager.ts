@@ -1,23 +1,25 @@
 
-class StorageManager
+class StorageManager2
 {
+	_valuesByKey: Map<string, string>;
+
 	constructor()
 	{
 		// todo - Use local storage.
-		this._valuesByKey = new Map();
+		this._valuesByKey = new Map<string, string>();
 	}
 
-	deleteByKey(key)
+	deleteByKey(key: string): void
 	{
 		this._valuesByKey.delete(key);
 	}
 
-	getValueByKey(key)
+	getValueByKey(key: string): string
 	{
 		return this._valuesByKey.get(key);
 	}
 
-	saveKeyWithValue(key, value)
+	saveKeyWithValue(key: string, value: string): void
 	{
 		this._valuesByKey.set(key, value);
 	}

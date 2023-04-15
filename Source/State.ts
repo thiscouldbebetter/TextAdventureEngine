@@ -1,7 +1,10 @@
 
 class State
 {
-	constructor(name, value)
+	name: string;
+	value: string;
+
+	constructor(name: string, value: string)
 	{
 		this.name = name;
 		this.value = value;
@@ -9,7 +12,7 @@ class State
 
 	// Clonable.
 
-	clone()
+	clone(): State
 	{
 		return new State(this.name, this.value);
 	}

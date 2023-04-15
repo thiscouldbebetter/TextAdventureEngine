@@ -1,7 +1,7 @@
 
 class Game
 {
-	static worldBuild()
+	static worldBuild(): World
 	{
 		var player = new Agent
 		(
@@ -14,12 +14,13 @@ class Game
 					"locket",
 					"This small copper locket contains a picture of your sweetie."
 				)
-			]
+			],
+			null // commands
 		);
 
 		var scriptsCustom = new Scripts();
 
-		var p = (name, description, objects) =>
+		var p = (name: string, description: string, objects: any[]) =>
 			Place.fromNameDescriptionAndObjects(name, description, objects);
 
 		var portalDescription = "This is a normal door with a round knob.";
@@ -37,7 +38,10 @@ class Game
 				+ "  There are doors to the north, south, east, and west.",
 			scriptsCustom.PlaceCenterRoomUpdate.name,
 			[
-				new Emplacement("pool", "This is a shallow, dirty, foul-smelling pool of water."),
+				Emplacement.fromNameAndDescription
+				(
+					"pool", "This is a shallow, dirty, foul-smelling pool of water."
+				),
 				new Portal("east", portalDescription, placeEasternRoomName),
 				new Portal("north", portalDescription, placeNorthernRoomName),
 				new Portal("south", portalDescription, placeSouthernRoomName),
@@ -77,7 +81,11 @@ class Game
 			"This room is north of the center.  A doorway to the south leads back to the Center Room.",
 			[
 				new Portal("south", portalDescription, placeCenterRoomName),
-				new Agent("troll", "The scabrous troll leers malevolently at you.")
+				Agent.fromNameAndDescription
+				(
+					"troll",
+					"The scabrous troll leers malevolently at you."
+				)
 			]
 		);
 
@@ -122,9 +130,9 @@ class Game
 
 		var commands = Command.Instances()._All;
 
-		var scriptsAll = [];
+		var scriptsAll = new Array<Script>;
 
-		var commandsAsScripts = commands.map(x => x._scriptExecute);
+		var commandsAsScripts = commands.map((x: Command) => x._scriptExecute);
 		scriptsAll.push(...commandsAsScripts);
 
 		scriptsAll.push(...scriptsCustom._All);
@@ -135,7 +143,9 @@ class Game
 			places,
 			player,
 			commands,
-			scriptsAll
+			scriptsAll,
+			null, // turnsSoFar,
+			null
 		);
 
 		return returnValue;
@@ -145,9 +155,22 @@ class Game
 
 class Scripts
 {
+	AgentCaptorTalkTo: Script;
+	AgentCaptorUpdate: Script;
+	EmplacementChestUse: Script;
+	EmplacementTrollBodyUse: Script;
+	ItemCoinGiveToCaptor: Script;
+	ItemKeyUse: Script;
+	ItemSwordUse: Script;
+	ItemTrollHeadTalkTo: Script;
+	ItemWhetstoneUse: Script;
+	PlaceCenterRoomUpdate: Script;
+
+	_All: Script[];
+
 	constructor()
 	{
-		var s = (a, b) => new Script(a, b);
+		var s = (a: string, b: any) => new Script(a, b);
 
 		this.AgentCaptorTalkTo = s("AgentCaptorTalkTo", this.agentCaptorTalkTo);
 		this.AgentCaptorUpdate = s("AgentCaptorUpdate", this.agentCaptorUpdate);
@@ -175,7 +198,7 @@ class Scripts
 		];
 	}
 
-	agentCaptorTalkTo(u, w, p, agent)
+	agentCaptorTalkTo(u: Universe, w: World, p: Place, agent: any): void
 	{
 		var message;
 
@@ -194,28 +217,28 @@ class Scripts
 		u.messageEnqueue(message);
 	}
 
-	agentCaptorUpdate(u, w, p, agent)
+	agentCaptorUpdate(u: Universe, w: World, p: Place, agent: any): void
 	{
 		// todo
 	}
 
-	emplacementChestUse(u, w, place, emplacement)
+	emplacementChestUse(u: Universe, w: World, place: Place, emplacement: any): void
 	{
-		var message;
+		var message: string;
 		var isEmpty = emplacement.stateGroup.valueGetByName(StateNames.isEmpty());
 		var isUnlocked = emplacement.stateGroup.valueGetByName(StateNames.isUnlocked());
 		if (isUnlocked != true)
 		{
-			u.messageEnqueue("The chest is locked.");
+			message = "The chest is locked.";
 		}
 		else if (isEmpty)
 		{
-			u.messageEnqueue("The chest is empty.");
+			message = "The chest is empty.";
 		}
 		else
 		{
-			u.messageEnqueue("You open the chest and find a sword.");
-			var itemSword = new Item
+			message = "You open the chest and find a sword.";
+			var itemSword = Item.fromNameDescriptionAndScriptUseName
 			(
 				"sword",
 				"This is a steel sword, too dull to cut anything.",
@@ -224,11 +247,17 @@ class Scripts
 			place.itemAdd(itemSword);
 			emplacement.stateGroup.stateWithNameSetToValue(StateNames.isEmpty(), true);
 		}
+
+		u.messageEnqueue(message);
 	}
 
-	emplacementTrollBodyUse(u, w, place, emplacementTrollBody, target)
+	emplacementTrollBodyUse
+	(
+		u: Universe, w: World, place: Place,
+		emplacementTrollBody: any, target: any
+	): void
 	{
-		var message;
+		var message: string;
 
 		if (target != null)
 		{
@@ -236,9 +265,12 @@ class Scripts
 		}
 		else
 		{
-			var message = "You find a gold coin in the troll's coin purse.";
+			message = "You find a gold coin in the troll's coin purse.";
 
-			var itemCoin = new Item("coin", "This is a gold coin.");
+			var itemCoin = Item.fromNameAndDescription
+			(
+				"coin", "This is a gold coin."
+			);
 			place.itemAdd(itemCoin);
 
 			emplacementTrollBody._scriptUseName = null;
@@ -247,7 +279,7 @@ class Scripts
 		u.messageEnqueue(message);
 	}
 
-	itemCoinGiveToCaptor(universe, world, place)
+	itemCoinGiveToCaptor(universe: Universe, world: World, place: Place): void
 	{
 		var message;
 
@@ -273,7 +305,7 @@ class Scripts
 			agentCaptor.itemAdd(itemCoin);
 			place.agentRemove(agentCaptor);
 
-			var itemRope = new Item
+			var itemRope = Item.fromNameAndDescription
 			(
 				"rope",
 				"This is a coil of weathered hempen rope."
@@ -284,7 +316,7 @@ class Scripts
 		universe.messageEnqueue(message);
 	}
 
-	itemKeyUse(u, w, p, i, target)
+	itemKeyUse(u: Universe, w: World, p: Place, i: any, target: any)
 	{
 		if (target == null)
 		{
@@ -312,7 +344,7 @@ class Scripts
 		}
 	}
 
-	itemSwordUse(u, w, place, item, target)
+	itemSwordUse(u: Universe, w: World, place: Place, item: any, target: any): void
 	{
 		if (target == null)
 		{
@@ -342,7 +374,7 @@ class Scripts
 			u.messageEnqueue(message);
 			place.agentRemove(target);
 
-			var emplacementTrollBody = new Emplacement
+			var emplacementTrollBody = Emplacement.fromNameDescriptionAndScriptUseName
 			(
 				"troll body",
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
@@ -368,13 +400,13 @@ class Scripts
 		}
 	}
 
-	itemTrollHeadTalkTo(u, w, place, item, target)
+	itemTrollHeadTalkTo(u: Universe, w: World, place: Place, item: any, target: any): void
 	{
 		var message = "The troll's head nods in agreement with what you're saying.";
 		u.messageEnqueue(message);
 	}
 
-	itemWhetstoneUse(u, w, p, i, target)
+	itemWhetstoneUse(u: Universe, w: World, p: Place, i: any, target: any): void
 	{
 		if (target == null)
 		{
@@ -392,7 +424,7 @@ class Scripts
 		}
 	}
 
-	placeCenterRoomUpdate(u, w, p)
+	placeCenterRoomUpdate(u: Universe, w: World, p: Place): any
 	{
 		if (p.hasBeenVisited() == false)
 		{
@@ -416,17 +448,17 @@ class Scripts
 
 class StateNames
 {
-	static isEmpty()
+	static isEmpty(): string
 	{
 		return "isEmpty";
 	}
 
-	static isSharpened()
+	static isSharpened(): string
 	{
 		return "isSharpened";
 	}
 
-	static isUnlocked()
+	static isUnlocked(): string
 	{
 		return "isUnlocked";
 	}

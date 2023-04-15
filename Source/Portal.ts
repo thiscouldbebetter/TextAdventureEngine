@@ -1,7 +1,16 @@
 
 class Portal
 {
-	constructor(name, description, placeDestinationName)
+	name: string;
+	description: string;
+	placeDestinationName: string;
+
+	constructor
+	(
+		name: string,
+		description: string,
+		placeDestinationName: string
+	)
 	{
 		this.name = name;
 		this.description = description;
@@ -10,7 +19,7 @@ class Portal
 
 	// Clonable.
 
-	clone()
+	clone(): Portal
 	{
 		return new Portal
 		(

@@ -1,12 +1,14 @@
 
 class InputTracker
 {
+	_keysPressed: string[];
+
 	constructor()
 	{
 		this._keysPressed = [];
 	}
 
-	keyPressed(event)
+	keyPressed(event: any): void
 	{
 		var key = event.key;
 		if (this._keysPressed.indexOf(key) < 0)
@@ -15,7 +17,7 @@ class InputTracker
 		}
 	}
 
-	keyReleased(event)
+	keyReleased(event: any): void
 	{
 		var key = event.key;
 		if (this._keysPressed.indexOf(key) >= 0)
@@ -24,17 +26,17 @@ class InputTracker
 		}
 	}
 
-	keysPressed()
+	keysPressed(): string[]
 	{
 		return this._keysPressed;
 	}
 
-	keysPressedClear()
+	keysPressedClear(): void
 	{
 		this._keysPressed.length = 0;
 	}
 
-	start()
+	start(): void
 	{
 		var d = document;
 		var body = d.body;

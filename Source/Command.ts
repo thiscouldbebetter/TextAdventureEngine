@@ -1,13 +1,22 @@
 
 class Command
 {
-	constructor(texts, scriptExecuteName)
+	texts: string[];
+	scriptExecuteName: string;
+
+	_scriptExecute: any; // hack
+
+	constructor
+	(
+		texts: string[],
+		scriptExecuteName: string
+	)
 	{
 		this.texts = texts;
 		this.scriptExecuteName = scriptExecuteName;
 	}
 
-	static fromTextsAndScriptExecute(texts, scriptExecute)
+	static fromTextsAndScriptExecute(texts: string[], scriptExecute: any): Command
 	{
 		var returnValue =
 			new Command(texts, scriptExecute.name);
@@ -15,14 +24,14 @@ class Command
 		return returnValue;
 	}
 
-	static fromTextAndCommands(commandTextToMatch, commands)
+	static fromTextAndCommands(commandTextToMatch: string, commands: Command[]): Command
 	{
 		var commandsMatching = commands.filter
 		(
 			command => command.texts.some(text => commandTextToMatch.startsWith(text) )
 		);
 
-		var commandMatching;
+		var commandMatching: Command;
 		if (commandsMatching.length == 0)
 		{
 			commandMatching = commands.find(x => x.text() == "unrecognized");
@@ -50,7 +59,8 @@ class Command
 		return commandMatching;
 	}
 
-	static Instances()
+	static _instances: Command_Instances;
+	static Instances(): Command_Instances
 	{
 		if (Command._instances == null)
 		{
@@ -59,20 +69,12 @@ class Command
 		return Command._instances;
 	}
 
-	clone()
-	{
-		return Command.fromTextsAndScriptExecute
-		(
-			this.texts, this._scriptExecute
-		);
-	}
-
-	scriptExecute(world)
+	scriptExecute(world: World): Script
 	{
 		return world.scriptByName(this.scriptExecuteName);
 	}
 
-	execute(universe, world, place, command)
+	execute(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var message = "Command entered: " + this.text() + "\n";
 		universe.messageEnqueue(message);
@@ -80,12 +82,12 @@ class Command
 		scriptExecute.run(universe, world, place, this);
 	}
 
-	text()
+	text(): string
 	{
 		return this.texts[0];
 	}
 
-	textSet(value)
+	textSet(value: string): Command
 	{
 		this.texts[0] = value;
 		return this;
@@ -93,7 +95,7 @@ class Command
 
 	// Clonable.
 
-	clone()
+	clone(): Command
 	{
 		return new Command
 		(
@@ -105,6 +107,40 @@ class Command
 
 class Command_Instances
 {
+	AttackSomething: Command;
+	BuySomething: Command;
+	DropSomething: Command;
+	GetSomething: Command;
+	GiveSomething: Command;
+	GoDirectionEast: Command;
+	GoDirectionNorth: Command;
+	GoDirectionSouth: Command;
+	GoDirectionWest: Command;
+	GoSomewhere: Command;
+	Help: Command;
+	InventoryView: Command;
+	LockOrUnlockSomething: Command;
+	LookAround: Command;
+	LookAtSomething: Command;
+	LookSomewhere: Command;
+	MoveSomething: Command;
+	OpenSomething: Command;
+	Quit: Command;
+	Restart: Command;
+	SaySomething: Command;
+	SearchSomething: Command;
+	SellSomething: Command;
+	StateDelete: Command;
+	StateSave: Command;
+	StateLoad: Command;
+	StatesList: Command;
+	TalkToSomething: Command;
+	Unrecognized: Command;
+	UseSomething: Command;
+	Wait: Command;
+
+	_All: Command[];
+
 	constructor()
 	{
 		this.AttackSomething = Command.fromTextsAndScriptExecute
@@ -330,16 +366,19 @@ class Command_Instances
 			this.UseSomething,
 			this.Wait
 		];
-
-		this._AllByName = new Map(this._All.map(x => [x.name, x] ) )
 	}
 
-	attackSomething(universe, world, place, command)
+	attackSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue("You can attack something by using a weapon on it.");
 	}
 
-	dropSomething(universe, world, place, command)
+	buySomething(universe: Universe, world: World, place: Place, command: Command): void
+	{
+		universe.messageEnqueue("todo");
+	}
+
+	dropSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
@@ -362,11 +401,11 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
-	getSomething(universe, world, place, command)
+	getSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
-		var message = null;
+		var message: string = null;
 
 		place = world.placeCurrent();
 
@@ -411,9 +450,9 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
-	giveSomething(universe, world, place, command)
+	giveSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		var message = null;
+		var message: string;
 
 		var commandText = command.text();
 		var commandTextMinusVerb = commandText.substring("give ".length);
@@ -427,8 +466,7 @@ class Command_Instances
 		else
 		{
 			var itemToGiveName = commandTextMinusVerb.substr(0, indexOfTo);
-			var playerItems = world.player.items;
-			var itemToGive = playerItems.find(itemToGiveName);
+			var itemToGive = world.player.itemByName(itemToGiveName);
 			if (itemToGive == null)
 			{
 				message = "You don't have any " + itemToGive + "."; 
@@ -445,46 +483,48 @@ class Command_Instances
 				}
 				else
 				{
-					// todo
+					message = "todo";
 				}
 			}
 		}
 
+		universe.messageEnqueue(message);
 	}
 
-	goDirectionEast(universe, world, place, command)
+	goDirectionEast(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		this.goThroughPortalWithName(universe, world, "east");
 	}
 
-	goDirectionNorth(universe, world, place, command)
+	goDirectionNorth(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		this.goThroughPortalWithName(universe, world, "north");
 	}
 
-	goDirectionSouth(universe, world, place, command)
+	goDirectionSouth(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		this.goThroughPortalWithName(universe, world, "south");
 	}
 
-	goDirectionWest(universe, world, place, command)
+	goDirectionWest(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		this.goThroughPortalWithName(universe, world, "west");
 	}
 
-	goSomewhere(universe, world, place, command)
+	goSomewhere(universe: Universe, world: World, place: Place, command: Command): void
 	{
+		var commandText = command.text();
 		var portalNameFromCommand =
 			commandText.substr(commandText.indexOf(" ") + 1);
-		this.goThroughPortalWithName(univers, world, portalNameFromCommand);
+		this.goThroughPortalWithName(universe, world, portalNameFromCommand);
 	}
 
-	goThroughPortalWithName(universe, world, portalName)
+	goThroughPortalWithName(universe: Universe, world: World, portalName: string): void
 	{
 		var place = world.placeCurrent();
 		var portals = place.portals;
 		var portalMatchingName =
-			portals.find(x => x.name == portalName);
+			portals.find( (x: Portal) => x.name == portalName);
 		if (portalMatchingName == null)
 		{
 			universe.messageEnqueue
@@ -500,7 +540,7 @@ class Command_Instances
 		}
 	}
 
-	help(universe, world, place, command)
+	help(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var helpTextAsLines =
 		[
@@ -529,7 +569,7 @@ class Command_Instances
 		universe.messageEnqueue(helpText);
 	}
 
-	inventoryView(universe, world, place, command)
+	inventoryView(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var player = world.player;
 		var items = player.items;
@@ -538,10 +578,11 @@ class Command_Instances
 			"Items Carried:"
 		];
 		items.forEach(x => linesToWrite.push(x.name) );
-		universe.messageEnqueues(linesToWrite);
+		var message = linesToWrite.join("\n");
+		universe.messageEnqueue(message);
 	}
 
-	lockOrUnlockSomething(universe, world, place, command)
+	lockOrUnlockSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue
 		(
@@ -549,18 +590,18 @@ class Command_Instances
 		);
 	}
 
-	lookAround(universe, world, place, command)
+	lookAround(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		place = world.placeCurrent();
 		universe.messageEnqueue(place.description);
 	}
 
-	lookAtSomething(universe, world, place, command)
+	lookAtSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var textAt = " at ";
 		var indexOfAt = commandText.indexOf(textAt);
-		var targetName;
+		var targetName: string;
 		if (indexOfAt < 0)
 		{
 			targetName =
@@ -590,12 +631,12 @@ class Command_Instances
 
 		for (var ta = 0; ta < targetsPossibleArrays.length; ta++)
 		{
-			var targetsPossible = targetsPossibleArrays[ta];
+			var targetsPossible: any[] = targetsPossibleArrays[ta];
 
 			for (var i = 0; i < targetsPossible.length; i++)
 			{
 				var targetFound =
-					targetsPossible.find(x => x.name == targetName);
+					targetsPossible.find( (x: any) => x.name == targetName);
 				if (targetFound != null)
 				{
 					targetDescription = targetFound.description;
@@ -617,14 +658,14 @@ class Command_Instances
 		universe.messageEnqueue(targetDescription);
 	}
 
-	moveSomething(universe, world, place, command)
+	moveSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var verbUsed = commandText.split(" ")[0];
 		universe.messageEnqueue("You cannot " + verbUsed + " that.");
 	}
 
-	openSomething(universe, world, place, command)
+	openSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue
 		(
@@ -632,21 +673,21 @@ class Command_Instances
 		);
 	}
 
-	quit(universe, world, place, command)
+	quit(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue("Quitting.  The game is now over.");
 
 		world.isOver = true;
 	}
 
-	restart(universe, world, place, command)
+	restart(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue("Restarting.");
 
 		universe.world = universe.worldCreate();
 	}
 
-	saySomething(universe, world, place, command)
+	saySomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var thingToSay = commandText.substr(commandText.indexOf(" ") + 1);
@@ -657,7 +698,7 @@ class Command_Instances
 		);
 	}
 
-	searchSomething(universe, world, place, command)
+	searchSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue
 		(
@@ -665,7 +706,12 @@ class Command_Instances
 		);
 	}
 
-	stateDelete(universe, world, place, command)
+	sellSomething(universe: Universe, world: World, place: Place, command: Command): void
+	{
+		universe.messageEnqueue("todo");
+	}
+
+	stateDelete(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
@@ -681,7 +727,7 @@ class Command_Instances
 		}
 	}
 
-	stateLoad(universe, world, place, command)
+	stateLoad(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
@@ -697,7 +743,7 @@ class Command_Instances
 		}
 	}
 
-	stateSave(universe, world, place, command)
+	stateSave(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
 		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
@@ -714,7 +760,7 @@ class Command_Instances
 		}
 	}
 
-	statesList(universe, world, place, command)
+	statesList(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var saveStateNames = universe.saveStateManager.saveStateNamesGet();
 		var message =
@@ -725,7 +771,7 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
-	talkToSomething(universe, world, place, command)
+	talkToSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var message = null;
 
@@ -764,7 +810,7 @@ class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
-	unrecognized(universe, world, place, command)
+	unrecognized(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue
 		(
@@ -772,13 +818,13 @@ class Command_Instances
 		);
 	}
 
-	useSomething(universe, world, place, command)
+	useSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var message = null;
 
 		var commandText = command.text();
 
-		var objectName;
+		var objectName: string;
 		var textOn = " on ";
 		var indexOfOn = commandText.indexOf(" on ");
 		if (indexOfOn < 0)
@@ -794,14 +840,15 @@ class Command_Instances
 
 		place = world.placeCurrent();
 
-		var emplacementToUse = place.emplacements.find(x => x.name == objectName);
+		var emplacementToUse =
+			place.emplacements.find( (x: Emplacement) => x.name == objectName);
 		if (emplacementToUse != null)
 		{
 			objectToUse = emplacementToUse;
 		}
 		else 
 		{
-			var agentToUse = place.agents.find(x => x.name == objectName);
+			var agentToUse = place.agents.find( (x: Agent) => x.name == objectName);
 			if (agentToUse != null)
 			{
 				message = "The " + agentToUse.name + " cannot be used.";
@@ -810,7 +857,7 @@ class Command_Instances
 			{
 				var playerItems = world.player.items;
 				var itemCarriedToUse =
-					playerItems.find(x => x.name == objectName);
+					playerItems.find( (x: Item) => x.name == objectName);
 
 				if (itemCarriedToUse != null)
 				{
@@ -819,7 +866,7 @@ class Command_Instances
 				else
 				{
 					var itemInRoomToUse =
-						place.items.find(x => x.name == objectName);
+						place.items.find( (x: Item) => x.name == objectName);
 
 					if (itemInRoomToUse == null)
 					{
@@ -882,7 +929,7 @@ class Command_Instances
 		}
 	}
 
-	wait(universe, world, place, command)
+	wait(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		universe.messageEnqueue("You wait a moment.");
 	}

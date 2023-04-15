@@ -1,13 +1,19 @@
 
 class Agent
 {
+	name: string;
+	description: string;
+	scriptUpdateForTurnName: string;
+	items: Item[];
+	commands: Command[];
+
 	constructor
 	(
-		name,
-		description,
-		scriptUpdateForTurnName,
-		items,
-		commands
+		name: string,
+		description: string,
+		scriptUpdateForTurnName: string,
+		items: Item[],
+		commands: Command[]
 	)
 	{
 		this.name = name;
@@ -17,7 +23,12 @@ class Agent
 		this.commands = commands || [];
 	}
 
-	updateForTurn(universe, world, place)
+	static fromNameAndDescription(name: string, description: string): Agent
+	{
+		return new Agent(name, description, null, null, null);
+	}
+
+	updateForTurn(universe: Universe, world: World, place: Place): void
 	{
 		if (this.scriptUpdateForTurnName != null)
 		{
@@ -30,7 +41,7 @@ class Agent
 
 	// Clonable.
 
-	clone()
+	clone(): Agent
 	{
 		return new Agent
 		(
@@ -44,17 +55,17 @@ class Agent
 
 	// Items.
 
-	itemAdd(item)
+	itemAdd(item: Item): void
 	{
 		this.items.push(item);
 	}
 
-	itemByName(name)
+	itemByName(name: string): Item
 	{
 		return this.items.find(x => x.name == name);
 	}
 
-	itemRemove(item)
+	itemRemove(item: Item): void
 	{
 		this.items.splice(this.items.indexOf(item), 1);
 	}

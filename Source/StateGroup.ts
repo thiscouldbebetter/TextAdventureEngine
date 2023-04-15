@@ -1,12 +1,14 @@
 
 class StateGroup
 {
-	constructor(states)
+	states: State[];
+
+	constructor(states: State[])
 	{
-		this.states = states || [];
+		this.states = states || new Array<State>();
 	}
 
-	stateWithNameSetToValue(stateToSetName, value)
+	stateWithNameSetToValue(stateToSetName: string, value: any): void
 	{
 		var stateFound = this.states.find(x => x.name == stateToSetName);
 		if (stateFound == null)
@@ -20,11 +22,18 @@ class StateGroup
 		}
 	}
  
-	valueGetByName(stateToGetName, states)
+	valueGetByName(stateToGetName: string): any
 	{
 		var stateFound = this.states.find(x => x.name == stateToGetName);
 		var returnValue = (stateFound == null ? null : stateFound.value);
 		return returnValue;
+	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new StateGroup(this.states.map(x => x.clone()) );
 	}
 
 }

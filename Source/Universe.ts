@@ -1,12 +1,23 @@
 
 class Universe
 {
-	constructor(worldCreate)
+	worldCreate: any;
+
+	commandEnteredAsText: string;
+	console: Console;
+	inputTracker: InputTracker;
+	messageQueue: MessageQueue;
+	saveStateManager: SaveStateManager;
+	storageManager: StorageManager2;
+	timerManager: TimerManager;
+	world: World;
+
+	constructor(worldCreate: any)
 	{
 		this.worldCreate = worldCreate;
 	}
 
-	initialize()
+	initialize(): void
 	{
 		this.world = this.worldCreate();
 
@@ -14,7 +25,7 @@ class Universe
 
 		this.saveStateManager = new SaveStateManager(this);
 
-		this.storageManager = new StorageManager();
+		this.storageManager = new StorageManager2();
 
 		var d = document;
 		var textareaConsole =
@@ -36,12 +47,12 @@ class Universe
 		this.inputTracker.start();
 	}
 
-	messageEnqueue(message)
+	messageEnqueue(message: string): void
 	{
 		this.messageQueue.enqueue(message);
 	}
 
-	updateForTimerTick()
+	updateForTimerTick(): void
 	{
 		var console = this.console;
 		if (console.isReading() )

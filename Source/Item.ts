@@ -1,48 +1,65 @@
 
 class Item
 {
+	name: string;
+	description: string;
+	_scriptUseName: string;
+	stateGroup: StateGroup;
+	commands: Command[];
+
 	constructor
 	(
-		name,
-		description,
-		scriptUseName,
-		stateGroup,
-		commands
+		name: string,
+		description: string,
+		scriptUseName: string,
+		stateGroup: StateGroup,
+		commands: Command[]
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
-		this.stateGroup = stateGroup || new StateGroup();
+		this.stateGroup = stateGroup || new StateGroup([]);
 		this.commands = commands || [];
 	}
 
-	static fromNameAndDescription(name, description)
+	static fromNameAndDescription(name: string, description: string): Item
 	{
-		return new Item(name, description);
+		return new Item(name, description, null, null, null);
 	}
 
-	static fromNameDescriptionAndScriptUse(name, description, scriptUse)
+	static fromNameDescriptionAndScriptUse
+	(
+		name: string, description: string, scriptUse: Script
+	): Item
 	{
-		return new Item(name, description, scriptUse.name, null);
+		return new Item(name, description, scriptUse.name, null, null);
 	}
 
-	canBeUsed()
+	static fromNameDescriptionAndScriptUseName
+	(
+		name: string, description: string, scriptUseName: string
+	): Item
+	{
+		return new Item(name, description, scriptUseName, null, null);
+	}
+
+	canBeUsed(): boolean
 	{
 		return (this._scriptUseName != null);
 	}
 
-	scriptUse(world)
+	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);
 	}
 
-	updateForTurn()
+	updateForTurn(): void
 	{
 		// todo
 	}
 
-	use(universe, world, place, target)
+	use(universe: Universe, world: World, place: Place, target: any): void
 	{
 		var scriptUse = this.scriptUse(world);
 		if (scriptUse != null)
@@ -53,13 +70,13 @@ class Item
 
 	// Clonable.
 
-	clone()
+	clone(): Item
 	{
 		return new Item
 		(
 			this.name,
 			this.description,
-			this.scriptUseName,
+			this._scriptUseName,
 			this.stateGroup.clone(),
 			this.commands.map(x => x.clone() )
 		);

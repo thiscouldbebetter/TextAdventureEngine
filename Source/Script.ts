@@ -1,7 +1,10 @@
 
 class Script
 {
-	constructor(name, run)
+	name: string;
+	run: any;
+
+	constructor(name: string, run: any)
 	{
 		this.name = name;
 		this.run = run;
@@ -9,7 +12,7 @@ class Script
 
 	// Clonable.
 
-	clone()
+	clone(): Script
 	{
 		return new Script
 		(

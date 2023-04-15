@@ -1,7 +1,12 @@
 
 class Console
 {
-	constructor(textarea)
+	textCurrent: string;
+	textarea: any;
+	_isReading: boolean;
+	textReadSoFar: string;
+
+	constructor(textarea: any)
 	{
 		this.textCurrent = "";
 		this.textarea = textarea;
@@ -10,13 +15,13 @@ class Console
 		this.textReadSoFar = null;
 	}
 
-	clear()
+	clear(): void
 	{
 		this.textCurrent = "";
 		this.draw();
 	}
 
-	draw()
+	draw(): void
 	{
 		this.textarea.value = this.textCurrent;
 		if (this.isReading())
@@ -25,18 +30,18 @@ class Console
 		}
 	}
 
-	isReading()
+	isReading(): boolean
 	{
 		return this._isReading;
 	}
 
-	readLine(callback)
+	readLine(): void
 	{
 		this._isReading = true;
 		this.textReadSoFar = "";
 	}
 
-	updateForTimerTick(universe)
+	updateForTimerTick(universe: Universe): void
 	{
 		if (this.isReading() )
 		{
@@ -73,13 +78,13 @@ class Console
 		}
 	}
 
-	write(textToWrite)
+	write(textToWrite: string): void
 	{
 		this.textCurrent += textToWrite;
 		this.draw();
 	}
 
-	writeLine(lineToWrite)
+	writeLine(lineToWrite: string): void
 	{
 		if (lineToWrite != null)
 		{
@@ -88,7 +93,7 @@ class Console
 		this.write("\n");
 	}
 
-	writeLines(linesToWrite)
+	writeLines(linesToWrite: string[]): void
 	{
 		linesToWrite.forEach(x => this.writeLine(x) );
 	}
