@@ -26,4 +26,15 @@ class Player
 	{
 		this.items.forEach(x => x.update());
 	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new Player
+		(
+			this.name,
+			this.items.map(x => x.clone())
+		);
+	}
 }

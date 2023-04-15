@@ -1,18 +1,38 @@
 
 class Item
 {
-	constructor(name, description, use, statesByName, update)
+	constructor
+	(
+		name,
+		description,
+		scriptUseName,
+		statesByName
+	)
 	{
 		this.name = name;
 		this.description = description;
-		this._use = use;
+		this._scriptUseName = scriptUseName;
 		this._statesByName = statesByName || new Map();
-		this._update = update;
+	}
+
+	static fromNameAndDescription(name, description)
+	{
+		return new Item(name, description);
+	}
+
+	static fromNameDescriptionAndScriptUse(name, description, scriptUse)
+	{
+		return new Item(name, description, scriptUse.name, null);
 	}
 
 	canBeUsed()
 	{
-		return (this._use != null);
+		return (this._scriptUseName != null);
+	}
+
+	scriptUse(world)
+	{
+		return world.scriptByName(this._scriptUseName);
 	}
 
 	stateGetByName(name)
@@ -35,9 +55,23 @@ class Item
 
 	use(universe, world, place, target)
 	{
-		if (this._use != null)
+		var scriptUse = this.scriptUse(world);
+		if (scriptUse != null)
 		{
-			this._use(universe, world, place, this, target);
+			scriptUse.run(universe, world, place, this, target);
 		}
+	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new Item
+		(
+			this.name,
+			this.description,
+			this.scriptUseName,
+			this.statesByName
+		);
 	}
 }

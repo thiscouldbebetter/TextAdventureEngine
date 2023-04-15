@@ -1,15 +1,24 @@
 
 class World
 {
-	constructor(name, places, player, commands)
+	constructor
+	(
+		name,
+		places,
+		player,
+		commands,
+		scripts,
+		turnsSoFar,
+		placeCurrentName
+	)
 	{
 		this.name = name;
 		this.places = places;
 		this.player = player;
 		this.commands = commands;
-
-		this.ticksSoFar = 0;
-		this.placeCurrentName = this.places[0].name;
+		this.scripts = scripts;
+		this.turnsSoFar = turnsSoFar || 0;
+		this.placeCurrentName = placeCurrentName || this.places[0].name;
 	}
 
 	placeByName(name)
@@ -25,6 +34,16 @@ class World
 	placeCurrentSet(value)
 	{
 		this.placeCurrentName = value.name;
+	}
+
+	scriptAdd(script)
+	{
+		this.scripts.push(script);
+	}
+
+	scriptByName(name)
+	{
+		return this.scripts.find(x => x.name == name);
 	}
 
 	update(universe)
@@ -47,6 +66,24 @@ class World
 
 			var placeCurrent = this.placeCurrent();
 			placeCurrent.update(universe, this);
+
+			placeCurrent.draw(universe, this);
 		}
+	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new World
+		(
+			this.name,
+			this.places.map(x => x.clone()),
+			this.player.clone(),
+			this.commands.map(x => x.clone()),
+			this.scripts.map(x => x.clone()),
+			this.placeCurrentName,
+			this.turnsSoFar
+		);
 	}
 }

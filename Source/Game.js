@@ -7,13 +7,15 @@ class Game
 		(
 			"Demo Player",
 			[
-				new Item
+				Item.fromNameAndDescription
 				(
 					"locket",
 					"This small gold locket contains a picture of your sweetie."
 				)
 			]
 		);
+
+		var scriptsCustom = new Scripts();
 
 		var p = (name, description, objects) =>
 			Place.fromNameDescriptionAndObjects(name, description, objects);
@@ -44,11 +46,11 @@ class Game
 			"This room is east of the center.  A doorway to the west leads back to the Center Room.",
 			[
 				new Portal("west", portalDescription, placeCenterRoomName),
-				new Emplacement
+				Emplacement.fromNameDescriptionAndScriptUse
 				(
 					"chest",
 					"This is a sturdy, and very heavy, oaken chest with a lock.",
-					Scripts.emplacementChestUse
+					scriptsCustom.EmplacementChestUse
 				)
 			]
 		);
@@ -69,26 +71,11 @@ class Game
 			"This room is south of the center.  A doorway to the north leads back to the Center Room.",
 			[
 				new Portal("north", portalDescription, placeCenterRoomName),
-				new Item
+				Item.fromNameDescriptionAndScriptUse
 				(
 					"key",
 					"This is a large brass key.",
-					(u, w, p, i, target) =>
-					{
-						if (target == null)
-						{
-							u.console.writeLine("The key must be used on something.");
-						}
-						else if (target.name != "chest")
-						{
-							u.console.writeLine("That does not have a keyhole!");
-						}
-						else
-						{
-							u.console.writeLine("You put the key in the keyhole and turn to unlock the chest.");
-							target.stateWithNameSetToValue(StateNames.isUnlocked(), true);
-						}
-					}
+					scriptsCustom.ItemKeyUse
 				)
 			]
 		);
@@ -99,27 +86,11 @@ class Game
 			"This room is west of the center.  A doorway to the east leads back to the Center Room.",
 			[
 				new Portal("east", portalDescription, placeCenterRoomName),
-				new Item
+				Item.fromNameDescriptionAndScriptUse
 				(
 					"whetstone",
 					"This is a flat stone for sharpening tools and weapons.",
-					(u, w, p, i, target) =>
-					{
-						if (target == null)
-						{
-							u.console.writeLine("The whetstone must be used on something.");
-						}
-						else if (target.name != "sword")
-						{
-							u.console.writeLine("That cannot be sharpened!");
-						}
-						else
-						{
-							u.console.writeLine("You stroke the edge of the sword with the whetstone, sharpening it.");
-							target.stateWithNameSetToValue(StateNames.isSharpened(), true);
-							target.description = "This is a sharp steel sword.";
-						}
-					}
+					scriptsCustom.ItemWhetstoneUse
 				)
 			]
 		);
@@ -135,12 +106,20 @@ class Game
 
 		var commands = Command.Instances()._All;
 
+		var scriptsAll = [];
+
+		var commandsAsScripts = commands.map(x => x._scriptExecute);
+		scriptsAll.push(...commandsAsScripts);
+
+		scriptsAll.push(...scriptsCustom._All);
+
 		var returnValue = new World
 		(
 			"Demo World",
 			places,
 			player,
-			commands
+			commands,
+			scriptsAll
 		);
 
 		return returnValue;
@@ -150,7 +129,27 @@ class Game
 
 class Scripts
 {
-	static emplacementChestUse(u, w, place, emplacement)
+	constructor()
+	{
+		var s = (a, b) => new Script(a, b);
+
+		this.EmplacementChestUse = s("EmplacementChestUse", this.emplacementChestUse);
+		this.EmplacementTrollCorpseUse = s("EmplacementTrollCorpseUse", this.emplacementTrollCorpseUse);
+		this.ItemKeyUse = s("ItemKeyUse", this.itemKeyUse);
+		this.ItemSwordUse = s("ItemSwordUse", this.itemSwordUse);
+		this.ItemWhetstoneUse = s("ItemWhetstoneUse", this.itemWhetstoneUse);
+
+		this._All =
+		[
+			this.EmplacementChestUse,
+			this.EmplacementTrollCorpseUse,
+			this.ItemKeyUse,
+			this.ItemSwordUse,
+			this.ItemWhetstoneUse
+		];
+	}
+
+	emplacementChestUse(u, w, place, emplacement)
 	{
 		var message;
 		var isUnlocked = emplacement.stateGetByName(StateNames.isUnlocked());
@@ -161,7 +160,7 @@ class Scripts
 			(
 				"sword",
 				"This is a steel sword, too dull to cut anything.",
-				Scripts.itemSwordUse
+				"ItemSwordUse"
 			);
 			place.itemAdd(itemSword);
 		}
@@ -171,7 +170,39 @@ class Scripts
 		}
 	}
 
-	static itemSwordUse(u, w, place, item, target)
+	emplacementTrollCorpseUse(u, w, place, item, target)
+	{
+		if (target != null)
+		{
+			u.console.writeLine("You can't use the troll on anything.");
+		}
+		else
+		{
+			var message = "You find a gold coin in the troll's coin purse.";
+			u.console.writeLine(message);
+			var itemCoin = new Item("coin", "This is a gold coin.");
+			place.itemAdd(itemCoin);
+		}
+	}
+
+	itemKeyUse(u, w, p, i, target)
+	{
+		if (target == null)
+		{
+			u.console.writeLine("The key must be used on something.");
+		}
+		else if (target.name != "chest")
+		{
+			u.console.writeLine("That does not have a keyhole!");
+		}
+		else
+		{
+			u.console.writeLine("You put the key in the keyhole and turn to unlock the chest.");
+			target.stateWithNameSetToValue(StateNames.isUnlocked(), true);
+		}
+	}
+
+	itemSwordUse(u, w, place, item, target)
 	{
 		if (target == null)
 		{
@@ -181,39 +212,45 @@ class Scripts
 		{
 			u.console.writeLine("That would only dull the sword.");
 		}
-		else if (item.stateGetByName(StateName.isSharpened()) != true) // hack
+		else if (item.stateGetByName(StateNames.isSharpened()) != true) // hack
 		{
-			u.console.writeLine("The dull sword bounces off the troll's skin.  He retaliates by killing you.");
+			var message =
+				"The dull sword bounces off the troll's skin.  He retaliates by killing you.";
+			u.console.writeLine(message);
 			u.world = null;
 		}
 		else
 		{
-			u.console.writeLine("The sword slices the troll's head off, killing it.");
+			var message = "The sword slices the troll's head off, killing it.";
+			u.console.writeLine(message);
 			place.agentRemove(target);
 			var emplacementTrollCorpse = new Emplacement
 			(
 				"troll corpse",
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
-				Scripts.itemTrollCorpseUse
+				"EmplacementTrollCorpseUse"
 			);
 			place.emplacementAdd(emplacementTrollCorpse);
 		}
 	}
 
-	static itemTrollCorpseUse(u, w, place, item, target) 
+	itemWhetstoneUse(u, w, p, i, target)
 	{
-		if (target != null)
+		if (target == null)
 		{
-			u.console.writeLine("You can't use the troll on anything.");
+			u.console.writeLine("The whetstone must be used on something.");
+		}
+		else if (target.name != "sword")
+		{
+			u.console.writeLine("That cannot be sharpened!");
 		}
 		else
 		{
-			u.console.writeLine("You find a gold coin in the troll's coin purse.");
-			var itemCoin = new Item("coin", "This is a gold coin.");
-			place.itemAdd(itemCoin);
+			u.console.writeLine("You stroke the edge of the sword with the whetstone, sharpening it.");
+			target.stateWithNameSetToValue(StateNames.isSharpened(), true);
+			target.description = "This is a sharp steel sword.";
 		}
 	}
-
 }
 
 class StateNames

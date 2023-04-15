@@ -8,8 +8,7 @@ class Place
 		portals,
 		emplacements,
 		items,
-		agents,
-		update
+		agents
 	)
 	{
 		this.name = name;
@@ -18,7 +17,6 @@ class Place
 		this.emplacements = emplacements;
 		this.items = items;
 		this.agents = agents;
-		this._update = update;
 	}
 
 	static fromNameAndDescription(name, description)
@@ -56,6 +54,36 @@ class Place
 	agentRemove(agent)
 	{
 		this.agents.splice(this.agents.indexOf(agent), 1);
+	}
+
+	draw(universe, world)
+	{
+		var linesToWrite =
+		[
+			"Location: " + this.name
+		];
+
+		var objectArraysPresent =
+		[
+			this.emplacements,
+			this.items,
+			this.agents
+		];
+
+		for (var oa = 0; oa < objectArraysPresent.length; oa++)
+		{
+			var objects = objectArraysPresent[oa];
+			for (var i = 0; i < objects.length; i++)
+			{
+				var objectToMention = objects[i];
+				var message = "There is a " + objectToMention.name + " here.";
+				linesToWrite.push(message);
+			}
+		}
+
+		var message = linesToWrite.join("\n\n");
+
+		universe.console.writeLine(message);
 	}
 
 	emplacementAdd(emplacement)
@@ -103,36 +131,21 @@ class Place
 
 	update(universe, world)
 	{
-		if (this._update != null)
-		{
-			this._update(universe, world);
-		}
+		// todo
+	}
 
-		var linesToWrite =
-		[
-			"Location: " + this.name
-		];
+	// Clonable.
 
-		var objectArraysPresent =
-		[
-			this.emplacements,
-			this.items,
-			this.agents
-		];
-
-		for (var oa = 0; oa < objectArraysPresent.length; oa++)
-		{
-			var objects = objectArraysPresent[oa];
-			for (var i = 0; i < objects.length; i++)
-			{
-				var objectToMention = objects[i];
-				var message = "There is a " + objectToMention.name + " here.";
-				linesToWrite.push(message);
-			}
-		}
-
-		var message = linesToWrite.join("\n\n");
-
-		universe.console.writeLine(message);
+	clone()
+	{
+		return new Place
+		(
+			this.name,
+			this.description,
+			this.portals.map(x => x.clone()),
+			this.emplacements.map(x => x.clone()),
+			this.items.map(x => x.clone()),
+			this.agents.map(x => x.clone()),
+		);
 	}
 }

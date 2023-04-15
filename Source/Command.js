@@ -1,10 +1,18 @@
 
 class Command
 {
-	constructor(text, execute)
+	constructor(text, scriptExecuteName)
 	{
 		this.text = text;
-		this._execute = execute;
+		this.scriptExecuteName = scriptExecuteName;
+	}
+
+	static fromTextAndScriptExecute(text, scriptExecute)
+	{
+		var returnValue =
+			new Command(text, scriptExecute.name);
+		returnValue._scriptExecute = scriptExecute;
+		return returnValue;
 	}
 
 	static fromTextAndCommands(commandTextToMatch, commands)
@@ -15,25 +23,17 @@ class Command
 		var commandMatching;
 		if (commandsMatching.length == 0)
 		{
-			commandMatching = Command.unrecognized(commandTextToMatch);
+			commandMatching = commands.find(x => x.text == "unrecognized");
+			commandMatching = commandMatching.clone().textSet(commandTextToMatch);
 		}
 		else
 		{
-			commandMatching = commandsMatching[commandsMatching.length - 1];
+			commandMatching = commandsMatching[0];
 			commandMatching = commandMatching.clone();
 			commandMatching.textSet(commandTextToMatch);
 		}
 
 		return commandMatching;
-	}
-
-	static unrecognized(text)
-	{
-		return new Command
-		(
-			text,
-			(u) => u.console.writeLine("Unrecognized command: '" + text + "'.")
-		);
 	}
 
 	static Instances()
@@ -47,15 +47,24 @@ class Command
 
 	clone()
 	{
-		return new Command(this.text, this._execute);
+		return Command.fromTextAndScriptExecute
+		(
+			this.text, this._scriptExecute
+		);
 	}
 
-	execute(universe, world, place)
+	scriptExecute(world)
+	{
+		return world.scriptByName(this.scriptExecuteName);
+	}
+
+	execute(universe, world, place, command)
 	{
 		var console = universe.console;
 		console.writeLine("Command entered: " + this.text);
 		console.writeLine();
-		this._execute(universe, world, place);
+		var scriptExecute = this.scriptExecute(world);
+		scriptExecute.run(universe, world, place, this);
 		console.writeLine("");
 	}
 
@@ -64,76 +73,123 @@ class Command
 		this.text = value;
 		return this;
 	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new Command
+		(
+			this.text,
+			this.scriptExecuteName
+		);
+	}
 }
 
 class Command_Instances
 {
 	constructor()
 	{
-		this.DropSomething = new Command
+		this.DropSomething = Command.fromTextAndScriptExecute
 		(
 			"drop ",
-			this.dropSomething
+			new Script("DropSomething", this.dropSomething)
 		);
 
-		this.GetSomething = new Command
+		this.StateDelete = Command.fromTextAndScriptExecute
+		(
+			"delete ",
+			new Script("StateDelete", this.stateDelete)
+		);
+
+		this.StateLoad = Command.fromTextAndScriptExecute
+		(
+			"load ",
+			new Script("StateLoad", this.stateLoad)
+		);
+
+		this.StateSave = Command.fromTextAndScriptExecute
+		(
+			"save ",
+			new Script("StateSave", this.stateSave)
+		);
+
+		this.StatesList = Command.fromTextAndScriptExecute
+		(
+			"list saves",
+			new Script("StatesList", this.statesList)
+		);
+
+		this.GetSomething = Command.fromTextAndScriptExecute
 		(
 			"get ",
-			this.getSomething
+			new Script("GetSomething", this.getSomething)
 		);
 
-		this.GoSomewhere = new Command
+		this.GoSomewhere = Command.fromTextAndScriptExecute
 		(
 			"go ",
-			this.goSomewhere
+			new Script("GoSomewhere", this.goSomewhere)
 		);
 
-		this.Help = new Command
+		this.Help = Command.fromTextAndScriptExecute
 		(
 			"?",
-			this.help
+			new Script("Help", this.help)
 		);
 
-		this.InventoryView = new Command
+		this.InventoryView = Command.fromTextAndScriptExecute
 		(
 			"inventory",
-			this.inventoryView
+			new Script("InventoryView", this.inventoryView)
 		);
 
-		this.LookAround = new Command
+		this.LookAround = Command.fromTextAndScriptExecute
 		(
-			"look",
-			this.lookAround
+			"look around",
+			new Script("LookAround", this.lookAround)
 		);
 
-		this.LookAtSomething = new Command
+		this.LookAtSomething = Command.fromTextAndScriptExecute
+		(
+			"look at ",
+			new Script("LookAtSomething", this.lookAtSomething)
+		);
+
+		this.LookSomewhere = Command.fromTextAndScriptExecute
 		(
 			"look ",
-			this.lookAtSomething
+			new Script("LookSomewhere", this.lookAtSomething) // hack
 		);
 
-		this.Quit = new Command
+		this.Quit = Command.fromTextAndScriptExecute
 		(
 			"quit",
-			this.quit
+			new Script("Quit", this.quit)
 		);
 
-		this.TalkToSomething = new Command
+		this.TalkToSomething = Command.fromTextAndScriptExecute
 		(
 			"talk to ",
-			this.talkToSomething
+			new Script("TalkToSomething", this.talkToSomething)
 		);
 
-		this.UseSomething = new Command
+		this.Unrecognized = Command.fromTextAndScriptExecute
+		(
+			"unrecognized",
+			new Script("Unrecognized", this.unrecognized)
+		);
+
+		this.UseSomething = Command.fromTextAndScriptExecute
 		(
 			"use ",
-			this.useSomething
+			new Script("UseSomething", this.useSomething)
 		);
 
-		this.Wait = new Command
+		this.Wait = Command.fromTextAndScriptExecute
 		(
 			"wait",
-			this.wait
+			new Script("Wait", this.wait)
 		);
 
 		this._All =
@@ -145,8 +201,14 @@ class Command_Instances
 			this.InventoryView,
 			this.LookAround,
 			this.LookAtSomething,
+			this.LookSomewhere,
 			this.Quit,
+			this.StateDelete,
+			this.StateSave,
+			this.StateLoad,
+			this.StatesList,
 			this.TalkToSomething,
+			this.Unrecognized,
 			this.UseSomething,
 			this.Wait
 		];
@@ -154,9 +216,9 @@ class Command_Instances
 		this._AllByName = new Map(this._All.map(x => [x.name, x] ) )
 	}
 
-	dropSomething(universe, world, place)
+	dropSomething(universe, world, place, command)
 	{
-		var commandText = this.text;
+		var commandText = command.text;
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var message = null;
 
@@ -177,9 +239,9 @@ class Command_Instances
 		universe.console.writeLine(message);
 	}
 
-	getSomething(universe, world, place)
+	getSomething(universe, world, place, command)
 	{
-		var commandText = this.text;
+		var commandText = command.text;
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var message = null;
 
@@ -226,11 +288,11 @@ class Command_Instances
 		universe.console.writeLine(message);
 	}
 
-	goSomewhere(universe, world, place)
+	goSomewhere(universe, world, place, command)
 	{
 		place = world.placeCurrent();
 		var portals = place.portals;
-		var commandText = this.text;
+		var commandText = command.text;
 		var portalNameFromCommand =
 			commandText.substr(commandText.indexOf(" ") + 1);
 		var portalMatchingName =
@@ -252,7 +314,7 @@ class Command_Instances
 		}
 	}
 
-	help(universe, world, place)
+	help(universe, world, place, command)
 	{
 		var helpTextAsLines =
 		[
@@ -261,12 +323,16 @@ class Command_Instances
 			"Recognized commands include:",
 			"",
 			"? - This text is displayed.",
-			"look - The player examines the surroundings.",
-			"look <name> - The player examines a particular thing.",
+			"delete <name> - Deletes the specified saved game.",
+			"look around - The player examines the surroundings.",
+			"look <name>, look at <name> - The player examines a particular thing.",
 			"go <name> - The player attempts to leave the area by the specified exit.",
 			"get <name> - The player attempts to pick up the item named.",
 			"inventory - Displays a list of the player's possessions.",
+			"list saves - Lists saved game states.",
 			"quit - Quit the Command_Instances.",
+			"load <name> - Loads the saved game with the specified name.",
+			"save <name> - Saves the game using the specified name.",
 			"talk to <name> - The player attempts to talk to someone or something.",
 			"use <name> - The player attempts to use something.",
 			"use <name> on <name2> - The player attempts to use something on something.",
@@ -276,7 +342,7 @@ class Command_Instances
 		console.writeLines(helpTextAsLines);
 	}
 
-	inventoryView(universe, world, place)
+	inventoryView(universe, world, place, command)
 	{
 		var player = world.player;
 		var items = player.items;
@@ -288,16 +354,29 @@ class Command_Instances
 		universe.console.writeLines(linesToWrite);
 	}
 
-	lookAround(universe, world, place)
+	lookAround(universe, world, place, command)
 	{
 		place = world.placeCurrent();
 		universe.console.writeLine(place.description);
 	}
 
-	lookAtSomething(universe, world, place)
+	lookAtSomething(universe, world, place, command)
 	{
-		var commandText = this.text;
-		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
+		var commandText = command.text;
+		var textAt = " at ";
+		var indexOfAt = commandText.indexOf(textAt);
+		var targetName;
+		if (indexOfAt < 0)
+		{
+			targetName =
+				commandText.substr(commandText.indexOf(" ") + 1);
+		}
+		else
+		{
+			targetName =
+				commandText.substr(indexOfAt + textAt.length);
+		}
+
 		var targetDescription = null;
 
 		var player = world.player;
@@ -343,18 +422,79 @@ class Command_Instances
 		universe.console.writeLine(targetDescription);
 	}
 
-	quit(universe, world, place)
+	quit(universe, world, place, command)
 	{
 		universe.console.writeLine("Quitting.");
 
 		universe.world = null;
 	}
 
-	talkToSomething(universe, world, place)
+	stateDelete(universe, world, place, command)
+	{
+		var commandText = command.text;
+		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
+		var saveStateManager = universe.saveStateManager;
+		try
+		{
+			saveStateManager.saveStateDeleteByName(stateName);
+			universe.console.writeLine("Deleted state with name '" + stateName + "'.");
+		}
+		catch (ex)
+		{
+			universe.console.writeLine(ex.message);
+		}
+	}
+
+	stateLoad(universe, world, place, command)
+	{
+		var commandText = command.text;
+		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
+		var saveStateManager = universe.saveStateManager;
+		try
+		{
+			saveStateManager.saveStateLoadByName(stateName);
+			universe.console.writeLine("Loaded state with name '" + stateName + "'.");
+			world.placeCurrent().draw(universe, world);
+		}
+		catch (ex)
+		{
+			universe.console.writeLine(ex.message);
+		}
+	}
+
+	stateSave(universe, world, place, command)
+	{
+		var commandText = command.text;
+		var stateName = commandText.substr(commandText.indexOf(" ") + 1);
+		var stateToSave = new SaveState(stateName, universe.world);
+		var saveStateManager = universe.saveStateManager;
+		try
+		{
+			saveStateManager.saveStateSave(stateToSave);
+			universe.console.writeLine("Saved state with name '" + stateName + "'.");
+		}
+		catch (ex)
+		{
+			universe.console.writeLine(ex.message);
+		}
+	}
+
+	statesList(universe, world, place, command)
+	{
+		var saveStateNames = universe.saveStateManager.saveStateNamesGet();
+		var message =
+			"Saved States:\n\n"
+			+ saveStateNames.join("\n")
+			+ "\n\n"
+			+ saveStateNames.length + " states currently saved.";
+		universe.console.writeLine(message);
+	}
+
+	talkToSomething(universe, world, place, command)
 	{
 		var message = null;
 
-		var commandText = this.text;
+		var commandText = command.text;
 
 		var targetName = commandText.substr("talk to ".length);
 
@@ -389,11 +529,19 @@ class Command_Instances
 		universe.console.writeLine(message);
 	}
 
-	useSomething(universe, world, place)
+	unrecognized(universe, world, place, command)
+	{
+		universe.console.writeLine
+		(
+			"Unrecognized command: '" + command.text + "'."
+		);
+	}
+
+	useSomething(universe, world, place, command)
 	{
 		var message = null;
 
-		var commandText = this.text;
+		var commandText = command.text;
 
 		var objectName;
 		var textOn = " on ";
@@ -500,7 +648,7 @@ class Command_Instances
 		}
 	}
 
-	wait(universe, world, place)
+	wait(universe, world, place, command)
 	{
 		universe.console.writeLine("You wait a moment.");
 	}

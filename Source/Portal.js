@@ -7,4 +7,16 @@ class Portal
 		this.description = description;
 		this.placeDestinationName = placeDestinationName;
 	}
+
+	// Clonable.
+
+	clone()
+	{
+		return new Portal
+		(
+			this.name,
+			this.description,
+			this.placeDestinationName
+		);
+	}
 }

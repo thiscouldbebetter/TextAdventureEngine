@@ -1,17 +1,38 @@
 
 class Emplacement
 {
-	constructor(name, description, use, statesByName)
+	constructor
+	(
+		name,
+		description,
+		scriptUseName,
+		statesByName
+	)
 	{
 		this.name = name;
 		this.description = description;
-		this._use = use;
+		this._scriptUseName = scriptUseName;
 		this._statesByName = statesByName || new Map();
+	}
+
+	static fromNameAndDescription(name, description)
+	{
+		return new Emplacement(name, description);
+	}
+
+	static fromNameDescriptionAndScriptUse(name, description, scriptUse)
+	{
+		return new Emplacement(name, description, scriptUse.name);
 	}
 
 	canBeUsed()
 	{
-		return (this._use != null);
+		return (this._scriptUseName != null);
+	}
+
+	scriptUse(world)
+	{
+		return world.scriptByName(this._scriptUseName);
 	}
 
 	stateGetByName(name)
@@ -26,9 +47,23 @@ class Emplacement
 
 	use(universe, world, place, target)
 	{
-		if (this._use != null)
+		var scriptUse = this.scriptUse(world);
+		if (scriptUse != null)
 		{
-			this._use(universe, world, place, this, target);
+			scriptUse.run(universe, world, place, this, target);
 		}
+	}
+
+	// Clone.
+
+	clone()
+	{
+		return new Emplacement
+		(
+			this.name,
+			this.description,
+			this.scriptUseName,
+			this.statesByName // todo
+		);
 	}
 }
