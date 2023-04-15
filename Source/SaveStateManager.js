@@ -47,7 +47,7 @@ class SaveStateManager
 		{
 			throw new Error
 			(
-				"An existing saved state was found with name '" + stateName + "'."
+				"Could not save, because an existing saved state was found with name '" + stateName + "'."
 			);
 		}
 		else

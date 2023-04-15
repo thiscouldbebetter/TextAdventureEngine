@@ -63,12 +63,12 @@ class World
 				{
 					if
 					(
-						commandText.startsWith("restore ") == false
+						commandText.startsWith("load ") == false
 						&& commandText != "restart"
 					)
 					{
 						var message =
-							"The game is over.  You can't do anything but restore or restart.\n";
+							"The game is over.  You can't do anything but load or restart.\n";
 						console.writeLine(message);
 						commandRecognized = null;
 					}
