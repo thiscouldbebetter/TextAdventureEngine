@@ -9,8 +9,13 @@ class Universe
 	initialize()
 	{
 		this.world = this.worldCreate();
+
+		this.messageQueue = new MessageQueue();
+
 		this.saveStateManager = new SaveStateManager(this);
+
 		this.storageManager = new StorageManager();
+
 		var d = document;
 		var textareaConsole =
 			d.getElementById("textareaConsole");
@@ -33,7 +38,7 @@ class Universe
 
 	messageEnqueue(message)
 	{
-		this.console.writeLine(message);
+		this.messageQueue.enqueue(message);
 	}
 
 	updateForTimerTick()

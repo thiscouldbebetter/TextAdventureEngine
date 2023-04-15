@@ -50,9 +50,6 @@ class World
 
 	updateForUniverseAndCommandText(universe, commandText)
 	{
-		var console = universe.console;
-		console.clear();
-
 		if (commandText != null)
 		{
 			var commandRecognized =
@@ -80,19 +77,25 @@ class World
 					universe.messageEnqueue("");
 				}
 			}
-
 		}
 
 		var world = universe.world; // Can't use "this" anymore: the command might have changed it.
 
-		if (world != null)
+		world.player.updateForTurn(universe, this);
+
+		var placeCurrent = world.placeCurrent();
+		placeCurrent.updateForTurn(universe, world);
+
+		var messageForPlaceCurrent = placeCurrent.draw(universe, world);
+		universe.messageEnqueue(messageForPlaceCurrent);
+
+		universe.console.clear();
+
+		var messageQueue = universe.messageQueue;
+		while (messageQueue.hasMessages())
 		{
-			world.player.updateForTurn(universe, this);
-
-			var placeCurrent = world.placeCurrent();
-			placeCurrent.updateForTurn(universe, world);
-
-			placeCurrent.draw(universe, world);
+			var message = messageQueue.dequeue();
+			universe.console.writeLine(message);
 		}
 	}
 
