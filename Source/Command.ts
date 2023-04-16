@@ -46,7 +46,23 @@ class Command
 
 			if (commandMatchingExactly == null)
 			{
-				commandMatching = commandsMatching[0];
+				var commandTextMatchingLongestSoFar = "";
+
+				for (var c = 0; c < commandsMatching.length; c++)
+				{
+					var commandMatching = commandsMatching[c];
+					var commandTextMatching = commandMatching.texts.find
+					(
+						x => commandTextToMatch.startsWith(x)
+					);
+					if (commandTextMatching.length > commandTextMatchingLongestSoFar.length)
+					{
+						commandTextMatchingLongestSoFar =
+							commandTextMatching;
+						commandMatching = commandsMatching[c];
+					}
+				}
+
 			}
 			else
 			{
@@ -102,6 +118,13 @@ class Command
 			this.texts.map(x => x),
 			this.scriptExecuteName
 		);
+	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Command.prototype);
 	}
 }
 
@@ -723,7 +746,7 @@ class Command_Instances
 		}
 		catch (ex)
 		{
-			universe.messageEnqueue(ex.message);
+			universe.messageEnqueue("Error during delete: " + ex.message);
 		}
 	}
 
@@ -735,11 +758,16 @@ class Command_Instances
 		try
 		{
 			saveStateManager.saveStateLoadByName(stateName);
+
+			// The world.scripts field cannot be easily or efficiently serialized,
+			// so it will instead be copied from the old instance of World.
+			universe.world.scripts = world.scripts;
+
 			universe.messageEnqueue("Loaded state with name '" + stateName + "'.");
 		}
 		catch (ex)
 		{
-			universe.messageEnqueue(ex.message);
+			universe.messageEnqueue("Error during load: " + ex.message);
 		}
 	}
 
@@ -756,7 +784,7 @@ class Command_Instances
 		}
 		catch (ex)
 		{
-			universe.messageEnqueue(ex.message);
+			universe.messageEnqueue("Error during save: " + ex.message);
 		}
 	}
 
@@ -933,5 +961,4 @@ class Command_Instances
 	{
 		universe.messageEnqueue("You wait a moment.");
 	}
-
 }

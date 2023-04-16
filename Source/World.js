@@ -69,4 +69,14 @@ class World {
     clone() {
         return new World(this.name, this.places.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, World.prototype);
+        instanceAsObject.places.forEach((x) => Place.prototypesSet(x));
+        Agent.prototypesSet(instanceAsObject.player);
+        instanceAsObject.commands.forEach((x) => Command.prototypesSet(x));
+        // Scripts cannot be easily of efficiently serialized,
+        // so they'll just be copied from a non-serialized instance.
+        instanceAsObject.scripts = new Array();
+    }
 }

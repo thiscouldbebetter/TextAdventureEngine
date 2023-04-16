@@ -8,4 +8,8 @@ class State {
     clone() {
         return new State(this.name, this.value);
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, State.prototype);
+    }
 }

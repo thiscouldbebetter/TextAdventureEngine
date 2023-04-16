@@ -9,4 +9,8 @@ class Portal {
     clone() {
         return new Portal(this.name, this.description, this.placeDestinationName);
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Portal.prototype);
+    }
 }

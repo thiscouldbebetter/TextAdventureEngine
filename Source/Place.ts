@@ -105,9 +105,9 @@ class Place
 	{
 		var commandsAll = new Array<Command>();
 
-		this.emplacements.forEach(x => commandsAll.push(...x.commands));
-		this.items.forEach(x => commandsAll.push(...x.commands));
-		this.agents.forEach(x => commandsAll.push(...x.commands));
+		this.emplacements.forEach( (x: any) => commandsAll.push(...x.commands));
+		this.items.forEach( (x: any) => commandsAll.push(...x.commands));
+		this.agents.forEach( (x: any) => commandsAll.push(...x.commands));
 
 		return commandsAll;
 	}
@@ -217,6 +217,18 @@ class Place
 			this.agents.map(x => x.clone()),
 			this.stateGroup.clone()
 		);
+	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Place.prototype);
+		instanceAsObject.portals.forEach( (x: any) => Portal.prototypesSet(x) );
+		instanceAsObject.emplacements.forEach( (x: any) => Emplacement.prototypesSet(x) );
+		instanceAsObject.items.forEach( (x: any) => Item.prototypesSet(x) );
+		instanceAsObject.agents.forEach( (x: any) => Agent.prototypesSet(x) );
+		StateGroup.prototypesSet(instanceAsObject.stateGroup);
 	}
 
 	// States.

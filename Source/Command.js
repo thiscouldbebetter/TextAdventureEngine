@@ -19,7 +19,16 @@ class Command {
         else {
             var commandMatchingExactly = commands.find(command => command.texts.some(text => text == commandTextToMatch));
             if (commandMatchingExactly == null) {
-                commandMatching = commandsMatching[0];
+                var commandTextMatchingLongestSoFar = "";
+                for (var c = 0; c < commandsMatching.length; c++) {
+                    var commandMatching = commandsMatching[c];
+                    var commandTextMatching = commandMatching.texts.find(x => commandTextToMatch.startsWith(x));
+                    if (commandTextMatching.length > commandTextMatchingLongestSoFar.length) {
+                        commandTextMatchingLongestSoFar =
+                            commandTextMatching;
+                        commandMatching = commandsMatching[c];
+                    }
+                }
             }
             else {
                 commandMatching = commandMatchingExactly;
@@ -54,6 +63,10 @@ class Command {
     // Clonable.
     clone() {
         return new Command(this.texts.map(x => x), this.scriptExecuteName);
+    }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Command.prototype);
     }
 }
 class Command_Instances {
@@ -366,7 +379,7 @@ class Command_Instances {
             universe.messageEnqueue("Deleted state with name '" + stateName + "'.");
         }
         catch (ex) {
-            universe.messageEnqueue(ex.message);
+            universe.messageEnqueue("Error during delete: " + ex.message);
         }
     }
     stateLoad(universe, world, place, command) {
@@ -375,10 +388,13 @@ class Command_Instances {
         var saveStateManager = universe.saveStateManager;
         try {
             saveStateManager.saveStateLoadByName(stateName);
+            // The world.scripts field cannot be easily or efficiently serialized,
+            // so it will instead be copied from the old instance of World.
+            universe.world.scripts = world.scripts;
             universe.messageEnqueue("Loaded state with name '" + stateName + "'.");
         }
         catch (ex) {
-            universe.messageEnqueue(ex.message);
+            universe.messageEnqueue("Error during load: " + ex.message);
         }
     }
     stateSave(universe, world, place, command) {
@@ -391,7 +407,7 @@ class Command_Instances {
             universe.messageEnqueue("Saved state with name '" + stateName + "'.");
         }
         catch (ex) {
-            universe.messageEnqueue(ex.message);
+            universe.messageEnqueue("Error during save: " + ex.message);
         }
     }
     statesList(universe, world, place, command) {

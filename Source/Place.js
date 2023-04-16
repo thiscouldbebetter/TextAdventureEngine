@@ -32,9 +32,9 @@ class Place {
     }
     commands() {
         var commandsAll = new Array();
-        this.emplacements.forEach(x => commandsAll.push(...x.commands));
-        this.items.forEach(x => commandsAll.push(...x.commands));
-        this.agents.forEach(x => commandsAll.push(...x.commands));
+        this.emplacements.forEach((x) => commandsAll.push(...x.commands));
+        this.items.forEach((x) => commandsAll.push(...x.commands));
+        this.agents.forEach((x) => commandsAll.push(...x.commands));
         return commandsAll;
     }
     draw(universe, world) {
@@ -96,6 +96,15 @@ class Place {
     // Clonable.
     clone() {
         return new Place(this.name, this.description, this.scriptUpdateForTurnName, this.portals.map(x => x.clone()), this.emplacements.map(x => x.clone()), this.items.map(x => x.clone()), this.agents.map(x => x.clone()), this.stateGroup.clone());
+    }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Place.prototype);
+        instanceAsObject.portals.forEach((x) => Portal.prototypesSet(x));
+        instanceAsObject.emplacements.forEach((x) => Emplacement.prototypesSet(x));
+        instanceAsObject.items.forEach((x) => Item.prototypesSet(x));
+        instanceAsObject.agents.forEach((x) => Agent.prototypesSet(x));
+        StateGroup.prototypesSet(instanceAsObject.stateGroup);
     }
     // States.
     hasBeenVisited() {

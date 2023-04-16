@@ -22,4 +22,9 @@ class StateGroup {
     clone() {
         return new StateGroup(this.states.map(x => x.clone()));
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, StateGroup.prototype);
+        instanceAsObject.states.forEach((x) => State.prototypesSet(x));
+    }
 }

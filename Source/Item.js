@@ -35,4 +35,10 @@ class Item {
     clone() {
         return new Item(this.name, this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Item.prototype);
+        StateGroup.prototypesSet(instanceAsObject.stateGroup);
+        instanceAsObject.commands.forEach((x) => Command.prototypesSet(x));
+    }
 }

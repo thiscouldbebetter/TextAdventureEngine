@@ -70,4 +70,12 @@ class Agent
 		this.items.splice(this.items.indexOf(item), 1);
 	}
 
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Agent.prototype);
+		instanceAsObject.items.forEach( (x: any) => Item.prototypesSet(x) );
+		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
+	}
 }

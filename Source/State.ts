@@ -16,4 +16,11 @@ class State
 	{
 		return new State(this.name, this.value);
 	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, State.prototype);
+	}
 }

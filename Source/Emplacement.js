@@ -32,4 +32,10 @@ class Emplacement {
     clone() {
         return new Emplacement(this.name, this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Emplacement.prototype);
+        StateGroup.prototypesSet(instanceAsObject.stateGroup);
+        instanceAsObject.commands.forEach((x) => Command.prototypesSet(x));
+    }
 }

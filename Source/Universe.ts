@@ -23,9 +23,10 @@ class Universe
 
 		this.messageQueue = new MessageQueue();
 
-		this.saveStateManager = new SaveStateManager(this);
+		this.storageManager = new StorageManagerMemory();
 
-		this.storageManager = new StorageManager2();
+		this.saveStateManager =
+			new SaveStateManager(this, this.storageManager);
 
 		var d = document;
 		var textareaConsole =

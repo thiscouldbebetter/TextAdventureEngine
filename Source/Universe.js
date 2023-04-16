@@ -6,8 +6,9 @@ class Universe {
     initialize() {
         this.world = this.worldCreate();
         this.messageQueue = new MessageQueue();
-        this.saveStateManager = new SaveStateManager(this);
-        this.storageManager = new StorageManager2();
+        this.storageManager = new StorageManagerMemory();
+        this.saveStateManager =
+            new SaveStateManager(this, this.storageManager);
         var d = document;
         var textareaConsole = d.getElementById("textareaConsole");
         this.console = new Console(textareaConsole);

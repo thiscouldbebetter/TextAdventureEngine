@@ -28,4 +28,12 @@ class Portal
 			this.placeDestinationName
 		);
 	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Portal.prototype);
+	}
+
 }

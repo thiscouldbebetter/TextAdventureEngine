@@ -138,4 +138,18 @@ class World
 			this.placeCurrentName,
 		);
 	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, World.prototype);
+		instanceAsObject.places.forEach( (x: any) => Place.prototypesSet(x) );
+		Agent.prototypesSet(instanceAsObject.player);
+		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
+
+		// Scripts cannot be easily of efficiently serialized,
+		// so they'll just be copied from a non-serialized instance.
+		instanceAsObject.scripts = new Array<Script>();
+	}
 }

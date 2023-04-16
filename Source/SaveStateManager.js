@@ -1,38 +1,53 @@
 "use strict";
 class SaveStateManager {
-    constructor(universe) {
+    constructor(universe, storageManager) {
         this.universe = universe;
-        this.saveStates = new Array();
+        this.storageManager = storageManager;
+    }
+    static delimiter() {
+        return "|";
+    }
+    static storageManagerKeyForSaveStateList() {
+        var delimiter = SaveStateManager.delimiter();
+        return delimiter + "SaveStateNameList";
     }
     saveStateDeleteByName(stateName) {
-        if (this.saveStates.some(x => x.name == stateName) == false) {
+        if (this.storageManager.valueExistsForKey(stateName) == false) {
             throw new Error("No saved state was found with name '" + stateName + "'.");
         }
         else {
-            var saveState = this.saveStates.find(x => x.name == stateName);
-            this.saveStates.splice(this.saveStates.indexOf(saveState), 1);
+            this.storageManager.valueDeleteByKey(stateName);
         }
     }
     saveStateLoadByName(stateName) {
-        if (this.saveStates.some(x => x.name == stateName) == false) {
+        if (this.storageManager.valueExistsForKey(stateName) == false) {
             throw new Error("No saved state was found with name '" + stateName + "'.");
         }
         else {
-            var state = this.saveStates.find(x => x.name == stateName);
+            var stateAsString = this.storageManager.valueGetByKey(stateName);
+            var state = SaveState.fromString(stateAsString);
             var worldToLoad = state.world.clone();
             this.universe.world = worldToLoad;
         }
     }
     saveStateNamesGet() {
-        return this.saveStates.map(x => x.name);
+        var saveStateNamesAsString = this.storageManager.valueGetByKey(SaveStateManager.storageManagerKeyForSaveStateList());
+        var delimiter = SaveStateManager.delimiter();
+        var saveStateNames = saveStateNamesAsString.split(delimiter);
+        return saveStateNames;
     }
     saveStateSave(saveStateToSave) {
         var stateName = saveStateToSave.name;
-        if (this.saveStates.some(x => x.name == stateName)) {
+        var delimiter = SaveStateManager.delimiter();
+        if (stateName.indexOf(delimiter) >= 0) {
+            throw new Error("Save state names may not include the character '" + delimiter + ".");
+        }
+        if (this.storageManager.valueExistsForKey(stateName)) {
             throw new Error("Could not save, because an existing saved state was found with name '" + stateName + "'.");
         }
         else {
-            this.saveStates.push(saveStateToSave);
+            var saveStateAsString = saveStateToSave.toString();
+            this.storageManager.keyAndValueSave(stateName, saveStateAsString);
         }
     }
 }

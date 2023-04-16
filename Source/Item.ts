@@ -81,4 +81,13 @@ class Item
 			this.commands.map(x => x.clone() )
 		);
 	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Item.prototype);
+		StateGroup.prototypesSet(instanceAsObject.stateGroup);
+		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
+	}
 }

@@ -76,4 +76,13 @@ class Emplacement
 			this.commands.map(x => x.clone() )
 		);
 	}
+
+	// Serialization.
+
+	static prototypesSet(instanceAsObject: any): void
+	{
+		Object.setPrototypeOf(instanceAsObject, Emplacement.prototype);
+		StateGroup.prototypesSet(instanceAsObject.stateGroup);
+		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
+	}
 }

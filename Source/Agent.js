@@ -31,4 +31,10 @@ class Agent {
     itemRemove(item) {
         this.items.splice(this.items.indexOf(item), 1);
     }
+    // Serialization.
+    static prototypesSet(instanceAsObject) {
+        Object.setPrototypeOf(instanceAsObject, Agent.prototype);
+        instanceAsObject.items.forEach((x) => Item.prototypesSet(x));
+        instanceAsObject.commands.forEach((x) => Command.prototypesSet(x));
+    }
 }
