@@ -2,7 +2,7 @@
 namespace ThisCouldBeBetter.TextAdventureEngine
 {
 
-export class Game
+export class GameDemo
 {
 	static worldBuild(): World
 	{
@@ -156,7 +156,7 @@ export class Game
 
 }
 
-export class Scripts
+class Scripts
 {
 	AgentCaptorTalkTo: Script;
 	AgentCaptorUpdate: Script;
@@ -449,7 +449,7 @@ export class Scripts
 
 }
 
-export class StateNames
+class StateNames
 {
 	static isEmpty(): string
 	{

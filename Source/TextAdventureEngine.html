@@ -19,13 +19,12 @@
 <script type="text/javascript" src="Command.js"></script>
 <script type="text/javascript" src="ConsoleTextarea.js"></script>
 <script type="text/javascript" src="Emplacement.js"></script>
-<script type="text/javascript" src="Game.js"></script>
+<script type="text/javascript" src="GameDemo.js"></script>
 <script type="text/javascript" src="InputTracker.js"></script>
 <script type="text/javascript" src="Item.js"></script>
 <script type="text/javascript" src="MessageQueue.js"></script>
 <script type="text/javascript" src="Place.js"></script>
 <script type="text/javascript" src="Portal.js"></script>
-<script type="text/javascript" src="Program.js"></script>
 <script type="text/javascript" src="State.js"></script>
 <script type="text/javascript" src="StateGroup.js"></script>
 <script type="text/javascript" src="SaveState.js"></script>
@@ -39,8 +38,13 @@
 
 <script type="text/javascript">
 
-var Program = ThisCouldBeBetter.TextAdventureEngine.Program;
-new Program().main();
+	var tea = ThisCouldBeBetter.TextAdventureEngine;
+	var Universe = tea.Universe;
+	var Game = tea.GameDemo;
+
+	var worldCreate = () => Game.worldBuild();
+	var universe = Universe.fromWorldCreate(worldCreate);
+	universe.initialize();
 
 </script>
 

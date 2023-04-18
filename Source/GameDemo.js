@@ -3,7 +3,7 @@ var ThisCouldBeBetter;
 (function (ThisCouldBeBetter) {
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
-        class Game {
+        class GameDemo {
             static worldBuild() {
                 var player = new TextAdventureEngine.Agent("self", "This is you.", null, // scriptUpdateForTurnName
                 [
@@ -64,7 +64,7 @@ var ThisCouldBeBetter;
                 return returnValue;
             }
         }
-        TextAdventureEngine.Game = Game;
+        TextAdventureEngine.GameDemo = GameDemo;
         class Scripts {
             constructor() {
                 var s = (a, b) => new TextAdventureEngine.Script(a, b);
@@ -245,7 +245,6 @@ var ThisCouldBeBetter;
                 }
             }
         }
-        TextAdventureEngine.Scripts = Scripts;
         class StateNames {
             static isEmpty() {
                 return "isEmpty";
@@ -257,6 +256,5 @@ var ThisCouldBeBetter;
                 return "isUnlocked";
             }
         }
-        TextAdventureEngine.StateNames = StateNames;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));
 })(ThisCouldBeBetter || (ThisCouldBeBetter = {}));
