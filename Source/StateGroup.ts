@@ -1,5 +1,8 @@
 
-class StateGroup
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class StateGroup
 {
 	states: State[];
 
@@ -43,5 +46,7 @@ class StateGroup
 		Object.setPrototypeOf(instanceAsObject, StateGroup.prototype);
 		instanceAsObject.states.forEach( (x: any) => State.prototypesSet(x) );
 	}
+
+}
 
 }

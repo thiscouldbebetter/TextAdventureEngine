@@ -1,5 +1,8 @@
 
-class TimerManager
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class TimerManager
 {
 	ticksPerSecond: number;
 	_tick: any;
@@ -43,4 +46,6 @@ class TimerManager
 	{
 		this._tick = tickHandler;
 	}
+}
+
 }

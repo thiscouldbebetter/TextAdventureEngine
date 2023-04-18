@@ -3,7 +3,7 @@ var ThisCouldBeBetter;
 (function (ThisCouldBeBetter) {
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
-        class Console {
+        class ConsoleTextarea {
             constructor(textarea) {
                 this.textCurrent = "";
                 this.textarea = textarea;
@@ -11,7 +11,7 @@ var ThisCouldBeBetter;
                 this.textReadSoFar = null;
             }
             static default() {
-                return new Console(document.getElementById("textareaConsole"));
+                return new ConsoleTextarea(document.getElementById("textareaConsole"));
             }
             clear() {
                 this.textCurrent = "";
@@ -72,6 +72,6 @@ var ThisCouldBeBetter;
                 linesToWrite.forEach(x => this.writeLine(x));
             }
         }
-        TextAdventureEngine.Console = Console;
+        TextAdventureEngine.ConsoleTextarea = ConsoleTextarea;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));
 })(ThisCouldBeBetter || (ThisCouldBeBetter = {}));

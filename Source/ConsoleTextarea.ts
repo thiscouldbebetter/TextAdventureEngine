@@ -1,5 +1,8 @@
 
-class Console
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class ConsoleTextarea
 {
 	textCurrent: string;
 	textarea: any;
@@ -15,9 +18,9 @@ class Console
 		this.textReadSoFar = null;
 	}
 
-	static default(): Console
+	static default(): ConsoleTextarea
 	{
-		return new Console(document.getElementById("textareaConsole") );
+		return new ConsoleTextarea(document.getElementById("textareaConsole") );
 	}
 
 	clear(): void
@@ -102,4 +105,6 @@ class Console
 	{
 		linesToWrite.forEach(x => this.writeLine(x) );
 	}
+}
+
 }

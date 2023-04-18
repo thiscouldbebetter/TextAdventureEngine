@@ -1,7 +1,10 @@
 
-class Universe
+namespace ThisCouldBeBetter.TextAdventureEngine
 {
-	console: Console;
+
+export class Universe
+{
+	console: ConsoleTextarea;
 	inputTracker: InputTracker;
 	messageQueue: MessageQueue;
 	saveStateManager: SaveStateManager;
@@ -14,7 +17,7 @@ class Universe
 
 	constructor
 	(
-		console: Console,
+		console: ConsoleTextarea,
 		timerManager: TimerManager,
 		worldCreate: ()=>World
 	)
@@ -28,7 +31,7 @@ class Universe
 	{
 		return new Universe
 		(
-			Console.default(),
+			ConsoleTextarea.default(),
 			TimerManager.default(),
 			worldCreate
 		);
@@ -79,4 +82,6 @@ class Universe
 			console.readLine();
 		}
 	}
+}
+
 }

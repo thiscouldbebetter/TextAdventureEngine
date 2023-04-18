@@ -1,5 +1,8 @@
 
-class SaveStateManager
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class SaveStateManager
 {
 	universe: Universe;
 	storageManager: StorageManager2;
@@ -95,4 +98,6 @@ class SaveStateManager
 			this.storageManager.keyAndValueSave(stateName, saveStateAsString);
 		}
 	}
+}
+
 }

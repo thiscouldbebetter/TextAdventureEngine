@@ -1,5 +1,8 @@
 
-class Game
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Game
 {
 	static worldBuild(): World
 	{
@@ -153,7 +156,7 @@ class Game
 
 }
 
-class Scripts
+export class Scripts
 {
 	AgentCaptorTalkTo: Script;
 	AgentCaptorUpdate: Script;
@@ -446,7 +449,7 @@ class Scripts
 
 }
 
-class StateNames
+export class StateNames
 {
 	static isEmpty(): string
 	{
@@ -462,4 +465,6 @@ class StateNames
 	{
 		return "isUnlocked";
 	}
+}
+
 }

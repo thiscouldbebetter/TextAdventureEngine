@@ -1,5 +1,8 @@
 
-class StorageManagerLocalStorage implements StorageManager2
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class StorageManagerLocalStorage implements StorageManager2
 {
 	keyPrefix: string;
 
@@ -37,4 +40,6 @@ class StorageManagerLocalStorage implements StorageManager2
 	{
 		this._localStorage.setItem(key, value);
 	}
+}
+
 }

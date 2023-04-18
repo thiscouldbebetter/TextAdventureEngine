@@ -1,5 +1,8 @@
 
-class Agent
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Agent
 {
 	name: string;
 	description: string;
@@ -78,4 +81,6 @@ class Agent
 		instanceAsObject.items.forEach( (x: any) => Item.prototypesSet(x) );
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}
+}
+
 }

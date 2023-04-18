@@ -1,5 +1,8 @@
 
-class Item
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Item
 {
 	name: string;
 	description: string;
@@ -90,4 +93,6 @@ class Item
 		StateGroup.prototypesSet(instanceAsObject.stateGroup);
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}
+}
+
 }

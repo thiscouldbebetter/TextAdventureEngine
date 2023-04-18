@@ -1,5 +1,8 @@
 
-class InputTracker
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class InputTracker
 {
 	_keysPressed: string[];
 
@@ -44,4 +47,6 @@ class InputTracker
 		body.onkeydown = (e) => inputTracker.keyPressed(e);
 		body.onkeyup = (e) => inputTracker.keyReleased(e);
 	}
+}
+
 }

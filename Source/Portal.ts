@@ -1,5 +1,8 @@
 
-class Portal
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Portal
 {
 	name: string;
 	description: string;
@@ -35,5 +38,7 @@ class Portal
 	{
 		Object.setPrototypeOf(instanceAsObject, Portal.prototype);
 	}
+
+}
 
 }

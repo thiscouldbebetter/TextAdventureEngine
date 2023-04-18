@@ -1,5 +1,8 @@
 
-class MessageQueue
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class MessageQueue
 {
 	messages: string[];
 
@@ -24,4 +27,6 @@ class MessageQueue
 	{
 		return (this.messages.length > 0);
 	}
+}
+
 }

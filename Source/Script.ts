@@ -1,5 +1,8 @@
 
-class Script
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Script
 {
 	name: string;
 	run: any;
@@ -20,4 +23,6 @@ class Script
 			this.run // todo
 		);
 	}
+}
+
 }

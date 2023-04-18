@@ -1,5 +1,8 @@
 
-class State
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class State
 {
 	name: string;
 	value: string;
@@ -23,4 +26,6 @@ class State
 	{
 		Object.setPrototypeOf(instanceAsObject, State.prototype);
 	}
+}
+
 }

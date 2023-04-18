@@ -1,5 +1,8 @@
 
-class Program
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Program
 {
 	main(): void
 	{
@@ -7,4 +10,6 @@ class Program
 		var universe = Universe.fromWorldCreate(worldCreate);
 		universe.initialize();
 	}
+}
+
 }

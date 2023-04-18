@@ -1,5 +1,8 @@
 
-class Emplacement
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Emplacement
 {
 	name: string;
 	description: string;
@@ -85,4 +88,6 @@ class Emplacement
 		StateGroup.prototypesSet(instanceAsObject.stateGroup);
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}
+}
+
 }

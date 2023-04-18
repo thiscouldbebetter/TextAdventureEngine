@@ -1,5 +1,8 @@
 
-class Command
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Command
 {
 	texts: string[];
 	scriptExecuteName: string;
@@ -128,7 +131,7 @@ class Command
 	}
 }
 
-class Command_Instances
+export class Command_Instances
 {
 	AttackSomething: Command;
 	BuySomething: Command;
@@ -961,4 +964,6 @@ class Command_Instances
 	{
 		universe.messageEnqueue("You wait a moment.");
 	}
+}
+
 }

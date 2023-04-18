@@ -1,5 +1,8 @@
 
-class SaveState
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class SaveState
 {
 	name: string;
 	world: World;
@@ -29,4 +32,6 @@ class SaveState
 	{
 		return JSON.stringify(this);
 	}
+}
+
 }

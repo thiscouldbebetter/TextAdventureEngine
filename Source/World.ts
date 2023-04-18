@@ -1,5 +1,8 @@
 
-class World
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class World
 {
 	name: string;
 	places: Place[];
@@ -152,4 +155,6 @@ class World
 		// so they'll just be copied from a non-serialized instance.
 		instanceAsObject.scripts = new Array<Script>();
 	}
+}
+
 }

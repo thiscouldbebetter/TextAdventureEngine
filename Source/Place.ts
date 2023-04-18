@@ -1,5 +1,8 @@
 
-class Place
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class Place
 {
 	name: string;
 	description: string;
@@ -242,4 +245,6 @@ class Place
 	{
 		return this.stateGroup.stateWithNameSetToValue("Visited", true);
 	}
+}
+
 }

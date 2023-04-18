@@ -1,5 +1,8 @@
 
-class StorageManagerMemory implements StorageManager2
+namespace ThisCouldBeBetter.TextAdventureEngine
+{
+
+export class StorageManagerMemory implements StorageManager2
 {
 	_valuesByKey: Map<string, string>;
 
@@ -32,4 +35,6 @@ class StorageManagerMemory implements StorageManager2
 	{
 		this._valuesByKey.set(key, value);
 	}
+}
+
 }
