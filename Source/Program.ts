@@ -4,8 +4,7 @@ class Program
 	main(): void
 	{
 		var worldCreate = () => Game.worldBuild();
-		var universe = new Universe(worldCreate);
+		var universe = Universe.fromWorldCreate(worldCreate);
 		universe.initialize();
-		//universe.update();
 	}
 }

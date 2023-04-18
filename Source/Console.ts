@@ -15,6 +15,11 @@ class Console
 		this.textReadSoFar = null;
 	}
 
+	static default(): Console
+	{
+		return new Console(document.getElementById("textareaConsole") );
+	}
+
 	clear(): void
 	{
 		this.textCurrent = "";

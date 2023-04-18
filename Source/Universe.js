@@ -1,7 +1,12 @@
 "use strict";
 class Universe {
-    constructor(worldCreate) {
+    constructor(console, timerManager, worldCreate) {
+        this.console = console;
+        this.timerManager = timerManager;
         this.worldCreate = worldCreate;
+    }
+    static fromWorldCreate(worldCreate) {
+        return new Universe(Console.default(), TimerManager.default(), worldCreate);
     }
     initialize() {
         this.world = this.worldCreate();
@@ -9,14 +14,10 @@ class Universe {
         this.storageManager = new StorageManagerMemory();
         this.saveStateManager =
             new SaveStateManager(this, this.storageManager);
-        var d = document;
-        var textareaConsole = d.getElementById("textareaConsole");
-        this.console = new Console(textareaConsole);
         this.commandEnteredAsText = null;
         this.inputTracker = new InputTracker();
         var universe = this;
-        this.timerManager = new TimerManager(24, // ticksPerSecond
-        () => universe.updateForTimerTick());
+        this.timerManager.tickHandlerSet(() => universe.updateForTimerTick());
         this.timerManager.start();
         this.inputTracker.start();
     }

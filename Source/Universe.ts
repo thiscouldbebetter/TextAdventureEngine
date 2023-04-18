@@ -1,20 +1,37 @@
 
 class Universe
 {
-	worldCreate: any;
-
-	commandEnteredAsText: string;
 	console: Console;
 	inputTracker: InputTracker;
 	messageQueue: MessageQueue;
 	saveStateManager: SaveStateManager;
 	storageManager: StorageManager2;
 	timerManager: TimerManager;
-	world: World;
+	worldCreate: ()=>World;
 
-	constructor(worldCreate: any)
+	world: World;
+	commandEnteredAsText: string;
+
+	constructor
+	(
+		console: Console,
+		timerManager: TimerManager,
+		worldCreate: ()=>World
+	)
 	{
+		this.console = console;
+		this.timerManager = timerManager;
 		this.worldCreate = worldCreate;
+	}
+
+	static fromWorldCreate(worldCreate: ()=>World): Universe
+	{
+		return new Universe
+		(
+			Console.default(),
+			TimerManager.default(),
+			worldCreate
+		);
 	}
 
 	initialize(): void
@@ -28,19 +45,13 @@ class Universe
 		this.saveStateManager =
 			new SaveStateManager(this, this.storageManager);
 
-		var d = document;
-		var textareaConsole =
-			d.getElementById("textareaConsole");
-		this.console = new Console(textareaConsole);
-
 		this.commandEnteredAsText = null;
 
 		this.inputTracker = new InputTracker();
 
 		var universe = this;
-		this.timerManager = new TimerManager
+		this.timerManager.tickHandlerSet
 		(
-			24, // ticksPerSecond
 			() => universe.updateForTimerTick()
 		);
 		this.timerManager.start();

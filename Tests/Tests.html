@@ -1,0 +1,102 @@
+<html>
+
+<body>
+
+	<h3>Text Adventure Engine - Tests</h3>
+
+<script type="text/javascript" src="../Source/Agent.js"></script>
+<script type="text/javascript" src="../Source/Command.js"></script>
+<script type="text/javascript" src="../Source/Console.js"></script>
+<script type="text/javascript" src="../Source/Emplacement.js"></script>
+<script type="text/javascript" src="../Source/Game.js"></script>
+<script type="text/javascript" src="../Source/InputTracker.js"></script>
+<script type="text/javascript" src="../Source/Item.js"></script>
+<script type="text/javascript" src="../Source/MessageQueue.js"></script>
+<script type="text/javascript" src="../Source/Place.js"></script>
+<script type="text/javascript" src="../Source/Portal.js"></script>
+<script type="text/javascript" src="../Source/Program.js"></script>
+<script type="text/javascript" src="../Source/State.js"></script>
+<script type="text/javascript" src="../Source/StateGroup.js"></script>
+<script type="text/javascript" src="../Source/SaveState.js"></script>
+<script type="text/javascript" src="../Source/SaveStateManager.js"></script>
+<script type="text/javascript" src="../Source/Script.js"></script>
+<script type="text/javascript" src="../Source/StorageManagerLocalStorage.js"></script>
+<script type="text/javascript" src="../Source/StorageManagerMemory.js"></script>
+<script type="text/javascript" src="../Source/TimerManager.js"></script>
+<script type="text/javascript" src="../Source/Universe.js"></script>
+<script type="text/javascript" src="../Source/World.js"></script>
+
+<script type="text/javascript" src="Assert.js"></script>
+<script type="text/javascript" src="Test.js"></script>
+<script type="text/javascript" src="TestFixture.js"></script>
+<script type="text/javascript" src="TestSuite.js"></script>
+
+<script type="text/javascript" src="Mocks/TimerManagerMock.js"></script>
+
+<script type="text/javascript">
+
+var suite = new TestSuite
+([
+	new TestFixture
+	(
+		"EndToEndTests",
+		[
+			new Test
+			(
+				"PlayFromStartToEnd",
+				() =>
+				{
+					var worldCreate = () => Game.worldBuild();
+					var console = new Console(document.createElement("textarea") );
+					var timerManager = new TimerManagerMock();
+					var universe = new Universe
+					(
+						console,
+						timerManager,
+						worldCreate
+					);
+					universe.initialize();
+					var world = universe.world;
+					var commands =
+					[
+						"s",
+						"get key",
+						"n",
+						"e",
+						"use key on chest",
+						"use chest",
+						"get sword",
+						"w",
+						"w",
+						"use whetstone on sword",
+						"e",
+						"n",
+						"use sword on troll",
+						"use troll body",
+						"get coin",
+						"s",
+						"give coin to captor",
+						"look rope"
+					];
+					for (var i = 0; i < commands.length; i++)
+					{
+						var command = commands[i];
+						world.updateForUniverseAndCommandText(universe, command);
+					}
+
+					var consoleTextActual = console.textCurrent;
+					var consoleTextExpected = "This is a coil of weathered hempen rope.";
+					Assert.true(consoleTextActual.indexOf(consoleTextExpected) >= 0);
+				}
+			)
+		]
+	)
+]);
+
+suite.run();
+
+</script>
+
+</body>
+
+</html>

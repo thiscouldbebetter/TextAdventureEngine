@@ -1,0 +1,6 @@
+
+class TimerManagerMock
+{
+	start() {}
+	tickHandlerSet() {}
+}

@@ -6,6 +6,9 @@ class Console {
         this._isReading = false;
         this.textReadSoFar = null;
     }
+    static default() {
+        return new Console(document.getElementById("textareaConsole"));
+    }
     clear() {
         this.textCurrent = "";
         this.draw();

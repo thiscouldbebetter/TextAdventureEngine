@@ -8,8 +8,13 @@ class TimerManager
 
 	constructor(ticksPerSecond: number, tick: any)
 	{
-		this.ticksPerSecond = ticksPerSecond || 1000;
+		this.ticksPerSecond = ticksPerSecond || 24;
 		this._tick = tick;
+	}
+
+	static default(): TimerManager
+	{
+		return new TimerManager(null, null);
 	}
 
 	millisecondsPerTick(): number
@@ -32,5 +37,10 @@ class TimerManager
 	tick(): void
 	{
 		this._tick();
+	}
+
+	tickHandlerSet(tickHandler: any): void
+	{
+		this._tick = tickHandler;
 	}
 }

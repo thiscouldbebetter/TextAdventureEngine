@@ -1,8 +1,11 @@
 "use strict";
 class TimerManager {
     constructor(ticksPerSecond, tick) {
-        this.ticksPerSecond = ticksPerSecond || 1000;
+        this.ticksPerSecond = ticksPerSecond || 24;
         this._tick = tick;
+    }
+    static default() {
+        return new TimerManager(null, null);
     }
     millisecondsPerTick() {
         return Math.round(1000 / this.ticksPerSecond);
@@ -17,5 +20,8 @@ class TimerManager {
     }
     tick() {
         this._tick();
+    }
+    tickHandlerSet(tickHandler) {
+        this._tick = tickHandler;
     }
 }
