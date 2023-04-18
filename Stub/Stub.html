@@ -2,9 +2,7 @@
 
 <body>
 
-	<h3>Text Adventure Engine</h3>
-
-	<p>Enter commands in the console to play a text adventure game.</p>
+	<h3>Stub Game</h3>
 
 	<div id="divUi">
 		<textarea
@@ -17,14 +15,13 @@
 
 <script type="text/javascript" src="Engine/Source/Agent.js"></script>
 <script type="text/javascript" src="Engine/Source/Command.js"></script>
-<script type="text/javascript" src="Engine/Source/Console.js"></script>
+<script type="text/javascript" src="Engine/Source/ConsoleTextarea.js"></script>
 <script type="text/javascript" src="Engine/Source/Emplacement.js"></script>
 <script type="text/javascript" src="Engine/Source/InputTracker.js"></script>
 <script type="text/javascript" src="Engine/Source/Item.js"></script>
 <script type="text/javascript" src="Engine/Source/MessageQueue.js"></script>
 <script type="text/javascript" src="Engine/Source/Place.js"></script>
 <script type="text/javascript" src="Engine/Source/Portal.js"></script>
-<script type="text/javascript" src="Engine/Source/Program.js"></script>
 <script type="text/javascript" src="Engine/Source/State.js"></script>
 <script type="text/javascript" src="Engine/Source/StateGroup.js"></script>
 <script type="text/javascript" src="Engine/Source/SaveState.js"></script>
@@ -36,11 +33,18 @@
 <script type="text/javascript" src="Engine/Source/Universe.js"></script>
 <script type="text/javascript" src="Engine/Source/World.js"></script>
 
+<script type="text/javascript" src="Game/Imports.js"></script>
+
 <script type="text/javascript" src="Game/Game.js"></script>
 
 <script type="text/javascript">
 
-new Program().main();
+	var tea = ThisCouldBeBetter.TextAdventureEngine;
+	var Universe = tea.Universe;
+
+	var worldCreate = () => Game.worldBuild();
+	var universe = Universe.fromWorldCreate(worldCreate);
+	universe.initialize();
 
 </script>
 
