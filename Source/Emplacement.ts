@@ -52,6 +52,12 @@ export class Emplacement
 		return (this._scriptUseName != null);
 	}
 
+	commandAdd(command: Command): Emplacement
+	{
+		this.commands.push(command);
+		return this;
+	}
+
 	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);

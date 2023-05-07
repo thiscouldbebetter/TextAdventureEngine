@@ -168,6 +168,7 @@ class Scripts
 	ItemTrollHeadTalkTo: Script;
 	ItemWhetstoneUse: Script;
 	PlaceCenterRoomUpdate: Script;
+	Todo: Script;
 
 	_All: Script[];
 
@@ -185,6 +186,7 @@ class Scripts
 		this.ItemTrollHeadTalkTo = s("ItemTrollHeadTalkTo", this.itemTrollHeadTalkTo);
 		this.ItemWhetstoneUse = s("ItemWhetstoneUse", this.itemWhetstoneUse);
 		this.PlaceCenterRoomUpdate = s("PlaceCenterRoomUpdate", this.placeCenterRoomUpdate);
+		this.Todo = s("Todo", this.todo);
 
 		this._All =
 		[
@@ -197,7 +199,8 @@ class Scripts
 			this.ItemSwordUse,
 			this.ItemTrollHeadTalkTo,
 			this.ItemWhetstoneUse,
-			this.PlaceCenterRoomUpdate
+			this.PlaceCenterRoomUpdate,
+			this.Todo
 		];
 	}
 
@@ -445,6 +448,11 @@ class Scripts
 			var message = messageLines.join("");
 			u.messageEnqueue(message);
 		}
+	}
+
+	todo(u: Universe, w: World, p: Place, i: any, target: any): void
+	{
+		u.messageEnqueue("todo");
 	}
 
 }

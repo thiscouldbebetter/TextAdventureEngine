@@ -23,6 +23,10 @@ var ThisCouldBeBetter;
             canBeUsed() {
                 return (this._scriptUseName != null);
             }
+            commandAdd(command) {
+                this.commands.push(command);
+                return this;
+            }
             scriptUse(world) {
                 return world.scriptByName(this._scriptUseName);
             }
