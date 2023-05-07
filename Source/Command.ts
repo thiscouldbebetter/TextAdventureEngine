@@ -88,6 +88,26 @@ export class Command
 		return Command._instances;
 	}
 
+	static cleanCommandText(commandText: string): string
+	{
+		var termsToIgnore =
+		[
+			"in",
+			"into",
+			"to",
+			"through",
+			"toward"
+		];
+
+		for (var i = 0; i < termsToIgnore.length; i++)
+		{
+			var term = termsToIgnore[i];
+			commandText = commandText.split(term + " ").join("");
+		}
+
+		return commandText;
+	}
+
 	scriptExecute(world: World): Script
 	{
 		return world.scriptByName(this.scriptExecuteName);
@@ -228,7 +248,7 @@ export class Command_Instances
 
 		this.GoSomewhere = Command.fromTextsAndScriptExecute
 		(
-			[ "go ", "walk ", "run " ],
+			[ "go ", "walk ", "run ", "go to", "go through" ],
 			new Script("GoSomewhere", this.goSomewhere)
 		);
 
@@ -519,30 +539,30 @@ export class Command_Instances
 
 	goDirectionEast(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		this.goThroughPortalWithName(universe, world, "east");
+		Command.Instances().goThroughPortalWithName(universe, world, "east");
 	}
 
 	goDirectionNorth(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		this.goThroughPortalWithName(universe, world, "north");
+		Command.Instances().goThroughPortalWithName(universe, world, "north");
 	}
 
 	goDirectionSouth(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		this.goThroughPortalWithName(universe, world, "south");
+		Command.Instances().goThroughPortalWithName(universe, world, "south");
 	}
 
 	goDirectionWest(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		this.goThroughPortalWithName(universe, world, "west");
+		Command.Instances().goThroughPortalWithName(universe, world, "west");
 	}
 
 	goSomewhere(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		var commandText = command.text();
+		var commandText = Command.cleanCommandText(command.text());
 		var portalNameFromCommand =
 			commandText.substr(commandText.indexOf(" ") + 1);
-		this.goThroughPortalWithName(universe, world, portalNameFromCommand);
+		Command.Instances().goThroughPortalWithName(universe, world, portalNameFromCommand);
 	}
 
 	goThroughPortalWithName(universe: Universe, world: World, portalName: string): void

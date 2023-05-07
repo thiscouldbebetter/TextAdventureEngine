@@ -48,6 +48,20 @@ var ThisCouldBeBetter;
                 }
                 return Command._instances;
             }
+            static cleanCommandText(commandText) {
+                var termsToIgnore = [
+                    "in",
+                    "into",
+                    "to",
+                    "through",
+                    "toward"
+                ];
+                for (var i = 0; i < termsToIgnore.length; i++) {
+                    var term = termsToIgnore[i];
+                    commandText = commandText.split(term + " ").join("");
+                }
+                return commandText;
+            }
             scriptExecute(world) {
                 return world.scriptByName(this.scriptExecuteName);
             }
@@ -88,7 +102,7 @@ var ThisCouldBeBetter;
                 this.GoDirectionNorth = Command.fromTextsAndScriptExecute(["n", "north", "go n"], new TextAdventureEngine.Script("GoNorth", this.goDirectionNorth.bind(this)));
                 this.GoDirectionSouth = Command.fromTextsAndScriptExecute(["s", "south", "go s"], new TextAdventureEngine.Script("GoSouth", this.goDirectionSouth.bind(this)));
                 this.GoDirectionWest = Command.fromTextsAndScriptExecute(["w", "west", "go w"], new TextAdventureEngine.Script("GoWest", this.goDirectionWest.bind(this)));
-                this.GoSomewhere = Command.fromTextsAndScriptExecute(["go ", "walk ", "run "], new TextAdventureEngine.Script("GoSomewhere", this.goSomewhere));
+                this.GoSomewhere = Command.fromTextsAndScriptExecute(["go ", "walk ", "run ", "go to", "go through"], new TextAdventureEngine.Script("GoSomewhere", this.goSomewhere));
                 this.Help = Command.fromTextsAndScriptExecute(["?", "help"], new TextAdventureEngine.Script("Help", this.help));
                 this.InventoryView = Command.fromTextsAndScriptExecute(["inventory", "look at possessions"], new TextAdventureEngine.Script("InventoryView", this.inventoryView));
                 this.LockOrUnlockSomething = Command.fromTextsAndScriptExecute(["lock ", "unlock "], new TextAdventureEngine.Script("LockOrUnlockSomething", this.lockOrUnlockSomething));
@@ -234,21 +248,21 @@ var ThisCouldBeBetter;
                 universe.messageEnqueue(message);
             }
             goDirectionEast(universe, world, place, command) {
-                this.goThroughPortalWithName(universe, world, "east");
+                Command.Instances().goThroughPortalWithName(universe, world, "east");
             }
             goDirectionNorth(universe, world, place, command) {
-                this.goThroughPortalWithName(universe, world, "north");
+                Command.Instances().goThroughPortalWithName(universe, world, "north");
             }
             goDirectionSouth(universe, world, place, command) {
-                this.goThroughPortalWithName(universe, world, "south");
+                Command.Instances().goThroughPortalWithName(universe, world, "south");
             }
             goDirectionWest(universe, world, place, command) {
-                this.goThroughPortalWithName(universe, world, "west");
+                Command.Instances().goThroughPortalWithName(universe, world, "west");
             }
             goSomewhere(universe, world, place, command) {
-                var commandText = command.text();
+                var commandText = Command.cleanCommandText(command.text());
                 var portalNameFromCommand = commandText.substr(commandText.indexOf(" ") + 1);
-                this.goThroughPortalWithName(universe, world, portalNameFromCommand);
+                Command.Instances().goThroughPortalWithName(universe, world, portalNameFromCommand);
             }
             goThroughPortalWithName(universe, world, portalName) {
                 var place = world.placeCurrent();
