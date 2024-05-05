@@ -78,6 +78,7 @@ var ThisCouldBeBetter;
                 this.ItemTrollHeadTalkTo = s("ItemTrollHeadTalkTo", this.itemTrollHeadTalkTo);
                 this.ItemWhetstoneUse = s("ItemWhetstoneUse", this.itemWhetstoneUse);
                 this.PlaceCenterRoomUpdate = s("PlaceCenterRoomUpdate", this.placeCenterRoomUpdate);
+                this.Todo = s("Todo", this.todo);
                 this._All =
                     [
                         this.AgentCaptorTalkTo,
@@ -89,7 +90,8 @@ var ThisCouldBeBetter;
                         this.ItemSwordUse,
                         this.ItemTrollHeadTalkTo,
                         this.ItemWhetstoneUse,
-                        this.PlaceCenterRoomUpdate
+                        this.PlaceCenterRoomUpdate,
+                        this.Todo
                     ];
             }
             agentCaptorTalkTo(u, w, p, agent) {
@@ -243,6 +245,9 @@ var ThisCouldBeBetter;
                     var message = messageLines.join("");
                     u.messageEnqueue(message);
                 }
+            }
+            todo(u, w, p, i, target) {
+                u.messageEnqueue("todo");
             }
         }
         class StateNames {

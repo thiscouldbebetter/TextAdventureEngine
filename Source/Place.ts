@@ -221,17 +221,7 @@ export class Place
 		{
 			var scriptUpdateForTurn =
 				world.scriptByName(this.scriptUpdateForTurnName);
-			if (scriptUpdateForTurn == null)
-			{
-				var message =
-					"No script found with name '"
-					+ this.scriptUpdateForTurnName + "'.";
-				throw new Error(message);
-			}
-			else
-			{
-				scriptUpdateForTurn.run(universe, world, this);
-			}
+			scriptUpdateForTurn.run(universe, world, this);
 		}
 	}
 
@@ -268,7 +258,28 @@ export class Place
 
 	hasBeenVisited(): boolean
 	{
-		return (this.stateGroup.valueGetByName("Visited") == true);
+		return (this.stateWithNameGetValue("Visited") == true);
+	}
+
+	stateWithNameGetValue(stateToGetName: string): any
+	{
+		return this.stateGroup.stateWithNameGetValue(stateToGetName);
+	}
+
+	stateWithNameIsTrue(stateName: string): boolean
+	{
+		return (this.stateWithNameGetValue(stateName) == true);
+	}
+
+	stateWithNameSetToValue(stateToSetName: string, valueToSet: any): Place
+	{
+		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+		return this;
+	}
+
+	stateWithNameSetToTrue(stateToSetName: string): Place
+	{
+		return this.stateWithNameSetToValue(stateToSetName, true);
 	}
 
 	visit(): void

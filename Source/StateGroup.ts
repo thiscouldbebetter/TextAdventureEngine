@@ -25,7 +25,7 @@ export class StateGroup
 		}
 	}
  
-	valueGetByName(stateToGetName: string): any
+	stateWithNameGetValue(stateToGetName: string): any
 	{
 		var stateFound = this.states.find(x => x.name == stateToGetName);
 		var returnValue = (stateFound == null ? null : stateFound.value);

@@ -94,6 +94,29 @@ export class Emplacement
 		StateGroup.prototypesSet(instanceAsObject.stateGroup);
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}
+
+	// States.
+
+	stateWithNameGetValue(stateToGetName: string): any
+	{
+		return this.stateGroup.stateWithNameGetValue(stateToGetName);
+	}
+
+	stateWithNameIsTrue(stateName: string): boolean
+	{
+		return (this.stateWithNameGetValue(stateName) == true);
+	}
+
+	stateWithNameSetToValue(stateToSetName: string, valueToSet: any): Emplacement
+	{
+		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+		return this;
+	}
+
+	stateWithNameSetToTrue(stateToSetName: string): Emplacement
+	{
+		return this.stateWithNameSetToValue(stateToSetName, true);
+	}
 }
 
 }

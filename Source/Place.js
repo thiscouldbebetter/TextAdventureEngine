@@ -97,14 +97,7 @@ var ThisCouldBeBetter;
             updateForTurn(universe, world) {
                 if (this.scriptUpdateForTurnName != null) {
                     var scriptUpdateForTurn = world.scriptByName(this.scriptUpdateForTurnName);
-                    if (scriptUpdateForTurn == null) {
-                        var message = "No script found with name '"
-                            + this.scriptUpdateForTurnName + "'.";
-                        throw new Error(message);
-                    }
-                    else {
-                        scriptUpdateForTurn.run(universe, world, this);
-                    }
+                    scriptUpdateForTurn.run(universe, world, this);
                 }
             }
             // Clonable.
@@ -122,7 +115,20 @@ var ThisCouldBeBetter;
             }
             // States.
             hasBeenVisited() {
-                return (this.stateGroup.valueGetByName("Visited") == true);
+                return (this.stateWithNameGetValue("Visited") == true);
+            }
+            stateWithNameGetValue(stateToGetName) {
+                return this.stateGroup.stateWithNameGetValue(stateToGetName);
+            }
+            stateWithNameIsTrue(stateName) {
+                return (this.stateWithNameGetValue(stateName) == true);
+            }
+            stateWithNameSetToValue(stateToSetName, valueToSet) {
+                this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+                return this;
+            }
+            stateWithNameSetToTrue(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, true);
             }
             visit() {
                 return this.stateGroup.stateWithNameSetToValue("Visited", true);

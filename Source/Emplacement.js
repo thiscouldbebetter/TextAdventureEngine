@@ -46,6 +46,20 @@ var ThisCouldBeBetter;
                 TextAdventureEngine.StateGroup.prototypesSet(instanceAsObject.stateGroup);
                 instanceAsObject.commands.forEach((x) => TextAdventureEngine.Command.prototypesSet(x));
             }
+            // States.
+            stateWithNameGetValue(stateToGetName) {
+                return this.stateGroup.stateWithNameGetValue(stateToGetName);
+            }
+            stateWithNameIsTrue(stateName) {
+                return (this.stateWithNameGetValue(stateName) == true);
+            }
+            stateWithNameSetToValue(stateToSetName, valueToSet) {
+                this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+                return this;
+            }
+            stateWithNameSetToTrue(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, true);
+            }
         }
         TextAdventureEngine.Emplacement = Emplacement;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));

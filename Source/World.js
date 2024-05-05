@@ -27,7 +27,11 @@ var ThisCouldBeBetter;
                 this.scripts.push(script);
             }
             scriptByName(name) {
-                return this.scripts.find(x => x.name == name);
+                var scriptFound = this.scripts.find(x => x.name == name);
+                if (scriptFound == null) {
+                    throw new Error("No script found with name '" + name + "'.");
+                }
+                return scriptFound;
             }
             updateForUniverseAndCommandText(universe, commandText) {
                 if (commandText != null) {

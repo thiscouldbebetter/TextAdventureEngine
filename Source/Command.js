@@ -62,14 +62,14 @@ var ThisCouldBeBetter;
                 }
                 return commandText;
             }
-            scriptExecute(world) {
-                return world.scriptByName(this.scriptExecuteName);
-            }
             execute(universe, world, place, command) {
                 var message = "Command entered: " + this.text();
                 universe.messageEnqueue(message);
                 var scriptExecute = this.scriptExecute(world);
                 scriptExecute.run(universe, world, place, this);
+            }
+            scriptExecute(world) {
+                return world.scriptByName(this.scriptExecuteName);
             }
             text() {
                 return this.texts[0];

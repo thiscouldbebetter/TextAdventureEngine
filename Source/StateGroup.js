@@ -17,7 +17,7 @@ var ThisCouldBeBetter;
                     stateFound.value = value;
                 }
             }
-            valueGetByName(stateToGetName) {
+            stateWithNameGetValue(stateToGetName) {
                 var stateFound = this.states.find(x => x.name == stateToGetName);
                 var returnValue = (stateFound == null ? null : stateFound.value);
                 return returnValue;

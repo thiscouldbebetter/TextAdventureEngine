@@ -108,17 +108,17 @@ export class Command
 		return commandText;
 	}
 
-	scriptExecute(world: World): Script
-	{
-		return world.scriptByName(this.scriptExecuteName);
-	}
-
 	execute(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var message = "Command entered: " + this.text();
 		universe.messageEnqueue(message);
 		var scriptExecute = this.scriptExecute(world);
 		scriptExecute.run(universe, world, place, this);
+	}
+
+	scriptExecute(world: World): Script
+	{
+		return world.scriptByName(this.scriptExecuteName);
 	}
 
 	text(): string
