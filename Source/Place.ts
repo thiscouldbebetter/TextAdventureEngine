@@ -68,6 +68,26 @@ export class Place
 		);
 	}
 
+	static fromNameDescriptionAndScriptName
+	(
+		name: string,
+		description: string,
+		scriptUpdateForTurnName: string,
+	): Place
+	{
+		return new Place
+		(
+			name,
+			description,
+			scriptUpdateForTurnName,
+			null,
+			null,
+			null,
+			null,
+			null, // stateGroup
+		);
+	}
+
 	static fromNameDescriptionScriptNameAndObjects
 	(
 		name: string,
@@ -201,7 +221,17 @@ export class Place
 		{
 			var scriptUpdateForTurn =
 				world.scriptByName(this.scriptUpdateForTurnName);
-			scriptUpdateForTurn.run(universe, world, this);
+			if (scriptUpdateForTurn == null)
+			{
+				var message =
+					"No script found with name '"
+					+ this.scriptUpdateForTurnName + "'.";
+				throw new Error(message);
+			}
+			else
+			{
+				scriptUpdateForTurn.run(universe, world, this);
+			}
 		}
 	}
 

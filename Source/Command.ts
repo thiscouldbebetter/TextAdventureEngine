@@ -115,7 +115,7 @@ export class Command
 
 	execute(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		var message = "Command entered: " + this.text() + "\n";
+		var message = "Command entered: " + this.text();
 		universe.messageEnqueue(message);
 		var scriptExecute = this.scriptExecute(world);
 		scriptExecute.run(universe, world, place, this);

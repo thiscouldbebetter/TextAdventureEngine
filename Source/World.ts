@@ -100,7 +100,6 @@ export class World
 				if (this.commandToExecute != null)
 				{
 					this.commandToExecute.execute(universe, this, place, this.commandToExecute);
-					universe.messageEnqueue("");
 				}
 			}
 		}
@@ -122,7 +121,7 @@ export class World
 		while (messageQueue.hasMessages())
 		{
 			var message = messageQueue.dequeue();
-			universe.console.writeLine(message);
+			universe.console.writeLinePlusBlankLine(message);
 		}
 	}
 

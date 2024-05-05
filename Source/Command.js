@@ -66,7 +66,7 @@ var ThisCouldBeBetter;
                 return world.scriptByName(this.scriptExecuteName);
             }
             execute(universe, world, place, command) {
-                var message = "Command entered: " + this.text() + "\n";
+                var message = "Command entered: " + this.text();
                 universe.messageEnqueue(message);
                 var scriptExecute = this.scriptExecute(world);
                 scriptExecute.run(universe, world, place, this);

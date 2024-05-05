@@ -22,6 +22,9 @@ var ThisCouldBeBetter;
                 objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null // stateGroup
                 );
             }
+            static fromNameDescriptionAndScriptName(name, description, scriptUpdateForTurnName) {
+                return new Place(name, description, scriptUpdateForTurnName, null, null, null, null, null);
+            }
             static fromNameDescriptionScriptNameAndObjects(name, description, scriptUpdateForTurnName, objects) {
                 return new Place(name, description, scriptUpdateForTurnName, objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null);
             }
@@ -94,7 +97,14 @@ var ThisCouldBeBetter;
             updateForTurn(universe, world) {
                 if (this.scriptUpdateForTurnName != null) {
                     var scriptUpdateForTurn = world.scriptByName(this.scriptUpdateForTurnName);
-                    scriptUpdateForTurn.run(universe, world, this);
+                    if (scriptUpdateForTurn == null) {
+                        var message = "No script found with name '"
+                            + this.scriptUpdateForTurnName + "'.";
+                        throw new Error(message);
+                    }
+                    else {
+                        scriptUpdateForTurn.run(universe, world, this);
+                    }
                 }
             }
             // Clonable.

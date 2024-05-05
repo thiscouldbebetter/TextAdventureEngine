@@ -101,6 +101,17 @@ export class ConsoleTextarea
 		this.write("\n");
 	}
 
+	writeLineBlank(): void
+	{
+		this.writeLine("");
+	}
+
+	writeLinePlusBlankLine(lineToWrite: string): void
+	{
+		this.writeLine(lineToWrite);
+		this.writeLineBlank();
+	}
+
 	writeLines(linesToWrite: string[]): void
 	{
 		linesToWrite.forEach(x => this.writeLine(x) );

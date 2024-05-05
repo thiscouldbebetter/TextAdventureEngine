@@ -68,6 +68,13 @@ var ThisCouldBeBetter;
                 }
                 this.write("\n");
             }
+            writeLineBlank() {
+                this.writeLine("");
+            }
+            writeLinePlusBlankLine(lineToWrite) {
+                this.writeLine(lineToWrite);
+                this.writeLineBlank();
+            }
             writeLines(linesToWrite) {
                 linesToWrite.forEach(x => this.writeLine(x));
             }

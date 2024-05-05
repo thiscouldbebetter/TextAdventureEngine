@@ -52,7 +52,6 @@ var ThisCouldBeBetter;
                         }
                         if (this.commandToExecute != null) {
                             this.commandToExecute.execute(universe, this, place, this.commandToExecute);
-                            universe.messageEnqueue("");
                         }
                     }
                 }
@@ -66,7 +65,7 @@ var ThisCouldBeBetter;
                 var messageQueue = universe.messageQueue;
                 while (messageQueue.hasMessages()) {
                     var message = messageQueue.dequeue();
-                    universe.console.writeLine(message);
+                    universe.console.writeLinePlusBlankLine(message);
                 }
             }
             // Clonable.
