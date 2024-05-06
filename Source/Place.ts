@@ -177,6 +177,11 @@ export class Place
 		this.emplacements.push(emplacement);
 	}
 
+	emplacementByName(name: string): Emplacement
+	{
+		return this.emplacements.find(x => x.name == name);
+	}
+
 	emplacementRemove(emplacement: Emplacement): void
 	{
 		this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);

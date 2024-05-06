@@ -52,6 +52,12 @@ export class Item
 		return (this._scriptUseName != null);
 	}
 
+	commandAdd(command: Command): Item
+	{
+		this.commands.push(command);
+		return this;
+	}
+
 	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);

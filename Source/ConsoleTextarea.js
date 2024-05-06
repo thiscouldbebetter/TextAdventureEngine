@@ -8,7 +8,7 @@ var ThisCouldBeBetter;
                 this.textCurrent = "";
                 this.textarea = textarea;
                 this._isReading = false;
-                this.textReadSoFar = null;
+                this._textReadSoFar = null;
             }
             static default() {
                 return new ConsoleTextarea(document.getElementById("textareaConsole"));
@@ -28,7 +28,10 @@ var ThisCouldBeBetter;
             }
             readLine() {
                 this._isReading = true;
-                this.textReadSoFar = "";
+                this._textReadSoFar = "";
+            }
+            textRead() {
+                return this._textReadSoFar;
             }
             updateForTimerTick(universe) {
                 if (this.isReading()) {
@@ -38,12 +41,15 @@ var ThisCouldBeBetter;
                         var keyPressed = keysPressedSinceLastTick[i];
                         if (keyPressed.length == 1) {
                             this.write(keyPressed);
-                            this.textReadSoFar += keyPressed;
+                            this._textReadSoFar += keyPressed;
                         }
                         else if (keyPressed == "Backspace") {
-                            if (this.textReadSoFar.length > 0) {
-                                this.textReadSoFar = this.textReadSoFar.substr(0, this.textReadSoFar.length - 1);
-                                this.textCurrent = this.textCurrent.substr(0, this.textCurrent.length - 1);
+                            if (this._textReadSoFar.length > 0) {
+                                this._textReadSoFar =
+                                    this._textReadSoFar
+                                        .substr(0, this._textReadSoFar.length - 1);
+                                this.textCurrent =
+                                    this.textCurrent.substr(0, this.textCurrent.length - 1);
                                 this.draw();
                             }
                         }

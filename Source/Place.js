@@ -71,6 +71,9 @@ var ThisCouldBeBetter;
             emplacementAdd(emplacement) {
                 this.emplacements.push(emplacement);
             }
+            emplacementByName(name) {
+                return this.emplacements.find(x => x.name == name);
+            }
             emplacementRemove(emplacement) {
                 this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
             }

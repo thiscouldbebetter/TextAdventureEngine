@@ -7,7 +7,7 @@ export class ConsoleTextarea
 	textCurrent: string;
 	textarea: any;
 	_isReading: boolean;
-	textReadSoFar: string;
+	_textReadSoFar: string;
 
 	constructor(textarea: any)
 	{
@@ -15,7 +15,7 @@ export class ConsoleTextarea
 		this.textarea = textarea;
 
 		this._isReading = false;
-		this.textReadSoFar = null;
+		this._textReadSoFar = null;
 	}
 
 	static default(): ConsoleTextarea
@@ -46,7 +46,12 @@ export class ConsoleTextarea
 	readLine(): void
 	{
 		this._isReading = true;
-		this.textReadSoFar = "";
+		this._textReadSoFar = "";
+	}
+
+	textRead(): string
+	{
+		return this._textReadSoFar;
 	}
 
 	updateForTimerTick(universe: Universe): void
@@ -61,14 +66,17 @@ export class ConsoleTextarea
 				if (keyPressed.length == 1)
 				{
 					this.write(keyPressed);
-					this.textReadSoFar += keyPressed;
+					this._textReadSoFar += keyPressed;
 				}
 				else if (keyPressed == "Backspace")
 				{
-					if (this.textReadSoFar.length > 0)
+					if (this._textReadSoFar.length > 0)
 					{
-						this.textReadSoFar = this.textReadSoFar.substr(0, this.textReadSoFar.length - 1);
-						this.textCurrent = this.textCurrent.substr(0, this.textCurrent.length - 1);
+						this._textReadSoFar =
+							this._textReadSoFar
+								.substr(0, this._textReadSoFar.length - 1);
+						this.textCurrent =
+							this.textCurrent.substr(0, this.textCurrent.length - 1);
 						this.draw();
 					}
 				}

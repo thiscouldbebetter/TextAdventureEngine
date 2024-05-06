@@ -34,7 +34,7 @@ var ThisCouldBeBetter;
                     console.updateForTimerTick(this);
                 }
                 else {
-                    var commandText = this.console.textReadSoFar;
+                    var commandText = this.console.textRead();
                     this.world.updateForUniverseAndCommandText(this, commandText);
                     console.write("Enter a command (? for help): ");
                     console.readLine();
