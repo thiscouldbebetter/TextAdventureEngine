@@ -48,7 +48,8 @@ var ThisCouldBeBetter;
                 var linesToWrite = [
                     "Location: " + this.name
                 ];
-                if (this.hasBeenVisited() == false) {
+                var hasBeenVisited = this.hasBeenVisited();
+                if (hasBeenVisited == false) {
                     linesToWrite.push(this.description);
                 }
                 this.visit(); // hack
