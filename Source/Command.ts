@@ -569,9 +569,9 @@ export class Command_Instances
 	{
 		var place = world.placeCurrent();
 		var portals = place.portals;
-		var portalMatchingName =
+		var portalMatching =
 			portals.find( (x: Portal) => x.name == portalName);
-		if (portalMatchingName == null)
+		if (portalMatching == null)
 		{
 			universe.messageEnqueue
 			(
@@ -580,9 +580,7 @@ export class Command_Instances
 		}
 		else
 		{
-			var placeNextName = portalMatchingName.placeDestinationName;
-			var placeNext = world.placeByName(placeNextName);
-			world.placeCurrentSet(placeNext);
+			portalMatching.use(universe, world, place);
 		}
 	}
 

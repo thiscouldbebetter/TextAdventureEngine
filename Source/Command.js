@@ -267,14 +267,12 @@ var ThisCouldBeBetter;
             goThroughPortalWithName(universe, world, portalName) {
                 var place = world.placeCurrent();
                 var portals = place.portals;
-                var portalMatchingName = portals.find((x) => x.name == portalName);
-                if (portalMatchingName == null) {
+                var portalMatching = portals.find((x) => x.name == portalName);
+                if (portalMatching == null) {
                     universe.messageEnqueue("You can't go " + portalName + " here.");
                 }
                 else {
-                    var placeNextName = portalMatchingName.placeDestinationName;
-                    var placeNext = world.placeByName(placeNextName);
-                    world.placeCurrentSet(placeNext);
+                    portalMatching.use(universe, world, place);
                 }
             }
             help(universe, world, place, command) {
