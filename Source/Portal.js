@@ -13,14 +13,14 @@ var ThisCouldBeBetter;
             static fromNameAndPlaceDestinationName(name, placeDestinationName) {
                 return new Portal(name, null, placeDestinationName, null);
             }
-            goThrough(universe, world, place) {
+            goThrough(universe, world) {
                 var placeNextName = this.placeDestinationName;
                 var placeNext = world.placeByName(placeNextName);
                 world.placeCurrentSet(placeNext);
             }
             use(universe, world, place) {
                 if (this.scriptUseName == null) {
-                    this.goThrough(universe, world, place);
+                    this.goThrough(universe, world);
                 }
                 else {
                     var scriptUse = world.scriptByName(this.scriptUseName);

@@ -98,6 +98,9 @@ var ThisCouldBeBetter;
                 }
                 return objectFound;
             }
+            portalByName(name) {
+                return this.portals.find(x => x.name == name);
+            }
             updateForTurn(universe, world) {
                 if (this.scriptUpdateForTurnName != null) {
                     var scriptUpdateForTurn = world.scriptByName(this.scriptUpdateForTurnName);

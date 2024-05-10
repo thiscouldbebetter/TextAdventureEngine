@@ -221,6 +221,11 @@ export class Place
 		return objectFound;
 	}
 
+	portalByName(name: string): Portal
+	{
+		return this.portals.find(x => x.name == name);
+	}
+
 	updateForTurn(universe: Universe, world: World): void
 	{
 		if (this.scriptUpdateForTurnName != null)

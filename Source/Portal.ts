@@ -31,7 +31,7 @@ export class Portal
 		return new Portal(name, null, placeDestinationName, null);
 	}
 
-	goThrough(universe: Universe, world: World, place: Place): void
+	goThrough(universe: Universe, world: World): void
 	{
 		var placeNextName = this.placeDestinationName;
 		var placeNext = world.placeByName(placeNextName);
@@ -42,7 +42,7 @@ export class Portal
 	{
 		if (this.scriptUseName == null)
 		{
-			this.goThrough(universe, world, place);
+			this.goThrough(universe, world);
 		}
 		else
 		{
