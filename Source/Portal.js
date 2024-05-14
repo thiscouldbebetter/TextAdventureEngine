@@ -4,14 +4,15 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Portal {
-            constructor(name, description, placeDestinationName, scriptUseName) {
+            constructor(name, description, placeDestinationName, scriptUseName, stateGroup) {
                 this.name = name;
                 this.description = description;
                 this.placeDestinationName = placeDestinationName;
                 this.scriptUseName = scriptUseName;
+                this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
             }
             static fromNameAndPlaceDestinationName(name, placeDestinationName) {
-                return new Portal(name, null, placeDestinationName, null);
+                return new Portal(name, null, placeDestinationName, null, null);
             }
             goThrough(universe, world) {
                 var placeNextName = this.placeDestinationName;
@@ -29,11 +30,34 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Portal(this.name, this.description, this.placeDestinationName, this.scriptUseName);
+                return new Portal(this.name, this.description, this.placeDestinationName, this.scriptUseName, this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
                 Object.setPrototypeOf(instanceAsObject, Portal.prototype);
+            }
+            // States.
+            locked() {
+                return this.stateWithNameIsTrue("Locked");
+            }
+            lockedSet() {
+                return this.stateWithNameSetToTrue("Locked");
+            }
+            stateWithNameGetValue(stateToGetName) {
+                return this.stateGroup.stateWithNameGetValue(stateToGetName);
+            }
+            stateWithNameIsTrue(stateName) {
+                return (this.stateWithNameGetValue(stateName) == true);
+            }
+            stateWithNameSetToValue(stateToSetName, valueToSet) {
+                this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+                return this;
+            }
+            stateWithNameSetToTrue(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, true);
+            }
+            visible() {
+                return this.stateWithNameIsTrue("Visible");
             }
         }
         TextAdventureEngine.Portal = Portal;

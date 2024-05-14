@@ -26,9 +26,26 @@ export class Emplacement
 		this.commands = commands || [];
 	}
 
+	static fromName(name: string): Emplacement
+	{
+		var description = "This is just a " + name + ".";
+
+		return new Emplacement
+		(
+			name,
+			description,
+			null, null, null
+		);
+	}
+
 	static fromNameAndDescription(name: string, description: string): Emplacement
 	{
-		return new Emplacement(name, description, null, null, null);
+		return new Emplacement
+		(
+			name,
+			description,
+			null, null, null
+		);
 	}
 
 	static fromNameDescriptionAndScriptUse
@@ -36,7 +53,13 @@ export class Emplacement
 		name: string, description: string, scriptUse: Script
 	): Emplacement
 	{
-		return new Emplacement(name, description, scriptUse.name, null, null);
+		return new Emplacement
+		(
+			name,
+			description,
+			scriptUse.name,
+			null, null
+		);
 	}
 
 	static fromNameDescriptionAndScriptUseName
@@ -44,7 +67,13 @@ export class Emplacement
 		name: string, description: string, scriptUseName: string
 	): Emplacement
 	{
-		return new Emplacement(name, description, scriptUseName, null, null);
+		return new Emplacement
+		(
+			name,
+			description,
+			scriptUseName,
+			null, null
+		);
 	}
 
 	canBeUsed(): boolean
@@ -107,15 +136,25 @@ export class Emplacement
 		return (this.stateWithNameGetValue(stateName) == true);
 	}
 
+	stateWithNameSetToTrue(stateToSetName: string): Emplacement
+	{
+		return this.stateWithNameSetToValue(stateToSetName, true);
+	}
+
 	stateWithNameSetToValue(stateToSetName: string, valueToSet: any): Emplacement
 	{
 		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
 		return this;
 	}
 
-	stateWithNameSetToTrue(stateToSetName: string): Emplacement
+	visible(): boolean
 	{
-		return this.stateWithNameSetToValue(stateToSetName, true);
+		return this.stateWithNameIsTrue("Visible");
+	}
+
+	visibleSet(value: boolean): Emplacement
+	{
+		return this.stateWithNameSetToTrue("Visible");
 	}
 }
 

@@ -11,6 +11,11 @@ export class StateGroup
 		this.states = states || new Array<State>();
 	}
 
+	static create(): StateGroup
+	{
+		return new StateGroup(null);
+	}
+
 	stateWithNameSetToValue(stateToSetName: string, value: any): void
 	{
 		var stateFound = this.states.find(x => x.name == stateToSetName);

@@ -41,6 +41,8 @@ var ThisCouldBeBetter;
                 instanceAsObject.items.forEach((x) => TextAdventureEngine.Item.prototypesSet(x));
                 instanceAsObject.commands.forEach((x) => TextAdventureEngine.Command.prototypesSet(x));
             }
+            // States.
+            visible() { return true; }
         }
         TextAdventureEngine.Agent = Agent;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));

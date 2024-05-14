@@ -77,6 +77,11 @@ export class Item
 		}
 	}
 
+	visible(): boolean
+	{
+		return true;
+	}
+
 	// Clonable.
 
 	clone(): Item

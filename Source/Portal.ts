@@ -8,19 +8,22 @@ export class Portal
 	description: string;
 	placeDestinationName: string;
 	scriptUseName: string;
+	stateGroup: StateGroup;
 
 	constructor
 	(
 		name: string,
 		description: string,
 		placeDestinationName: string,
-		scriptUseName: string
+		scriptUseName: string,
+		stateGroup: StateGroup
 	)
 	{
 		this.name = name;
 		this.description = description;
 		this.placeDestinationName = placeDestinationName;
 		this.scriptUseName = scriptUseName;
+		this.stateGroup = stateGroup || StateGroup.create();
 	}
 
 	static fromNameAndPlaceDestinationName
@@ -28,7 +31,7 @@ export class Portal
 		name: string, placeDestinationName: string
 	): Portal
 	{
-		return new Portal(name, null, placeDestinationName, null);
+		return new Portal(name, null, placeDestinationName, null, null);
 	}
 
 	goThrough(universe: Universe, world: World): void
@@ -60,7 +63,8 @@ export class Portal
 			this.name,
 			this.description,
 			this.placeDestinationName,
-			this.scriptUseName
+			this.scriptUseName,
+			this.stateGroup.clone()
 		);
 	}
 
@@ -69,6 +73,44 @@ export class Portal
 	static prototypesSet(instanceAsObject: any): void
 	{
 		Object.setPrototypeOf(instanceAsObject, Portal.prototype);
+	}
+
+	// States.
+
+	locked(): boolean
+	{
+		return this.stateWithNameIsTrue("Locked");
+	}
+
+	lockedSet(): Portal
+	{
+		return this.stateWithNameSetToTrue("Locked");
+	}
+
+	stateWithNameGetValue(stateToGetName: string): any
+	{
+		return this.stateGroup.stateWithNameGetValue(stateToGetName);
+	}
+
+	stateWithNameIsTrue(stateName: string): boolean
+	{
+		return (this.stateWithNameGetValue(stateName) == true);
+	}
+
+	stateWithNameSetToValue(stateToSetName: string, valueToSet: any): Portal
+	{
+		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
+		return this;
+	}
+
+	stateWithNameSetToTrue(stateToSetName: string): Portal
+	{
+		return this.stateWithNameSetToValue(stateToSetName, true);
+	}
+
+	visible(): boolean
+	{
+		return this.stateWithNameIsTrue("Visible");
 	}
 
 }

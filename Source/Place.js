@@ -62,8 +62,13 @@ var ThisCouldBeBetter;
                     var objects = objectArraysPresent[oa];
                     for (var i = 0; i < objects.length; i++) {
                         var objectToMention = objects[i];
-                        var message = "There is a " + objectToMention.name + " here.";
-                        linesToWrite.push(message);
+                        var objectIsVisible = objectToMention.visible();
+                        if (objectIsVisible) {
+                            var message = "There is "
+                                + TextAdventureEngine.MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name)
+                                + " here.";
+                            linesToWrite.push(message);
+                        }
                     }
                 }
                 var message = linesToWrite.join("\n\n") + "\n";

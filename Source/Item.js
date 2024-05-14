@@ -39,6 +39,9 @@ var ThisCouldBeBetter;
                     scriptUse.run(universe, world, place, this, target);
                 }
             }
+            visible() {
+                return true;
+            }
             // Clonable.
             clone() {
                 return new Item(this.name, this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));

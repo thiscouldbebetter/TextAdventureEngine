@@ -7,6 +7,9 @@ var ThisCouldBeBetter;
             constructor(states) {
                 this.states = states || new Array();
             }
+            static create() {
+                return new StateGroup(null);
+            }
             stateWithNameSetToValue(stateToSetName, value) {
                 var stateFound = this.states.find(x => x.name == stateToSetName);
                 if (stateFound == null) {

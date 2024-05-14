@@ -11,6 +11,10 @@ var ThisCouldBeBetter;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
                 this.commands = commands || [];
             }
+            static fromName(name) {
+                var description = "This is just a " + name + ".";
+                return new Emplacement(name, description, null, null, null);
+            }
             static fromNameAndDescription(name, description) {
                 return new Emplacement(name, description, null, null, null);
             }
@@ -53,12 +57,18 @@ var ThisCouldBeBetter;
             stateWithNameIsTrue(stateName) {
                 return (this.stateWithNameGetValue(stateName) == true);
             }
+            stateWithNameSetToTrue(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, true);
+            }
             stateWithNameSetToValue(stateToSetName, valueToSet) {
                 this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
                 return this;
             }
-            stateWithNameSetToTrue(stateToSetName) {
-                return this.stateWithNameSetToValue(stateToSetName, true);
+            visible() {
+                return this.stateWithNameIsTrue("Visible");
+            }
+            visibleSet(value) {
+                return this.stateWithNameSetToTrue("Visible");
             }
         }
         TextAdventureEngine.Emplacement = Emplacement;

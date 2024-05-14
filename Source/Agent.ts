@@ -81,6 +81,10 @@ export class Agent
 		instanceAsObject.items.forEach( (x: any) => Item.prototypesSet(x) );
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}
+
+	// States.
+
+	visible(): boolean { return true; }
 }
 
 }
