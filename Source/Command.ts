@@ -19,6 +19,11 @@ export class Command
 		this.scriptExecuteName = scriptExecuteName;
 	}
 
+	static fromTextAndScriptExecuteName(text: string, scriptExecuteName: string): Command
+	{
+		return new Command( [ text ], scriptExecuteName);
+	}
+
 	static fromTextsAndScriptExecute(texts: string[], scriptExecute: any): Command
 	{
 		var returnValue =
@@ -431,7 +436,7 @@ export class Command_Instances
 		var message = null;
 
 		var player = world.player;
-		var itemToDrop = player.items.find(x => x.name == targetName);
+		var itemToDrop = player.items.find(x => x.names.indexOf(targetName) );
 		if (itemToDrop == null)
 		{
 			message = "You don't have any " + targetName + ".";
@@ -455,14 +460,14 @@ export class Command_Instances
 
 		place = world.placeCurrent();
 
-		var emplacementToGet = place.emplacements.find(x => x.name == targetName);
+		var emplacementToGet = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
 		if (emplacementToGet != null)
 		{
 			message = "The " + emplacementToGet.name + " cannot be picked up.";
 		}
 		else 
 		{
-			var agentToGet = place.agents.find(x => x.name == targetName);
+			var agentToGet = place.agents.find(x => x.names.indexOf(targetName) >= 0);
 			if (agentToGet != null)
 			{
 				message = "The " + agentToGet.name + " cannot be picked up.";
@@ -471,7 +476,7 @@ export class Command_Instances
 			{
 				var player = world.player;
 
-				var itemToGet = place.items.find(x => x.name == targetName);
+				var itemToGet = place.items.find(x => x.names.indexOf(targetName) >= 0);
 				if (itemToGet == null)
 				{
 					var itemAlreadyCarried = player.itemByName(targetName);
@@ -522,7 +527,7 @@ export class Command_Instances
 				var recipientName =
 					commandTextMinusVerb.substr(indexOfTo + textTo.length);
 				var agents = place.agents;
-				var recipient = agents.find(x => x.name == recipientName);
+				var recipient = agents.find(x => x.names.indexOf(recipientName) >= 0);
 				if (recipient == null)
 				{
 					message = "You don't see any " + recipientName + " here."; 
@@ -570,7 +575,7 @@ export class Command_Instances
 		var place = world.placeCurrent();
 		var portals = place.portals;
 		var portalMatching =
-			portals.find( (x: Portal) => x.name == portalName);
+			portals.find( (x: Portal) => x.names.indexOf(portalName) >= 0);
 		if (portalMatching == null)
 		{
 			universe.messageEnqueue
@@ -621,7 +626,7 @@ export class Command_Instances
 		[
 			"Items Carried:"
 		];
-		items.forEach(x => linesToWrite.push(x.name) );
+		items.forEach(x => linesToWrite.push(x.name() ) );
 		var message = linesToWrite.join("\n");
 		universe.messageEnqueue(message);
 	}
@@ -830,21 +835,21 @@ export class Command_Instances
 
 		place = world.placeCurrent();
 
-		var emplacementToTalkTo = place.emplacements.find(x => x.name == targetName);
+		var emplacementToTalkTo = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
 		if (emplacementToTalkTo != null)
 		{
 			message = "The " + emplacementToTalkTo.name + " says nothing.";
 		}
 		else 
 		{
-			var itemToTalkTo = place.items.find(x => x.name == targetName);
+			var itemToTalkTo = place.items.find(x => x.names.indexOf(targetName) >= 0);
 			if (itemToTalkTo != null)
 			{
 				message = "The " + itemToTalkTo.name + " says nothing.";
 			}
 			else
 			{
-				var agentToTalkTo = place.agents.find(x => x.name == targetName);
+				var agentToTalkTo = place.agents.find(x => x.names.indexOf(targetName) >= 0);
 				if (agentToTalkTo == null)
 				{
 					message = "You don't see any " + targetName + " here.";
@@ -890,14 +895,15 @@ export class Command_Instances
 		place = world.placeCurrent();
 
 		var emplacementToUse =
-			place.emplacements.find( (x: Emplacement) => x.name == objectName);
+			place.emplacements.find( (x: Emplacement) => x.names.indexOf(objectName) >= 0);
+
 		if (emplacementToUse != null)
 		{
 			objectToUse = emplacementToUse;
 		}
 		else 
 		{
-			var agentToUse = place.agents.find( (x: Agent) => x.name == objectName);
+			var agentToUse = place.agents.find( (x: Agent) => x.names.indexOf(objectName) >= 0);
 			if (agentToUse != null)
 			{
 				message = "The " + agentToUse.name + " cannot be used.";
@@ -906,7 +912,7 @@ export class Command_Instances
 			{
 				var playerItems = world.player.items;
 				var itemCarriedToUse =
-					playerItems.find( (x: Item) => x.name == objectName);
+					playerItems.find( (x: Item) => x.names.indexOf(objectName) >= 0);
 
 				if (itemCarriedToUse != null)
 				{
@@ -915,7 +921,7 @@ export class Command_Instances
 				else
 				{
 					var itemInRoomToUse =
-						place.items.find( (x: Item) => x.name == objectName);
+						place.items.find( (x: Item) => x.names.indexOf(objectName) >= 0);
 
 					if (itemInRoomToUse == null)
 					{
@@ -935,7 +941,7 @@ export class Command_Instances
 		}
 		else if (objectToUse.canBeUsed() == false)
 		{
-			message = "The " + objectToUse.name + " cannot be used.";
+			message = "The " + objectToUse.name() + " cannot be used.";
 			universe.messageEnqueue(message);
 		}
 		else

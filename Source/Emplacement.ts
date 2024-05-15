@@ -4,7 +4,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 
 export class Emplacement
 {
-	name: string;
+	names: string[];
 	description: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
@@ -12,14 +12,14 @@ export class Emplacement
 
 	constructor
 	(
-		name: string,
+		names: string[],
 		description: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
 		commands: Command[]
 	)
 	{
-		this.name = name;
+		this.names = names;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
@@ -28,21 +28,25 @@ export class Emplacement
 
 	static fromName(name: string): Emplacement
 	{
-		var description = "This is just a " + name + ".";
+		return Emplacement.fromNames( [ name ] );
+	}
 
-		return new Emplacement
+	static fromNames(names: string[]): Emplacement
+	{
+		var description = "This is just a " + names[0] + ".";
+
+		return Emplacement.fromNamesAndDescription
 		(
-			name,
-			description,
-			null, null, null
+			names,
+			description
 		);
 	}
 
-	static fromNameAndDescription(name: string, description: string): Emplacement
+	static fromNamesAndDescription(names: string[], description: string): Emplacement
 	{
 		return new Emplacement
 		(
-			name,
+			names,
 			description,
 			null, null, null
 		);
@@ -55,7 +59,7 @@ export class Emplacement
 	{
 		return new Emplacement
 		(
-			name,
+			[ name ],
 			description,
 			scriptUse.name,
 			null, null
@@ -69,7 +73,7 @@ export class Emplacement
 	{
 		return new Emplacement
 		(
-			name,
+			[ name ],
 			description,
 			scriptUseName,
 			null, null
@@ -85,6 +89,11 @@ export class Emplacement
 	{
 		this.commands.push(command);
 		return this;
+	}
+
+	name(): string
+	{
+		return this.names[0];
 	}
 
 	scriptUse(world: World): Script
@@ -107,7 +116,7 @@ export class Emplacement
 	{
 		return new Emplacement
 		(
-			this.name,
+			this.names.map(x => x),
 			this.description,
 			this._scriptUseName,
 			this.stateGroup.clone(),
@@ -154,7 +163,7 @@ export class Emplacement
 
 	visibleSet(value: boolean): Emplacement
 	{
-		return this.stateWithNameSetToTrue("Visible");
+		return this.stateWithNameSetToValue("Visible", value);
 	}
 }
 

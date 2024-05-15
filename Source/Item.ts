@@ -4,7 +4,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 
 export class Item
 {
-	name: string;
+	names: string[];
 	description: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
@@ -12,14 +12,14 @@ export class Item
 
 	constructor
 	(
-		name: string,
+		names: string[],
 		description: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
 		commands: Command[]
 	)
 	{
-		this.name = name;
+		this.names = names;
 		this.description = description;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
@@ -28,7 +28,7 @@ export class Item
 
 	static fromNameAndDescription(name: string, description: string): Item
 	{
-		return new Item(name, description, null, null, null);
+		return new Item( [ name ], description, null, null, null);
 	}
 
 	static fromNameDescriptionAndScriptUse
@@ -36,7 +36,7 @@ export class Item
 		name: string, description: string, scriptUse: Script
 	): Item
 	{
-		return new Item(name, description, scriptUse.name, null, null);
+		return new Item( [ name ], description, scriptUse.name, null, null);
 	}
 
 	static fromNameDescriptionAndScriptUseName
@@ -44,7 +44,7 @@ export class Item
 		name: string, description: string, scriptUseName: string
 	): Item
 	{
-		return new Item(name, description, scriptUseName, null, null);
+		return new Item( [ name ], description, scriptUseName, null, null);
 	}
 
 	canBeUsed(): boolean
@@ -58,6 +58,7 @@ export class Item
 		return this;
 	}
 
+	name(): string { return this.names[0]; }
 	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);
@@ -88,7 +89,7 @@ export class Item
 	{
 		return new Item
 		(
-			this.name,
+			this.names.map(x => x),
 			this.description,
 			this._scriptUseName,
 			this.stateGroup.clone(),

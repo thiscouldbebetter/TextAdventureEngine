@@ -8,6 +8,9 @@ var ThisCouldBeBetter;
                 this.texts = texts;
                 this.scriptExecuteName = scriptExecuteName;
             }
+            static fromTextAndScriptExecuteName(text, scriptExecuteName) {
+                return new Command([text], scriptExecuteName);
+            }
             static fromTextsAndScriptExecute(texts, scriptExecute) {
                 var returnValue = new Command(texts, scriptExecute.name);
                 returnValue._scriptExecute = scriptExecute;
@@ -171,7 +174,7 @@ var ThisCouldBeBetter;
                 var targetName = commandText.substr(commandText.indexOf(" ") + 1);
                 var message = null;
                 var player = world.player;
-                var itemToDrop = player.items.find(x => x.name == targetName);
+                var itemToDrop = player.items.find(x => x.names.indexOf(targetName));
                 if (itemToDrop == null) {
                     message = "You don't have any " + targetName + ".";
                 }
@@ -188,18 +191,18 @@ var ThisCouldBeBetter;
                 var targetName = commandText.substr(commandText.indexOf(" ") + 1);
                 var message = null;
                 place = world.placeCurrent();
-                var emplacementToGet = place.emplacements.find(x => x.name == targetName);
+                var emplacementToGet = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
                 if (emplacementToGet != null) {
                     message = "The " + emplacementToGet.name + " cannot be picked up.";
                 }
                 else {
-                    var agentToGet = place.agents.find(x => x.name == targetName);
+                    var agentToGet = place.agents.find(x => x.names.indexOf(targetName) >= 0);
                     if (agentToGet != null) {
                         message = "The " + agentToGet.name + " cannot be picked up.";
                     }
                     else {
                         var player = world.player;
-                        var itemToGet = place.items.find(x => x.name == targetName);
+                        var itemToGet = place.items.find(x => x.names.indexOf(targetName) >= 0);
                         if (itemToGet == null) {
                             var itemAlreadyCarried = player.itemByName(targetName);
                             if (itemAlreadyCarried == null) {
@@ -236,7 +239,7 @@ var ThisCouldBeBetter;
                     else {
                         var recipientName = commandTextMinusVerb.substr(indexOfTo + textTo.length);
                         var agents = place.agents;
-                        var recipient = agents.find(x => x.name == recipientName);
+                        var recipient = agents.find(x => x.names.indexOf(recipientName) >= 0);
                         if (recipient == null) {
                             message = "You don't see any " + recipientName + " here.";
                         }
@@ -267,7 +270,7 @@ var ThisCouldBeBetter;
             goThroughPortalWithName(universe, world, portalName) {
                 var place = world.placeCurrent();
                 var portals = place.portals;
-                var portalMatching = portals.find((x) => x.name == portalName);
+                var portalMatching = portals.find((x) => x.names.indexOf(portalName) >= 0);
                 if (portalMatching == null) {
                     universe.messageEnqueue("You can't go " + portalName + " here.");
                 }
@@ -307,7 +310,7 @@ var ThisCouldBeBetter;
                 var linesToWrite = [
                     "Items Carried:"
                 ];
-                items.forEach(x => linesToWrite.push(x.name));
+                items.forEach(x => linesToWrite.push(x.name()));
                 var message = linesToWrite.join("\n");
                 universe.messageEnqueue(message);
             }
@@ -440,17 +443,17 @@ var ThisCouldBeBetter;
                 var commandText = command.text();
                 var targetName = commandText.substr("talk to ".length);
                 place = world.placeCurrent();
-                var emplacementToTalkTo = place.emplacements.find(x => x.name == targetName);
+                var emplacementToTalkTo = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
                 if (emplacementToTalkTo != null) {
                     message = "The " + emplacementToTalkTo.name + " says nothing.";
                 }
                 else {
-                    var itemToTalkTo = place.items.find(x => x.name == targetName);
+                    var itemToTalkTo = place.items.find(x => x.names.indexOf(targetName) >= 0);
                     if (itemToTalkTo != null) {
                         message = "The " + itemToTalkTo.name + " says nothing.";
                     }
                     else {
-                        var agentToTalkTo = place.agents.find(x => x.name == targetName);
+                        var agentToTalkTo = place.agents.find(x => x.names.indexOf(targetName) >= 0);
                         if (agentToTalkTo == null) {
                             message = "You don't see any " + targetName + " here.";
                         }
@@ -478,23 +481,23 @@ var ThisCouldBeBetter;
                 }
                 var objectToUse = null;
                 place = world.placeCurrent();
-                var emplacementToUse = place.emplacements.find((x) => x.name == objectName);
+                var emplacementToUse = place.emplacements.find((x) => x.names.indexOf(objectName) >= 0);
                 if (emplacementToUse != null) {
                     objectToUse = emplacementToUse;
                 }
                 else {
-                    var agentToUse = place.agents.find((x) => x.name == objectName);
+                    var agentToUse = place.agents.find((x) => x.names.indexOf(objectName) >= 0);
                     if (agentToUse != null) {
                         message = "The " + agentToUse.name + " cannot be used.";
                     }
                     else {
                         var playerItems = world.player.items;
-                        var itemCarriedToUse = playerItems.find((x) => x.name == objectName);
+                        var itemCarriedToUse = playerItems.find((x) => x.names.indexOf(objectName) >= 0);
                         if (itemCarriedToUse != null) {
                             objectToUse = itemCarriedToUse;
                         }
                         else {
-                            var itemInRoomToUse = place.items.find((x) => x.name == objectName);
+                            var itemInRoomToUse = place.items.find((x) => x.names.indexOf(objectName) >= 0);
                             if (itemInRoomToUse == null) {
                                 message = "You don't see any " + objectName + " here.";
                             }
@@ -508,7 +511,7 @@ var ThisCouldBeBetter;
                     universe.messageEnqueue(message);
                 }
                 else if (objectToUse.canBeUsed() == false) {
-                    message = "The " + objectToUse.name + " cannot be used.";
+                    message = "The " + objectToUse.name() + " cannot be used.";
                     universe.messageEnqueue(message);
                 }
                 else {

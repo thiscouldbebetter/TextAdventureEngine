@@ -32,7 +32,7 @@ var ThisCouldBeBetter;
                 this.agents.push(agent);
             }
             agentByName(name) {
-                return this.agents.find(x => x.name == name);
+                return this.agents.find(x => x.names.indexOf(name) >= 0);
             }
             agentRemove(agent) {
                 this.agents.splice(this.agents.indexOf(agent), 1);
@@ -65,7 +65,7 @@ var ThisCouldBeBetter;
                         var objectIsVisible = objectToMention.visible();
                         if (objectIsVisible) {
                             var message = "There is "
-                                + TextAdventureEngine.MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name)
+                                + TextAdventureEngine.MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name())
                                 + " here.";
                             linesToWrite.push(message);
                         }
@@ -78,7 +78,7 @@ var ThisCouldBeBetter;
                 this.emplacements.push(emplacement);
             }
             emplacementByName(name) {
-                return this.emplacements.find(x => x.name == name);
+                return this.emplacements.find(x => x.names.indexOf(name) >= 0);
             }
             emplacementRemove(emplacement) {
                 this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
@@ -104,7 +104,7 @@ var ThisCouldBeBetter;
                 return objectFound;
             }
             portalByName(name) {
-                return this.portals.find(x => x.name == name);
+                return this.portals.find(x => x.names.indexOf(name) >= 0);
             }
             updateForTurn(universe, world) {
                 if (this.scriptUpdateForTurnName != null) {

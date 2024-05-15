@@ -8,7 +8,7 @@ export class GameDemo
 	{
 		var player = new Agent
 		(
-			"self",
+			[ "self" ],
 			"This is you.",
 			null, // scriptUpdateForTurnName
 			[
@@ -41,17 +41,17 @@ export class GameDemo
 				+ "  There are doors to the north, south, east, and west.",
 			scriptsCustom.PlaceCenterRoomUpdate.name,
 			[
-				Emplacement.fromNameAndDescription
+				Emplacement.fromNamesAndDescription
 				(
-					"pool", "This is a shallow, dirty, foul-smelling pool of water."
+					[ "pool" ], "This is a shallow, dirty, foul-smelling pool of water."
 				),
-				new Portal("east", portalDescription, placeEasternRoomName),
-				new Portal("north", portalDescription, placeNorthernRoomName),
-				new Portal("south", portalDescription, placeSouthernRoomName),
-				new Portal("west", portalDescription, placeWesternRoomName),
+				new Portal( [ "east" ], portalDescription, placeEasternRoomName, null, null),
+				new Portal( [ "north" ], portalDescription, placeNorthernRoomName, null, null),
+				new Portal( [ "south" ], portalDescription, placeSouthernRoomName, null, null),
+				new Portal( [ "west" ], portalDescription, placeWesternRoomName, null, null),
 				new Agent
 				(
-					"captor",
+					[ "captor" ],
 					"Your captor lingers by the trap door, waiting for you to retrieve his property.",
 					scriptsCustom.AgentCaptorUpdate.name,
 					null, // items
@@ -68,7 +68,7 @@ export class GameDemo
 			placeEasternRoomName,
 			"This room is east of the center.  A doorway to the west leads back to the Center Room.",
 			[
-				new Portal("west", portalDescription, placeCenterRoomName),
+				new Portal( [ "west" ], portalDescription, placeCenterRoomName, null, null),
 				Emplacement.fromNameDescriptionAndScriptUse
 				(
 					"chest",
@@ -83,7 +83,7 @@ export class GameDemo
 			"Northern Room",
 			"This room is north of the center.  A doorway to the south leads back to the Center Room.",
 			[
-				new Portal("south", portalDescription, placeCenterRoomName),
+				new Portal( [ "south" ] , portalDescription, placeCenterRoomName, null, null),
 				Agent.fromNameAndDescription
 				(
 					"troll",
@@ -97,7 +97,7 @@ export class GameDemo
 			"Southern Room",
 			"This room is south of the center.  A doorway to the north leads back to the Center Room.",
 			[
-				new Portal("north", portalDescription, placeCenterRoomName),
+				new Portal( [ "north" ] , portalDescription, placeCenterRoomName, null, null),
 				Item.fromNameDescriptionAndScriptUse
 				(
 					"key",
@@ -112,7 +112,7 @@ export class GameDemo
 			"Western Room",
 			"This room is west of the center.  A doorway to the east leads back to the Center Room.",
 			[
-				new Portal("east", portalDescription, placeCenterRoomName),
+				new Portal( [ "east" ], portalDescription, placeCenterRoomName, null, null),
 				Item.fromNameDescriptionAndScriptUse
 				(
 					"whetstone",
@@ -210,7 +210,7 @@ class Scripts
 
 		var player = w.player;
 		var playerItems = player.items;
-		var playerHasCoin = playerItems.some(x => x.name == "coin");
+		var playerHasCoin = playerItems.some(x => x.name() == "coin");
 		if (playerHasCoin == false)
 		{
 			message = "Your captor says, 'Get me my coin back from the troll, and I'll throw you down a rope.'";
@@ -390,7 +390,7 @@ class Scripts
 
 			var itemTrollHead = new Item
 			(
-				"troll head",
+				[ "troll head" ] ,
 				"This is the head of the troll you killed.",
 				null, // scriptNameUse
 				null, // stateGroup

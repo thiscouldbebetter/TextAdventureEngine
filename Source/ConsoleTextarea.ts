@@ -6,6 +6,8 @@ export class ConsoleTextarea
 {
 	textCurrent: string;
 	textarea: any;
+
+	lineReadPrevious: string;
 	_isReading: boolean;
 	_textReadSoFar: string;
 
@@ -14,6 +16,7 @@ export class ConsoleTextarea
 		this.textCurrent = "";
 		this.textarea = textarea;
 
+		this.lineReadPrevious = "";
 		this._isReading = false;
 		this._textReadSoFar = null;
 	}
@@ -45,6 +48,8 @@ export class ConsoleTextarea
 
 	readLine(): void
 	{
+		this.lineReadPrevious = this.textRead();
+
 		this._isReading = true;
 		this._textReadSoFar = "";
 	}
@@ -84,6 +89,12 @@ export class ConsoleTextarea
 				{
 					this.writeLine("");
 					this._isReading = false;
+				}
+				else if (keyPressed == "ArrowUp")
+				{
+					var lineReadPrevious = this.lineReadPrevious;
+					this.writeLine(lineReadPrevious);
+					this._textReadSoFar = lineReadPrevious;
 				}
 				else
 				{

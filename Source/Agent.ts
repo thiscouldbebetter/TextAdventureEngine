@@ -4,7 +4,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 
 export class Agent
 {
-	name: string;
+	names: string[];
 	description: string;
 	scriptUpdateForTurnName: string;
 	items: Item[];
@@ -12,14 +12,14 @@ export class Agent
 
 	constructor
 	(
-		name: string,
+		names: string[],
 		description: string,
 		scriptUpdateForTurnName: string,
 		items: Item[],
 		commands: Command[]
 	)
 	{
-		this.name = name;
+		this.names = names;
 		this.description = description;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
 		this.items = items || [];
@@ -28,7 +28,12 @@ export class Agent
 
 	static fromNameAndDescription(name: string, description: string): Agent
 	{
-		return new Agent(name, description, null, null, null);
+		return new Agent( [ name ], description, null, null, null);
+	}
+
+	name(): string
+	{
+		return this.names[0];
 	}
 
 	updateForTurn(universe: Universe, world: World, place: Place): void
@@ -48,7 +53,7 @@ export class Agent
 	{
 		return new Agent
 		(
-			this.name,
+			this.names.map(x => x),
 			this.description,
 			this.scriptUpdateForTurnName,
 			this.items.map(x => x.clone() ),
@@ -65,7 +70,7 @@ export class Agent
 
 	itemByName(name: string): Item
 	{
-		return this.items.find(x => x.name == name);
+		return this.items.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	itemRemove(item: Item): void

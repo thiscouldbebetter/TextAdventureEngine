@@ -4,25 +4,28 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Emplacement {
-            constructor(name, description, scriptUseName, stateGroup, commands) {
-                this.name = name;
+            constructor(names, description, scriptUseName, stateGroup, commands) {
+                this.names = names;
                 this.description = description;
                 this._scriptUseName = scriptUseName;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
                 this.commands = commands || [];
             }
             static fromName(name) {
-                var description = "This is just a " + name + ".";
-                return new Emplacement(name, description, null, null, null);
+                return Emplacement.fromNames([name]);
             }
-            static fromNameAndDescription(name, description) {
-                return new Emplacement(name, description, null, null, null);
+            static fromNames(names) {
+                var description = "This is just a " + names[0] + ".";
+                return Emplacement.fromNamesAndDescription(names, description);
+            }
+            static fromNamesAndDescription(names, description) {
+                return new Emplacement(names, description, null, null, null);
             }
             static fromNameDescriptionAndScriptUse(name, description, scriptUse) {
-                return new Emplacement(name, description, scriptUse.name, null, null);
+                return new Emplacement([name], description, scriptUse.name, null, null);
             }
             static fromNameDescriptionAndScriptUseName(name, description, scriptUseName) {
-                return new Emplacement(name, description, scriptUseName, null, null);
+                return new Emplacement([name], description, scriptUseName, null, null);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -30,6 +33,9 @@ var ThisCouldBeBetter;
             commandAdd(command) {
                 this.commands.push(command);
                 return this;
+            }
+            name() {
+                return this.names[0];
             }
             scriptUse(world) {
                 return world.scriptByName(this._scriptUseName);
@@ -42,7 +48,7 @@ var ThisCouldBeBetter;
             }
             // Clone.
             clone() {
-                return new Emplacement(this.name, this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
+                return new Emplacement(this.names.map(x => x), this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
@@ -68,7 +74,7 @@ var ThisCouldBeBetter;
                 return this.stateWithNameIsTrue("Visible");
             }
             visibleSet(value) {
-                return this.stateWithNameSetToTrue("Visible");
+                return this.stateWithNameSetToValue("Visible", value);
             }
         }
         TextAdventureEngine.Emplacement = Emplacement;

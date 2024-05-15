@@ -4,15 +4,18 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Portal {
-            constructor(name, description, placeDestinationName, scriptUseName, stateGroup) {
-                this.name = name;
+            constructor(names, description, placeDestinationName, scriptUseName, stateGroup) {
+                this.names = names;
                 this.description = description;
                 this.placeDestinationName = placeDestinationName;
                 this.scriptUseName = scriptUseName;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
             }
             static fromNameAndPlaceDestinationName(name, placeDestinationName) {
-                return new Portal(name, null, placeDestinationName, null, null);
+                return Portal.fromNamesAndPlaceDestinationName([name], placeDestinationName);
+            }
+            static fromNamesAndPlaceDestinationName(names, placeDestinationName) {
+                return new Portal(names, null, placeDestinationName, null, null);
             }
             goThrough(universe, world) {
                 var placeNextName = this.placeDestinationName;
@@ -30,7 +33,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Portal(this.name, this.description, this.placeDestinationName, this.scriptUseName, this.stateGroup.clone());
+                return new Portal(this.names.map(x => x), this.description, this.placeDestinationName, this.scriptUseName, this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
@@ -58,6 +61,9 @@ var ThisCouldBeBetter;
             }
             visible() {
                 return this.stateWithNameIsTrue("Visible");
+            }
+            visibleSet(value) {
+                return this.stateWithNameSetToTrue("Visible");
             }
         }
         TextAdventureEngine.Portal = Portal;

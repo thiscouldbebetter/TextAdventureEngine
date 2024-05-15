@@ -7,6 +7,7 @@ var ThisCouldBeBetter;
             constructor(textarea) {
                 this.textCurrent = "";
                 this.textarea = textarea;
+                this.lineReadPrevious = "";
                 this._isReading = false;
                 this._textReadSoFar = null;
             }
@@ -27,6 +28,7 @@ var ThisCouldBeBetter;
                 return this._isReading;
             }
             readLine() {
+                this.lineReadPrevious = this.textRead();
                 this._isReading = true;
                 this._textReadSoFar = "";
             }
@@ -56,6 +58,11 @@ var ThisCouldBeBetter;
                         else if (keyPressed == "Enter") {
                             this.writeLine("");
                             this._isReading = false;
+                        }
+                        else if (keyPressed == "ArrowUp") {
+                            var lineReadPrevious = this.lineReadPrevious;
+                            this.writeLine(lineReadPrevious);
+                            this._textReadSoFar = lineReadPrevious;
                         }
                         else {
                             // Do nothing?

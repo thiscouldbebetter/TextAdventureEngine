@@ -4,15 +4,18 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Agent {
-            constructor(name, description, scriptUpdateForTurnName, items, commands) {
-                this.name = name;
+            constructor(names, description, scriptUpdateForTurnName, items, commands) {
+                this.names = names;
                 this.description = description;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
                 this.items = items || [];
                 this.commands = commands || [];
             }
             static fromNameAndDescription(name, description) {
-                return new Agent(name, description, null, null, null);
+                return new Agent([name], description, null, null, null);
+            }
+            name() {
+                return this.names[0];
             }
             updateForTurn(universe, world, place) {
                 if (this.scriptUpdateForTurnName != null) {
@@ -23,14 +26,14 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Agent(this.name, this.description, this.scriptUpdateForTurnName, this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {
                 this.items.push(item);
             }
             itemByName(name) {
-                return this.items.find(x => x.name == name);
+                return this.items.find(x => x.names.indexOf(name) >= 0);
             }
             itemRemove(item) {
                 this.items.splice(this.items.indexOf(item), 1);

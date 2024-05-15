@@ -116,7 +116,7 @@ export class Place
 
 	agentByName(name: string): Agent
 	{
-		return this.agents.find(x => x.name == name);
+		return this.agents.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	agentRemove(agent: Agent): void
@@ -168,7 +168,7 @@ export class Place
 				{
 					var message =
 						"There is "
-						+ MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name)
+						+ MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name() )
 						+ " here.";
 					linesToWrite.push(message);
 				}
@@ -187,7 +187,7 @@ export class Place
 
 	emplacementByName(name: string): Emplacement
 	{
-		return this.emplacements.find(x => x.name == name);
+		return this.emplacements.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	emplacementRemove(emplacement: Emplacement): void
@@ -230,7 +230,7 @@ export class Place
 
 	portalByName(name: string): Portal
 	{
-		return this.portals.find(x => x.name == name);
+		return this.portals.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	updateForTurn(universe: Universe, world: World): void

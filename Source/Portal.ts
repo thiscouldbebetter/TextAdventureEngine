@@ -4,7 +4,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 
 export class Portal
 {
-	name: string;
+	names: string[];
 	description: string;
 	placeDestinationName: string;
 	scriptUseName: string;
@@ -12,14 +12,14 @@ export class Portal
 
 	constructor
 	(
-		name: string,
+		names: string[],
 		description: string,
 		placeDestinationName: string,
 		scriptUseName: string,
 		stateGroup: StateGroup
 	)
 	{
-		this.name = name;
+		this.names = names;
 		this.description = description;
 		this.placeDestinationName = placeDestinationName;
 		this.scriptUseName = scriptUseName;
@@ -31,7 +31,15 @@ export class Portal
 		name: string, placeDestinationName: string
 	): Portal
 	{
-		return new Portal(name, null, placeDestinationName, null, null);
+		return Portal.fromNamesAndPlaceDestinationName( [ name ], placeDestinationName );
+	}
+
+	static fromNamesAndPlaceDestinationName
+	(
+		names: string[], placeDestinationName: string
+	): Portal
+	{
+		return new Portal(names, null, placeDestinationName, null, null);
 	}
 
 	goThrough(universe: Universe, world: World): void
@@ -60,7 +68,7 @@ export class Portal
 	{
 		return new Portal
 		(
-			this.name,
+			this.names.map(x => x),
 			this.description,
 			this.placeDestinationName,
 			this.scriptUseName,
@@ -111,6 +119,11 @@ export class Portal
 	visible(): boolean
 	{
 		return this.stateWithNameIsTrue("Visible");
+	}
+
+	visibleSet(value: boolean): Portal
+	{
+		return this.stateWithNameSetToTrue("Visible");
 	}
 
 }
