@@ -37,6 +37,11 @@ export class World
 		this.isOver = false;
 	}
 
+	end()
+	{
+		this.isOver = true;
+	}
+
 	placeByName(name: string): Place
 	{
 		return this.places.find(x => x.name == name);

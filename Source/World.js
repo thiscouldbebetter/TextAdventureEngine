@@ -14,6 +14,9 @@ var ThisCouldBeBetter;
                 this.placeCurrentName = placeCurrentName || this.places[0].name;
                 this.isOver = false;
             }
+            end() {
+                this.isOver = true;
+            }
             placeByName(name) {
                 return this.places.find(x => x.name == name);
             }
