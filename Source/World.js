@@ -4,15 +4,17 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class World {
-            constructor(name, places, items, player, commands, scripts, turnsSoFar, placeCurrentName) {
+            constructor(name, regions, items, player, commands, scripts, turnsSoFar, placeCurrentName) {
                 this.name = name;
-                this.places = places;
+                this.regions = regions;
                 this.items = items;
                 this.player = player;
                 this.commands = commands;
                 this.scripts = scripts;
                 this.turnsSoFar = turnsSoFar || 0;
-                this.placeCurrentName = placeCurrentName || this.places[0].name;
+                this.placeCurrentName = placeCurrentName;
+                this.places = new Array();
+                this.regions.forEach(x => this.places.push(...x.places));
                 this.isOver = false;
             }
             end() {
@@ -28,7 +30,14 @@ var ThisCouldBeBetter;
                 return this.placeByName(this.placeCurrentName);
             }
             placeCurrentSet(value) {
-                this.placeCurrentName = value.name;
+                return this.placeCurrentSetByName(value.name);
+            }
+            placeCurrentSetByName(placeName) {
+                this.placeCurrentName = placeName;
+                return this;
+            }
+            regionByPlace(place) {
+                return this.regions.find(x => x.placeByName(place.name) != null);
             }
             scriptAdd(script) {
                 this.scripts.push(script);
@@ -82,7 +91,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new World(this.name, this.places.map(x => x.clone()), this.items.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
+                return new World(this.name, this.regions.map(x => x.clone()), this.items.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

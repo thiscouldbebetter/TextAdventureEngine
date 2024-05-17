@@ -109,9 +109,20 @@ var ThisCouldBeBetter;
             portalByName(name) {
                 return this.portals.find(x => x.names.indexOf(name) >= 0);
             }
+            region(world) {
+                return world.regionByPlace(this);
+            }
+            scriptUpdateForTurn(world) {
+                var script = this.scriptUpdateForTurnName == null
+                    ? null
+                    : world.scriptByName(this.scriptUpdateForTurnName);
+                return script;
+            }
             updateForTurn(universe, world) {
-                if (this.scriptUpdateForTurnName != null) {
-                    var scriptUpdateForTurn = world.scriptByName(this.scriptUpdateForTurnName);
+                var region = this.region(world);
+                region.updateForTurn(universe, world);
+                var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
+                if (scriptUpdateForTurn != null) {
                     scriptUpdateForTurn.run(universe, world, this);
                 }
             }

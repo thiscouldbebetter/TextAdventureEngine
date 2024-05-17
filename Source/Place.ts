@@ -238,12 +238,28 @@ export class Place
 		return this.portals.find(x => x.names.indexOf(name) >= 0);
 	}
 
+	region(world: World): Region
+	{
+		return world.regionByPlace(this);
+	}
+
+	scriptUpdateForTurn(world: World): Script
+	{
+		var script =
+			this.scriptUpdateForTurnName == null
+			? null
+			: world.scriptByName(this.scriptUpdateForTurnName);
+		return script;
+	}
+
 	updateForTurn(universe: Universe, world: World): void
 	{
-		if (this.scriptUpdateForTurnName != null)
+		var region = this.region(world);
+		region.updateForTurn(universe, world);
+
+		var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
+		if (scriptUpdateForTurn != null)
 		{
-			var scriptUpdateForTurn =
-				world.scriptByName(this.scriptUpdateForTurnName);
 			scriptUpdateForTurn.run(universe, world, this);
 		}
 	}

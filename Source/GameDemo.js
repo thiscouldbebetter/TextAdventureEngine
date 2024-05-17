@@ -54,12 +54,14 @@ var ThisCouldBeBetter;
                     placeSouthernRoom,
                     placeWesternRoom
                 ];
+                var regionMain = TextAdventureEngine.Region.fromNameAndPlaces("RegionMain", places);
+                var regions = [regionMain];
                 var commands = TextAdventureEngine.Command.Instances()._All;
                 var scriptsAll = new Array;
                 var commandsAsScripts = commands.map((x) => x._scriptExecute);
                 scriptsAll.push(...commandsAsScripts);
                 scriptsAll.push(...scriptsCustom._All);
-                var returnValue = new TextAdventureEngine.World("Demo World", places, [], // items
+                var returnValue = new TextAdventureEngine.World("Demo World", regions, [], // items
                 player, commands, scriptsAll, null, // turnsSoFar,
                 null);
                 return returnValue;

@@ -5,7 +5,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class World
 {
 	name: string;
-	places: Place[];
+	regions: Region[];
 	items: Item[];
 	player: Agent;
 	commands: Command[];
@@ -13,13 +13,15 @@ export class World
 	turnsSoFar: number;
 	placeCurrentName: string;
 
+	places: Place[];
+
 	commandToExecute: Command;
 	isOver: boolean;
 
 	constructor
 	(
 		name: string,
-		places: Place[],
+		regions: Region[],
 		items: Item[],
 		player: Agent,
 		commands: Command[],
@@ -29,13 +31,16 @@ export class World
 	)
 	{
 		this.name = name;
-		this.places = places;
+		this.regions = regions;
 		this.items = items;
 		this.player = player;
 		this.commands = commands;
 		this.scripts = scripts;
 		this.turnsSoFar = turnsSoFar || 0;
-		this.placeCurrentName = placeCurrentName || this.places[0].name;
+		this.placeCurrentName = placeCurrentName;
+
+		this.places = new Array<Place>();
+		this.regions.forEach(x => this.places.push(...x.places) );
 
 		this.isOver = false;
 	}
@@ -60,9 +65,20 @@ export class World
 		return this.placeByName(this.placeCurrentName);
 	}
 
-	placeCurrentSet(value: Place): void
+	placeCurrentSet(value: Place): World
 	{
-		this.placeCurrentName = value.name;
+		return this.placeCurrentSetByName(value.name);
+	}
+
+	placeCurrentSetByName(placeName: string): World
+	{
+		this.placeCurrentName = placeName;
+		return this;
+	}
+
+	regionByPlace(place: Place): Region
+	{
+		return this.regions.find(x => x.placeByName(place.name) != null);
 	}
 
 	scriptAdd(script: Script): void
@@ -151,13 +167,13 @@ export class World
 		return new World
 		(
 			this.name,
-			this.places.map(x => x.clone() ),
+			this.regions.map(x => x.clone() ),
 			this.items.map(x => x.clone() ),
 			this.player.clone(),
 			this.commands.map(x => x.clone() ),
 			this.scripts.map(x => x.clone() ),
 			this.turnsSoFar,
-			this.placeCurrentName,
+			this.placeCurrentName
 		);
 	}
 

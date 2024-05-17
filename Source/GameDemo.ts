@@ -131,6 +131,14 @@ export class GameDemo
 			placeWesternRoom
 		];
 
+		var regionMain = Region.fromNameAndPlaces
+		(
+			"RegionMain",
+			places
+		);
+
+		var regions = [ regionMain ];
+
 		var commands = Command.Instances()._All;
 
 		var scriptsAll = new Array<Script>;
@@ -143,7 +151,7 @@ export class GameDemo
 		var returnValue = new World
 		(
 			"Demo World",
-			places,
+			regions,
 			[], // items
 			player,
 			commands,
