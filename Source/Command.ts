@@ -160,6 +160,7 @@ export class Command_Instances
 {
 	AttackSomething: Command;
 	BuySomething: Command;
+	Cheat: Command;
 	DropSomething: Command;
 	GetSomething: Command;
 	GiveSomething: Command;
@@ -205,8 +206,14 @@ export class Command_Instances
 
 		this.BuySomething = Command.fromTextsAndScriptExecute
 		(
-			[ "give " ],
+			[ "buy " ],
 			new Script("BuySomething", this.buySomething)
+		);
+
+		this.Cheat = Command.fromTextsAndScriptExecute
+		(
+			[ "cheat" ],
+			new Script("Cheat", this.cheat)
 		);
 
 		this.DropSomething = Command.fromTextsAndScriptExecute
@@ -387,6 +394,7 @@ export class Command_Instances
 		[
 			this.AttackSomething,
 			this.BuySomething,
+			this.Cheat,
 			this.DropSomething,
 			this.GetSomething,
 			this.GiveSomething,
@@ -429,6 +437,114 @@ export class Command_Instances
 		universe.messageEnqueue("todo");
 	}
 
+	cheat(universe: Universe, world: World, place: Place, command: Command): void
+	{
+		universe.messageEnqueue("You are cheating!");
+
+		var commandText = command.text();
+		var commandTextParts = commandText.split(" ");
+		var cheatOperationName = commandTextParts[1] || "[none]";
+
+		var message: string = null;
+
+		if (cheatOperationName == "get")
+		{
+			var itemToGetName = commandTextParts.slice(2).join(" ");
+			var itemToGet = world.itemByName(itemToGetName);
+			if (itemToGet == null)
+			{
+				message = "Unknown item: " + itemToGetName + ".";
+			}
+			else
+			{
+				message = "Player receives item: " + itemToGetName + ".";
+				world.player.itemAdd(itemToGet);
+			}
+		}
+		else if (cheatOperationName == "goto")
+		{
+			var placeDestinationNameOrIndex = commandTextParts.slice(2).join(" ");
+			var placeDestinationIndex = parseInt(placeDestinationNameOrIndex);
+			var placeDestination =
+				isNaN(placeDestinationIndex)
+				? world.placeByName(placeDestinationNameOrIndex)
+				: world.places[placeDestinationIndex];
+
+			if (placeDestination == null)
+			{
+				message = "No such place: " + placeDestinationNameOrIndex + ".";
+			}
+			else
+			{
+				placeDestinationIndex =
+					world.places.indexOf(placeDestination);
+
+				message =
+					"Jumping to place: "
+					+ placeDestination.name
+					+ " (" + placeDestinationNameOrIndex + ").";
+				world.placeCurrentSet(placeDestination);
+			}
+		}
+		else if (cheatOperationName == "help")
+		{
+			message = Command_Instances.cheat_HelpMessage();
+		}
+		else if (cheatOperationName == "list")
+		{
+			var objectsToListTypeName = commandTextParts[2] || "[none]";
+			if (objectsToListTypeName == "places")
+			{
+				message = "";
+				var places = world.places;
+				for (var p = 0; p < places.length; p++)
+				{
+					var place = places[p];
+					message += p + ". " + place.name + "\n";
+				}
+			}
+			else if (objectsToListTypeName == "items")
+			{
+				message = "";
+				var items = world.items;
+				for (var i = 0; i < items.length; i++)
+				{
+					var item = items[i];
+					message += i + ". " + item.name() + "\n";
+				}
+			}
+			else
+			{
+				message =
+					"Unrecognized list type: " + objectsToListTypeName + ".\n\n"
+					+ Command_Instances.cheat_HelpMessage();
+			}
+		}
+		else
+		{
+			message =
+				"Unrecognized cheat operation: " + cheatOperationName + ".\n\n"
+				+ Command_Instances.cheat_HelpMessage();
+		}
+
+		universe.messageEnqueue(message);
+	}
+
+	static cheat_HelpMessage(): string
+	{
+		var helpMessage =
+		[
+			"Cheat Commands",
+			"==============",
+			"get <itemName> - Gives the player the specified item.",
+			"goto <placeIndexOrName> - Jumps to the place indicated.",
+			"help - Displays this list of cheat commands.",
+			"list [places | items] - Displays a list of places or items."
+		].join("\n");
+
+		return helpMessage;
+	}
+
 	dropSomething(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		var commandText = command.text();
@@ -436,14 +552,14 @@ export class Command_Instances
 		var message = null;
 
 		var player = world.player;
-		var itemToDrop = player.items.find(x => x.names.indexOf(targetName) );
+		var itemToDrop = player.itemByName(targetName);
 		if (itemToDrop == null)
 		{
 			message = "You don't have any " + targetName + ".";
 		}
 		else
 		{
-			message = "You drop the " + itemToDrop.name + ".";
+			message = "You drop the " + itemToDrop.name() + ".";
 			player.itemRemove(itemToDrop);
 			place = world.placeCurrent();
 			place.itemAdd(itemToDrop);
@@ -460,23 +576,23 @@ export class Command_Instances
 
 		place = world.placeCurrent();
 
-		var emplacementToGet = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
+		var emplacementToGet = place.emplacementByName(targetName);
 		if (emplacementToGet != null)
 		{
-			message = "The " + emplacementToGet.name + " cannot be picked up.";
+			message = "The " + emplacementToGet.name() + " cannot be picked up.";
 		}
 		else 
 		{
-			var agentToGet = place.agents.find(x => x.names.indexOf(targetName) >= 0);
+			var agentToGet = place.agentByName(targetName);
 			if (agentToGet != null)
 			{
-				message = "The " + agentToGet.name + " cannot be picked up.";
+				message = "The " + agentToGet.name() + " cannot be picked up.";
 			}
 			else
 			{
 				var player = world.player;
 
-				var itemToGet = place.items.find(x => x.names.indexOf(targetName) >= 0);
+				var itemToGet = place.itemByName(targetName);
 				if (itemToGet == null)
 				{
 					var itemAlreadyCarried = player.itemByName(targetName);
@@ -491,7 +607,7 @@ export class Command_Instances
 				}
 				else
 				{
-					message = "You take the " + itemToGet.name + ".";
+					message = "You take the " + itemToGet.name() + ".";
 					place.itemRemove(itemToGet);
 					world.player.itemAdd(itemToGet);
 				}
@@ -526,8 +642,7 @@ export class Command_Instances
 			{
 				var recipientName =
 					commandTextMinusVerb.substr(indexOfTo + textTo.length);
-				var agents = place.agents;
-				var recipient = agents.find(x => x.names.indexOf(recipientName) >= 0);
+				var recipient = place.agentByName(recipientName);
 				if (recipient == null)
 				{
 					message = "You don't see any " + recipientName + " here."; 
@@ -573,9 +688,7 @@ export class Command_Instances
 	goThroughPortalWithName(universe: Universe, world: World, portalName: string): void
 	{
 		var place = world.placeCurrent();
-		var portals = place.portals;
-		var portalMatching =
-			portals.find( (x: Portal) => x.names.indexOf(portalName) >= 0);
+		var portalMatching = place.portalByName(portalName);
 		if (portalMatching == null)
 		{
 			universe.messageEnqueue
@@ -685,7 +798,7 @@ export class Command_Instances
 			for (var i = 0; i < targetsPossible.length; i++)
 			{
 				var targetFound =
-					targetsPossible.find( (x: any) => x.name == targetName);
+					targetsPossible.find(x => x.namesInclude(targetName) );
 				if (targetFound != null)
 				{
 					targetDescription = targetFound.description;
@@ -835,28 +948,28 @@ export class Command_Instances
 
 		place = world.placeCurrent();
 
-		var emplacementToTalkTo = place.emplacements.find(x => x.names.indexOf(targetName) >= 0);
+		var emplacementToTalkTo = place.emplacementByName(targetName);
 		if (emplacementToTalkTo != null)
 		{
-			message = "The " + emplacementToTalkTo.name + " says nothing.";
+			message = "The " + emplacementToTalkTo.name() + " says nothing.";
 		}
 		else 
 		{
-			var itemToTalkTo = place.items.find(x => x.names.indexOf(targetName) >= 0);
+			var itemToTalkTo = place.itemByName(targetName);
 			if (itemToTalkTo != null)
 			{
-				message = "The " + itemToTalkTo.name + " says nothing.";
+				message = "The " + itemToTalkTo.name() + " says nothing.";
 			}
 			else
 			{
-				var agentToTalkTo = place.agents.find(x => x.names.indexOf(targetName) >= 0);
+				var agentToTalkTo = place.agentByName(targetName);
 				if (agentToTalkTo == null)
 				{
 					message = "You don't see any " + targetName + " here.";
 				}
 				else
 				{
-					message = "The " + agentToTalkTo.name + " says nothing.";
+					message = "The " + agentToTalkTo.name() + " says nothing.";
 				}
 			}
 		}
@@ -895,7 +1008,7 @@ export class Command_Instances
 		place = world.placeCurrent();
 
 		var emplacementToUse =
-			place.emplacements.find( (x: Emplacement) => x.names.indexOf(objectName) >= 0);
+			place.emplacementByName(objectName);
 
 		if (emplacementToUse != null)
 		{
@@ -903,16 +1016,16 @@ export class Command_Instances
 		}
 		else 
 		{
-			var agentToUse = place.agents.find( (x: Agent) => x.names.indexOf(objectName) >= 0);
+			var agentToUse = place.agentByName(objectName);
 			if (agentToUse != null)
 			{
-				message = "The " + agentToUse.name + " cannot be used.";
+				message = "The " + agentToUse.name() + " cannot be used.";
 			}
 			else
 			{
-				var playerItems = world.player.items;
+				var player = world.player;
 				var itemCarriedToUse =
-					playerItems.find( (x: Item) => x.names.indexOf(objectName) >= 0);
+					player.itemByName(objectName);
 
 				if (itemCarriedToUse != null)
 				{
@@ -921,7 +1034,7 @@ export class Command_Instances
 				else
 				{
 					var itemInRoomToUse =
-						place.items.find( (x: Item) => x.names.indexOf(objectName) >= 0);
+						place.itemByName(objectName);
 
 					if (itemInRoomToUse == null)
 					{

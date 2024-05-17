@@ -4,9 +4,10 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class World {
-            constructor(name, places, player, commands, scripts, turnsSoFar, placeCurrentName) {
+            constructor(name, places, items, player, commands, scripts, turnsSoFar, placeCurrentName) {
                 this.name = name;
                 this.places = places;
+                this.items = items;
                 this.player = player;
                 this.commands = commands;
                 this.scripts = scripts;
@@ -16,6 +17,9 @@ var ThisCouldBeBetter;
             }
             end() {
                 this.isOver = true;
+            }
+            itemByName(name) {
+                return this.items.find(x => x.names.indexOf(name) >= 0);
             }
             placeByName(name) {
                 return this.places.find(x => x.name == name);
@@ -41,8 +45,8 @@ var ThisCouldBeBetter;
                     var commandsAll = [];
                     commandsAll.push(...this.commands);
                     var player = this.player;
-                    var playerItems = player.items;
-                    playerItems.forEach(x => commandsAll.push(...x.commands));
+                    var playerCommands = player.commands();
+                    playerCommands.forEach(x => commandsAll.push(...playerCommands));
                     var place = this.placeCurrent();
                     var placeCommands = place.commands();
                     commandsAll.push(...placeCommands);
@@ -59,6 +63,7 @@ var ThisCouldBeBetter;
                         }
                         if (this.commandToExecute != null) {
                             this.commandToExecute.execute(universe, this, place, this.commandToExecute);
+                            this.turnsSoFar++;
                         }
                     }
                 }
@@ -77,7 +82,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new World(this.name, this.places.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
+                return new World(this.name, this.places.map(x => x.clone()), this.items.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

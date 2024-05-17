@@ -39,9 +39,9 @@ var ThisCouldBeBetter;
             }
             commands() {
                 var commandsAll = new Array();
-                this.emplacements.forEach((x) => commandsAll.push(...x.commands));
-                this.items.forEach((x) => commandsAll.push(...x.commands));
-                this.agents.forEach((x) => commandsAll.push(...x.commands));
+                this.emplacements.forEach(x => commandsAll.push(...x.commands));
+                this.items.forEach(x => commandsAll.push(...x.commands));
+                this.agents.forEach(x => commandsAll.push(...x.commands()));
                 return commandsAll;
             }
             draw(universe, world) {
@@ -85,6 +85,9 @@ var ThisCouldBeBetter;
             }
             itemAdd(item) {
                 this.items.push(item);
+            }
+            itemByName(name) {
+                return this.items.find(x => x.names.indexOf(name) >= 0);
             }
             itemRemove(item) {
                 this.items.splice(this.items.indexOf(item), 1);

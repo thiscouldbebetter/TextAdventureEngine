@@ -128,9 +128,9 @@ export class Place
 	{
 		var commandsAll = new Array<Command>();
 
-		this.emplacements.forEach( (x: any) => commandsAll.push(...x.commands));
-		this.items.forEach( (x: any) => commandsAll.push(...x.commands));
-		this.agents.forEach( (x: any) => commandsAll.push(...x.commands));
+		this.emplacements.forEach( x => commandsAll.push(...x.commands) );
+		this.items.forEach( x => commandsAll.push(...x.commands) );
+		this.agents.forEach( x => commandsAll.push(...x.commands() ) );
 
 		return commandsAll;
 	}
@@ -198,6 +198,11 @@ export class Place
 	itemAdd(item: Item): void
 	{
 		this.items.push(item);
+	}
+
+	itemByName(name: string): Item
+	{
+		return this.items.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	itemRemove(item: Item): void

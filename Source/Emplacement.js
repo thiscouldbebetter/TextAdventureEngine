@@ -21,11 +21,8 @@ var ThisCouldBeBetter;
             static fromNamesAndDescription(names, description) {
                 return new Emplacement(names, description, null, null, null);
             }
-            static fromNameDescriptionAndScriptUse(name, description, scriptUse) {
-                return new Emplacement([name], description, scriptUse.name, null, null);
-            }
-            static fromNameDescriptionAndScriptUseName(name, description, scriptUseName) {
-                return new Emplacement([name], description, scriptUseName, null, null);
+            static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
+                return new Emplacement(names, description, scriptUseName, null, null);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -36,6 +33,9 @@ var ThisCouldBeBetter;
             }
             name() {
                 return this.names[0];
+            }
+            namesInclude(nameToMatch) {
+                return this.names.indexOf(nameToMatch) >= 0;
             }
             scriptUse(world) {
                 return world.scriptByName(this._scriptUseName);
@@ -69,6 +69,13 @@ var ThisCouldBeBetter;
             stateWithNameSetToValue(stateToSetName, valueToSet) {
                 this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
                 return this;
+            }
+            // Visibility.
+            hide() {
+                return this.visibleSet(false);
+            }
+            show() {
+                return this.visibleSet(true);
             }
             visible() {
                 return this.stateWithNameIsTrue("Visible");

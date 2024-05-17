@@ -31,20 +31,12 @@ export class Item
 		return new Item( [ name ], description, null, null, null);
 	}
 
-	static fromNameDescriptionAndScriptUse
+	static fromNamesDescriptionAndScriptUseName
 	(
-		name: string, description: string, scriptUse: Script
+		names: string[], description: string, scriptUseName: string
 	): Item
 	{
-		return new Item( [ name ], description, scriptUse.name, null, null);
-	}
-
-	static fromNameDescriptionAndScriptUseName
-	(
-		name: string, description: string, scriptUseName: string
-	): Item
-	{
-		return new Item( [ name ], description, scriptUseName, null, null);
+		return new Item(names, description, scriptUseName, null, null);
 	}
 
 	canBeUsed(): boolean
@@ -58,7 +50,16 @@ export class Item
 		return this;
 	}
 
-	name(): string { return this.names[0]; }
+	name(): string
+	{
+		return this.names[0];
+	}
+
+	namesInclude(nameToMatch: string): boolean
+	{
+		return this.names.indexOf(nameToMatch) >= 0;
+	}
+
 	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);

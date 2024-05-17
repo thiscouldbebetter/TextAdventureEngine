@@ -6,6 +6,7 @@ export class World
 {
 	name: string;
 	places: Place[];
+	items: Item[];
 	player: Agent;
 	commands: Command[];
 	scripts: Script[];
@@ -19,6 +20,7 @@ export class World
 	(
 		name: string,
 		places: Place[],
+		items: Item[],
 		player: Agent,
 		commands: Command[],
 		scripts: Script[],
@@ -28,6 +30,7 @@ export class World
 	{
 		this.name = name;
 		this.places = places;
+		this.items = items;
 		this.player = player;
 		this.commands = commands;
 		this.scripts = scripts;
@@ -37,9 +40,14 @@ export class World
 		this.isOver = false;
 	}
 
-	end()
+	end(): void
 	{
 		this.isOver = true;
+	}
+
+	itemByName(name: string): Item
+	{
+		return this.items.find(x => x.names.indexOf(name) >= 0);
 	}
 
 	placeByName(name: string): Place
@@ -80,8 +88,8 @@ export class World
 			commandsAll.push(...this.commands);
 
 			var player = this.player;
-			var playerItems = player.items;
-			playerItems.forEach(x => commandsAll.push(...x.commands) );
+			var playerCommands = player.commands();
+			playerCommands.forEach(x => commandsAll.push(...playerCommands) );
 
 			var place = this.placeCurrent();
 			var placeCommands = place.commands();
@@ -110,6 +118,7 @@ export class World
 				if (this.commandToExecute != null)
 				{
 					this.commandToExecute.execute(universe, this, place, this.commandToExecute);
+					this.turnsSoFar++;
 				}
 			}
 		}
@@ -142,10 +151,11 @@ export class World
 		return new World
 		(
 			this.name,
-			this.places.map(x => x.clone()),
+			this.places.map(x => x.clone() ),
+			this.items.map(x => x.clone() ),
 			this.player.clone(),
-			this.commands.map(x => x.clone()),
-			this.scripts.map(x => x.clone()),
+			this.commands.map(x => x.clone() ),
+			this.scripts.map(x => x.clone() ),
 			this.turnsSoFar,
 			this.placeCurrentName,
 		);

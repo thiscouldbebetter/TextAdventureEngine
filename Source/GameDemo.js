@@ -33,7 +33,7 @@ var ThisCouldBeBetter;
                 ]);
                 var placeEasternRoom = p(placeEasternRoomName, "This room is east of the center.  A doorway to the west leads back to the Center Room.", [
                     new TextAdventureEngine.Portal(["west"], portalDescription, placeCenterRoomName, null, null),
-                    TextAdventureEngine.Emplacement.fromNameDescriptionAndScriptUse("chest", "This is a sturdy, and very heavy, oaken chest with a lock.", scriptsCustom.EmplacementChestUse)
+                    TextAdventureEngine.Emplacement.fromNamesDescriptionAndScriptUseName(["chest", "box"], "This is a sturdy, and very heavy, oaken chest with a lock.", scriptsCustom.EmplacementChestUse.name)
                 ]);
                 var placeNorthernRoom = p("Northern Room", "This room is north of the center.  A doorway to the south leads back to the Center Room.", [
                     new TextAdventureEngine.Portal(["south"], portalDescription, placeCenterRoomName, null, null),
@@ -41,11 +41,11 @@ var ThisCouldBeBetter;
                 ]);
                 var placeSouthernRoom = p("Southern Room", "This room is south of the center.  A doorway to the north leads back to the Center Room.", [
                     new TextAdventureEngine.Portal(["north"], portalDescription, placeCenterRoomName, null, null),
-                    TextAdventureEngine.Item.fromNameDescriptionAndScriptUse("key", "This is a large brass key.", scriptsCustom.ItemKeyUse)
+                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["key"], "This is a large brass key.", scriptsCustom.ItemKeyUse.name)
                 ]);
                 var placeWesternRoom = p("Western Room", "This room is west of the center.  A doorway to the east leads back to the Center Room.", [
                     new TextAdventureEngine.Portal(["east"], portalDescription, placeCenterRoomName, null, null),
-                    TextAdventureEngine.Item.fromNameDescriptionAndScriptUse("whetstone", "This is a flat stone for sharpening tools and weapons.", scriptsCustom.ItemWhetstoneUse)
+                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["whetstone", "stone", "rock"], "This is a flat stone for sharpening tools and weapons.", scriptsCustom.ItemWhetstoneUse.name)
                 ]);
                 var places = [
                     placeCenterRoom,
@@ -59,7 +59,8 @@ var ThisCouldBeBetter;
                 var commandsAsScripts = commands.map((x) => x._scriptExecute);
                 scriptsAll.push(...commandsAsScripts);
                 scriptsAll.push(...scriptsCustom._All);
-                var returnValue = new TextAdventureEngine.World("Demo World", places, player, commands, scriptsAll, null, // turnsSoFar,
+                var returnValue = new TextAdventureEngine.World("Demo World", places, [], // items
+                player, commands, scriptsAll, null, // turnsSoFar,
                 null);
                 return returnValue;
             }
@@ -122,7 +123,7 @@ var ThisCouldBeBetter;
                 }
                 else {
                     message = "You open the chest and find a sword.";
-                    var itemSword = TextAdventureEngine.Item.fromNameDescriptionAndScriptUseName("sword", "This is a steel sword, too dull to cut anything.", "ItemSwordUse");
+                    var itemSword = TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["sword"], "This is a steel sword, too dull to cut anything.", "ItemSwordUse");
                     place.itemAdd(itemSword);
                     emplacement.stateGroup.stateWithNameSetToValue(StateNames.isEmpty(), true);
                 }
@@ -203,7 +204,7 @@ var ThisCouldBeBetter;
                     var message = "The sharp sword slices the troll's head off, killing it.";
                     u.messageEnqueue(message);
                     place.agentRemove(target);
-                    var emplacementTrollBody = TextAdventureEngine.Emplacement.fromNameDescriptionAndScriptUseName("troll body", "This is the headless corpse of the troll, naked except for a small coin purse.", "EmplacementTrollBodyUse");
+                    var emplacementTrollBody = TextAdventureEngine.Emplacement.fromNamesDescriptionAndScriptUseName(["troll body", "body", "corpse", "troll body", "troll corpse", "dead troll"], "This is the headless corpse of the troll, naked except for a small coin purse.", "EmplacementTrollBodyUse");
                     place.emplacementAdd(emplacementTrollBody);
                     var itemTrollHead = new TextAdventureEngine.Item(["troll head"], "This is the head of the troll you killed.", null, // scriptNameUse
                     null, // stateGroup

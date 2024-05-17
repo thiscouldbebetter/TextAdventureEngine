@@ -14,11 +14,8 @@ var ThisCouldBeBetter;
             static fromNameAndDescription(name, description) {
                 return new Item([name], description, null, null, null);
             }
-            static fromNameDescriptionAndScriptUse(name, description, scriptUse) {
-                return new Item([name], description, scriptUse.name, null, null);
-            }
-            static fromNameDescriptionAndScriptUseName(name, description, scriptUseName) {
-                return new Item([name], description, scriptUseName, null, null);
+            static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
+                return new Item(names, description, scriptUseName, null, null);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -27,7 +24,12 @@ var ThisCouldBeBetter;
                 this.commands.push(command);
                 return this;
             }
-            name() { return this.names[0]; }
+            name() {
+                return this.names[0];
+            }
+            namesInclude(nameToMatch) {
+                return this.names.indexOf(nameToMatch) >= 0;
+            }
             scriptUse(world) {
                 return world.scriptByName(this._scriptUseName);
             }

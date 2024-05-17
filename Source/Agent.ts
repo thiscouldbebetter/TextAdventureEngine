@@ -8,7 +8,7 @@ export class Agent
 	description: string;
 	scriptUpdateForTurnName: string;
 	items: Item[];
-	commands: Command[];
+	_commands: Command[];
 
 	constructor
 	(
@@ -23,7 +23,7 @@ export class Agent
 		this.description = description;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
 		this.items = items || [];
-		this.commands = commands || [];
+		this._commands = commands || [];
 	}
 
 	static fromNameAndDescription(name: string, description: string): Agent
@@ -31,9 +31,21 @@ export class Agent
 		return new Agent( [ name ], description, null, null, null);
 	}
 
+	commands(): Command[]
+	{
+		var commandsAll = new Array<Command>();
+		this.items.forEach(x => commandsAll.push(...x.commands) );
+		return commandsAll;
+	}
+
 	name(): string
 	{
 		return this.names[0];
+	}
+
+	namesInclude(nameToMatch: string): boolean
+	{
+		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
 	updateForTurn(universe: Universe, world: World, place: Place): void
@@ -57,7 +69,7 @@ export class Agent
 			this.description,
 			this.scriptUpdateForTurnName,
 			this.items.map(x => x.clone() ),
-			this.commands.map(x => x.clone() )
+			this._commands.map(x => x.clone() )
 		);
 	}
 

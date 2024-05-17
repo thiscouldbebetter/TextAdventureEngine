@@ -17,6 +17,12 @@ var ThisCouldBeBetter;
             static fromNamesAndPlaceDestinationName(names, placeDestinationName) {
                 return new Portal(names, null, placeDestinationName, null, null);
             }
+            name() {
+                return this.names[0];
+            }
+            namesInclude(nameToMatch) {
+                return this.names.indexOf(nameToMatch) >= 0;
+            }
             goThrough(universe, world) {
                 var placeNextName = this.placeDestinationName;
                 var placeNext = world.placeByName(placeNextName);
@@ -40,12 +46,6 @@ var ThisCouldBeBetter;
                 Object.setPrototypeOf(instanceAsObject, Portal.prototype);
             }
             // States.
-            locked() {
-                return this.stateWithNameIsTrue("Locked");
-            }
-            lockedSet() {
-                return this.stateWithNameSetToTrue("Locked");
-            }
             stateWithNameGetValue(stateToGetName) {
                 return this.stateGroup.stateWithNameGetValue(stateToGetName);
             }
@@ -58,6 +58,26 @@ var ThisCouldBeBetter;
             }
             stateWithNameSetToTrue(stateToSetName) {
                 return this.stateWithNameSetToValue(stateToSetName, true);
+            }
+            // Locking.
+            lock() {
+                return this.lockedSet(true);
+            }
+            locked() {
+                return this.stateWithNameIsTrue("Locked");
+            }
+            lockedSet(value) {
+                return this.stateWithNameSetToValue("Locked", value);
+            }
+            unlock() {
+                return this.lockedSet(false);
+            }
+            // Visibility.
+            hide() {
+                return this.visibleSet(false);
+            }
+            show() {
+                return this.visibleSet(true);
             }
             visible() {
                 return this.stateWithNameIsTrue("Visible");

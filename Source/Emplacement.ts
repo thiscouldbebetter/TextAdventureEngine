@@ -52,28 +52,14 @@ export class Emplacement
 		);
 	}
 
-	static fromNameDescriptionAndScriptUse
+	static fromNamesDescriptionAndScriptUseName
 	(
-		name: string, description: string, scriptUse: Script
+		names: string[], description: string, scriptUseName: string
 	): Emplacement
 	{
 		return new Emplacement
 		(
-			[ name ],
-			description,
-			scriptUse.name,
-			null, null
-		);
-	}
-
-	static fromNameDescriptionAndScriptUseName
-	(
-		name: string, description: string, scriptUseName: string
-	): Emplacement
-	{
-		return new Emplacement
-		(
-			[ name ],
+			names,
 			description,
 			scriptUseName,
 			null, null
@@ -94,6 +80,11 @@ export class Emplacement
 	name(): string
 	{
 		return this.names[0];
+	}
+
+	namesInclude(nameToMatch: string): boolean
+	{
+		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
 	scriptUse(world: World): Script
@@ -154,6 +145,18 @@ export class Emplacement
 	{
 		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
 		return this;
+	}
+
+	// Visibility.
+
+	hide(): Emplacement
+	{
+		return this.visibleSet(false);
+	}
+
+	show(): Emplacement
+	{
+		return this.visibleSet(true);
 	}
 
 	visible(): boolean

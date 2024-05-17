@@ -9,13 +9,21 @@ var ThisCouldBeBetter;
                 this.description = description;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
                 this.items = items || [];
-                this.commands = commands || [];
+                this._commands = commands || [];
             }
             static fromNameAndDescription(name, description) {
                 return new Agent([name], description, null, null, null);
             }
+            commands() {
+                var commandsAll = new Array();
+                this.items.forEach(x => commandsAll.push(...x.commands));
+                return commandsAll;
+            }
             name() {
                 return this.names[0];
+            }
+            namesInclude(nameToMatch) {
+                return this.names.indexOf(nameToMatch) >= 0;
             }
             updateForTurn(universe, world, place) {
                 if (this.scriptUpdateForTurnName != null) {
@@ -26,7 +34,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {

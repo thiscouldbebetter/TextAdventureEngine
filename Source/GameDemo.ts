@@ -69,11 +69,11 @@ export class GameDemo
 			"This room is east of the center.  A doorway to the west leads back to the Center Room.",
 			[
 				new Portal( [ "west" ], portalDescription, placeCenterRoomName, null, null),
-				Emplacement.fromNameDescriptionAndScriptUse
+				Emplacement.fromNamesDescriptionAndScriptUseName
 				(
-					"chest",
+					[ "chest", "box" ],
 					"This is a sturdy, and very heavy, oaken chest with a lock.",
-					scriptsCustom.EmplacementChestUse
+					scriptsCustom.EmplacementChestUse.name
 				)
 			]
 		);
@@ -98,11 +98,11 @@ export class GameDemo
 			"This room is south of the center.  A doorway to the north leads back to the Center Room.",
 			[
 				new Portal( [ "north" ] , portalDescription, placeCenterRoomName, null, null),
-				Item.fromNameDescriptionAndScriptUse
+				Item.fromNamesDescriptionAndScriptUseName
 				(
-					"key",
+					[ "key" ],
 					"This is a large brass key.",
-					scriptsCustom.ItemKeyUse
+					scriptsCustom.ItemKeyUse.name
 				)
 			]
 		);
@@ -113,11 +113,11 @@ export class GameDemo
 			"This room is west of the center.  A doorway to the east leads back to the Center Room.",
 			[
 				new Portal( [ "east" ], portalDescription, placeCenterRoomName, null, null),
-				Item.fromNameDescriptionAndScriptUse
+				Item.fromNamesDescriptionAndScriptUseName
 				(
-					"whetstone",
+					[ "whetstone", "stone", "rock" ],
 					"This is a flat stone for sharpening tools and weapons.",
-					scriptsCustom.ItemWhetstoneUse
+					scriptsCustom.ItemWhetstoneUse.name
 				)
 			]
 		);
@@ -144,6 +144,7 @@ export class GameDemo
 		(
 			"Demo World",
 			places,
+			[], // items
 			player,
 			commands,
 			scriptsAll,
@@ -244,9 +245,9 @@ class Scripts
 		else
 		{
 			message = "You open the chest and find a sword.";
-			var itemSword = Item.fromNameDescriptionAndScriptUseName
+			var itemSword = Item.fromNamesDescriptionAndScriptUseName
 			(
-				"sword",
+				[ "sword" ],
 				"This is a steel sword, too dull to cut anything.",
 				"ItemSwordUse"
 			);
@@ -380,9 +381,9 @@ class Scripts
 			u.messageEnqueue(message);
 			place.agentRemove(target);
 
-			var emplacementTrollBody = Emplacement.fromNameDescriptionAndScriptUseName
+			var emplacementTrollBody = Emplacement.fromNamesDescriptionAndScriptUseName
 			(
-				"troll body",
+				[ "troll body", "body", "corpse", "troll body", "troll corpse", "dead troll" ],
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
 				"EmplacementTrollBodyUse"
 			);

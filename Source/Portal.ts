@@ -42,6 +42,16 @@ export class Portal
 		return new Portal(names, null, placeDestinationName, null, null);
 	}
 
+	name(): string
+	{
+		return this.names[0];
+	}
+
+	namesInclude(nameToMatch: string): boolean
+	{
+		return this.names.indexOf(nameToMatch) >= 0;
+	}
+
 	goThrough(universe: Universe, world: World): void
 	{
 		var placeNextName = this.placeDestinationName;
@@ -85,16 +95,6 @@ export class Portal
 
 	// States.
 
-	locked(): boolean
-	{
-		return this.stateWithNameIsTrue("Locked");
-	}
-
-	lockedSet(): Portal
-	{
-		return this.stateWithNameSetToTrue("Locked");
-	}
-
 	stateWithNameGetValue(stateToGetName: string): any
 	{
 		return this.stateGroup.stateWithNameGetValue(stateToGetName);
@@ -114,6 +114,40 @@ export class Portal
 	stateWithNameSetToTrue(stateToSetName: string): Portal
 	{
 		return this.stateWithNameSetToValue(stateToSetName, true);
+	}
+
+	// Locking.
+
+	lock(): Portal
+	{
+		return this.lockedSet(true);
+	}
+
+	locked(): boolean
+	{
+		return this.stateWithNameIsTrue("Locked");
+	}
+
+	lockedSet(value: boolean): Portal
+	{
+		return this.stateWithNameSetToValue("Locked", value);
+	}
+
+	unlock(): Portal
+	{
+		return this.lockedSet(false);
+	}
+
+	// Visibility.
+
+	hide(): Portal
+	{
+		return this.visibleSet(false);
+	}
+
+	show(): Portal
+	{
+		return this.visibleSet(true);
 	}
 
 	visible(): boolean
