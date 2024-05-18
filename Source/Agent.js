@@ -19,6 +19,10 @@ var ThisCouldBeBetter;
                 this.items.forEach(x => commandsAll.push(...x.commands));
                 return commandsAll;
             }
+            itemGetFromPlace(itemToGet, place) {
+                place.itemRemove(itemToGet);
+                this.itemAdd(itemToGet);
+            }
             name() {
                 return this.names[0];
             }

@@ -15,7 +15,7 @@ var ThisCouldBeBetter;
                 return Emplacement.fromNames([name]);
             }
             static fromNames(names) {
-                var description = "This is just a " + names[0] + ".";
+                var description = "You don't see anything notable.";
                 return Emplacement.fromNamesAndDescription(names, description);
             }
             static fromNamesAndDescription(names, description) {
@@ -29,6 +29,10 @@ var ThisCouldBeBetter;
             }
             commandAdd(command) {
                 this.commands.push(command);
+                return this;
+            }
+            descriptionSet(value) {
+                this.description = value;
                 return this;
             }
             name() {
@@ -69,6 +73,19 @@ var ThisCouldBeBetter;
             stateWithNameSetToValue(stateToSetName, valueToSet) {
                 this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
                 return this;
+            }
+            // Locking.
+            lock() {
+                return this.lockedSet(true);
+            }
+            locked() {
+                return this.stateWithNameIsTrue("Locked");
+            }
+            lockedSet(value) {
+                return this.stateWithNameSetToValue("Locked", value);
+            }
+            unlock() {
+                return this.lockedSet(false);
             }
             // Visibility.
             hide() {

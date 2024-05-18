@@ -38,6 +38,12 @@ export class Agent
 		return commandsAll;
 	}
 
+	itemGetFromPlace(itemToGet: Item, place: Place): void
+	{
+		place.itemRemove(itemToGet);
+		this.itemAdd(itemToGet);
+	}
+
 	name(): string
 	{
 		return this.names[0];

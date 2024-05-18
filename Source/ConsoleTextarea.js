@@ -35,6 +35,9 @@ var ThisCouldBeBetter;
             textRead() {
                 return this._textReadSoFar;
             }
+            textReadSoFarClear() {
+                this.writeBackspaces(this._textReadSoFar.length);
+            }
             updateForTimerTick(universe) {
                 if (this.isReading()) {
                     var inputTracker = universe.inputTracker;
@@ -46,20 +49,17 @@ var ThisCouldBeBetter;
                             this._textReadSoFar += keyPressed;
                         }
                         else if (keyPressed == "Backspace") {
-                            if (this._textReadSoFar.length > 0) {
-                                this._textReadSoFar =
-                                    this._textReadSoFar
-                                        .substr(0, this._textReadSoFar.length - 1);
-                                this.textCurrent =
-                                    this.textCurrent.substr(0, this.textCurrent.length - 1);
-                                this.draw();
-                            }
+                            this.writeBackspaces(1);
                         }
                         else if (keyPressed == "Enter") {
                             this.writeLine("");
                             this._isReading = false;
                         }
+                        else if (keyPressed == "Escape") {
+                            this.textReadSoFarClear();
+                        }
                         else if (keyPressed == "ArrowUp") {
+                            this.textReadSoFarClear();
                             var lineReadPrevious = this.lineReadPrevious;
                             this.writeLine(lineReadPrevious);
                             this._textReadSoFar = lineReadPrevious;
@@ -73,6 +73,18 @@ var ThisCouldBeBetter;
             }
             write(textToWrite) {
                 this.textCurrent += textToWrite;
+                this.draw();
+            }
+            writeBackspaces(characterCountToBackspaceOver) {
+                for (var i = 0; i < characterCountToBackspaceOver; i++) {
+                    if (this._textReadSoFar.length > 0) {
+                        this._textReadSoFar =
+                            this._textReadSoFar
+                                .substr(0, this._textReadSoFar.length - 1);
+                        this.textCurrent =
+                            this.textCurrent.substr(0, this.textCurrent.length - 1);
+                    }
+                }
                 this.draw();
             }
             writeLine(lineToWrite) {

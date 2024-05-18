@@ -33,7 +33,7 @@ export class Emplacement
 
 	static fromNames(names: string[]): Emplacement
 	{
-		var description = "This is just a " + names[0] + ".";
+		var description = "You don't see anything notable.";
 
 		return Emplacement.fromNamesAndDescription
 		(
@@ -74,6 +74,12 @@ export class Emplacement
 	commandAdd(command: Command): Emplacement
 	{
 		this.commands.push(command);
+		return this;
+	}
+
+	descriptionSet(value: string): Emplacement
+	{
+		this.description = value;
 		return this;
 	}
 
@@ -145,6 +151,28 @@ export class Emplacement
 	{
 		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
 		return this;
+	}
+
+	// Locking.
+
+	lock(): Emplacement
+	{
+		return this.lockedSet(true);
+	}
+
+	locked(): boolean
+	{
+		return this.stateWithNameIsTrue("Locked");
+	}
+
+	lockedSet(value: boolean): Emplacement
+	{
+		return this.stateWithNameSetToValue("Locked", value);
+	}
+
+	unlock(): Emplacement
+	{
+		return this.lockedSet(false);
 	}
 
 	// Visibility.

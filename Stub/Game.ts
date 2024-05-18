@@ -9,9 +9,9 @@ class Game
 			"This is you.",
 			null, // scriptUpdateForTurnName
 			[
-				Item.fromNameAndDescription
+				Item.fromNamesAndDescription
 				(
-					"locket",
+					[ "locket" ],
 					"This small copper locket contains a picture of your sweetie."
 				)
 			],
@@ -267,9 +267,9 @@ class Scripts
 		{
 			message = "You find a gold coin in the troll's coin purse.";
 
-			var itemCoin = Item.fromNameAndDescription
+			var itemCoin = Item.fromNamesAndDescription
 			(
-				"coin", "This is a gold coin."
+				[ "coin" ], "This is a gold coin."
 			);
 			place.itemAdd(itemCoin);
 
@@ -305,9 +305,9 @@ class Scripts
 			agentCaptor.itemAdd(itemCoin);
 			place.agentRemove(agentCaptor);
 
-			var itemRope = Item.fromNameAndDescription
+			var itemRope = Item.fromNamesAndDescription
 			(
-				"rope",
+				[ "rope" ],
 				"This is a coil of weathered hempen rope."
 			);
 			place.itemAdd(itemRope);

@@ -107,7 +107,10 @@ var ThisCouldBeBetter;
                 return objectFound;
             }
             portalByName(name) {
-                return this.portals.find(x => x.names.indexOf(name) >= 0);
+                return this.portalsByName(name)[0];
+            }
+            portalsByName(name) {
+                return this.portals.filter(x => x.namesInclude(name));
             }
             region(world) {
                 return world.regionByPlace(this);

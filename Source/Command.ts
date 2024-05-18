@@ -32,6 +32,11 @@ export class Command
 		return returnValue;
 	}
 
+	static fromTextsAndScriptExecuteName(texts: string[], scriptExecuteName: string): Command
+	{
+		return new Command( texts, scriptExecuteName);
+	}
+
 	static fromTextAndCommands(commandTextToMatch: string, commands: Command[]): Command
 	{
 		var commandsMatching = commands.filter
@@ -284,7 +289,15 @@ export class Command_Instances
 
 		this.LookAround = Command.fromTextsAndScriptExecute
 		(
-			[ "look around", "examine room", "examine surroundings" ],
+			[
+				"look around",
+				"look",
+				"look at place",
+				"look at room",
+				"examine place",
+				"examine room",
+				"examine surroundings"
+			],
 			new Script("LookAround", this.lookAround)
 		);
 
@@ -568,7 +581,10 @@ export class Command_Instances
 		universe.messageEnqueue(message);
 	}
 
-	getSomething(universe: Universe, world: World, place: Place, command: Command): void
+	getSomething
+	(
+		universe: Universe, world: World, place: Place, command: Command
+	): void
 	{
 		var commandText = command.text();
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
@@ -607,9 +623,17 @@ export class Command_Instances
 				}
 				else
 				{
-					message = "You take the " + itemToGet.name() + ".";
-					place.itemRemove(itemToGet);
-					world.player.itemAdd(itemToGet);
+					var scriptGet = itemToGet.scriptGet(world);
+
+					if (scriptGet != null)
+					{
+						scriptGet.run(universe, world, place, command);
+					}
+					else
+					{
+						message = "You take the " + itemToGet.name() + ".";
+						world.player.itemGetFromPlace(itemToGet, place);
+					}
 				}
 			}
 		}
@@ -677,23 +701,38 @@ export class Command_Instances
 		Command.Instances().goThroughPortalWithName(universe, world, "west");
 	}
 
-	goSomewhere(universe: Universe, world: World, place: Place, command: Command): void
+	goSomewhere
+	(
+		universe: Universe, world: World, place: Place, command: Command
+	): void
 	{
 		var commandText = Command.cleanCommandText(command.text());
 		var portalNameFromCommand =
 			commandText.substr(commandText.indexOf(" ") + 1);
-		Command.Instances().goThroughPortalWithName(universe, world, portalNameFromCommand);
+		var commands = Command.Instances();
+		commands.goThroughPortalWithName(universe, world, portalNameFromCommand);
 	}
 
-	goThroughPortalWithName(universe: Universe, world: World, portalName: string): void
+	goThroughPortalWithName
+	(
+		universe: Universe,
+		world: World,
+		portalName: string
+	): void
 	{
 		var place = world.placeCurrent();
-		var portalMatching = place.portalByName(portalName);
+		var portalsMatching = place.portalsByName(portalName);
+		var portalsMatchingVisible = portalsMatching.filter(x => x.visible() );
+		var portalMatching = portalsMatchingVisible[0];
 		if (portalMatching == null)
+		{
+			universe.messageEnqueue("You can't go there.");
+		}
+		else if (portalsMatching.length > 1)
 		{
 			universe.messageEnqueue
 			(
-				"You can't go " + portalName + " here."
+				"There's more than one " + portalName + " here.  Be more specific."
 			);
 		}
 		else
@@ -785,8 +824,8 @@ export class Command_Instances
 		var targetsPossibleArrays =
 		[
 			playerItems,
-			place.portals,
 			place.emplacements,
+			place.portals,
 			place.items,
 			place.agents
 		];
@@ -797,11 +836,22 @@ export class Command_Instances
 
 			for (var i = 0; i < targetsPossible.length; i++)
 			{
-				var targetFound =
-					targetsPossible.find(x => x.namesInclude(targetName) );
-				if (targetFound != null)
+				var targetsFound =
+					targetsPossible.filter(x => x.namesInclude(targetName) );
+
+				if (targetsFound.length > 1)
 				{
+					targetDescription =
+						"There's more than one " + targetName + " here.  Be more specific."
+				}
+				else if (targetsFound.length > 0)
+				{
+					var targetFound = targetsFound[0];
 					targetDescription = targetFound.description;
+					if (targetDescription == null)
+					{
+						targetDescription = "You don't see anything notable."
+					}
 					break;
 				}
 			}

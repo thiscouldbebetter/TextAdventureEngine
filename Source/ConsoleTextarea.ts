@@ -59,6 +59,11 @@ export class ConsoleTextarea
 		return this._textReadSoFar;
 	}
 
+	textReadSoFarClear(): void
+	{
+		this.writeBackspaces(this._textReadSoFar.length);
+	}
+
 	updateForTimerTick(universe: Universe): void
 	{
 		if (this.isReading() )
@@ -75,23 +80,21 @@ export class ConsoleTextarea
 				}
 				else if (keyPressed == "Backspace")
 				{
-					if (this._textReadSoFar.length > 0)
-					{
-						this._textReadSoFar =
-							this._textReadSoFar
-								.substr(0, this._textReadSoFar.length - 1);
-						this.textCurrent =
-							this.textCurrent.substr(0, this.textCurrent.length - 1);
-						this.draw();
-					}
+					this.writeBackspaces(1);
 				}
 				else if (keyPressed == "Enter")
 				{
 					this.writeLine("");
 					this._isReading = false;
 				}
+				else if (keyPressed == "Escape")
+				{
+					this.textReadSoFarClear();
+				}
 				else if (keyPressed == "ArrowUp")
 				{
+					this.textReadSoFarClear();
+
 					var lineReadPrevious = this.lineReadPrevious;
 					this.writeLine(lineReadPrevious);
 					this._textReadSoFar = lineReadPrevious;
@@ -108,6 +111,23 @@ export class ConsoleTextarea
 	write(textToWrite: string): void
 	{
 		this.textCurrent += textToWrite;
+		this.draw();
+	}
+
+	writeBackspaces(characterCountToBackspaceOver: number): void
+	{
+		for (var i = 0; i < characterCountToBackspaceOver; i++)
+		{
+			if (this._textReadSoFar.length > 0)
+			{
+				this._textReadSoFar =
+					this._textReadSoFar
+						.substr(0, this._textReadSoFar.length - 1);
+				this.textCurrent =
+					this.textCurrent.substr(0, this.textCurrent.length - 1);
+			}
+		}
+
 		this.draw();
 	}
 

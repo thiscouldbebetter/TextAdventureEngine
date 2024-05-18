@@ -235,7 +235,12 @@ export class Place
 
 	portalByName(name: string): Portal
 	{
-		return this.portals.find(x => x.names.indexOf(name) >= 0);
+		return this.portalsByName(name)[0];
+	}
+
+	portalsByName(name: string): Portal[]
+	{
+		return this.portals.filter(x => x.namesInclude(name) );
 	}
 
 	region(world: World): Region

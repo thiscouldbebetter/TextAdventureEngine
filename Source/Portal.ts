@@ -10,12 +10,15 @@ export class Portal
 	scriptUseName: string;
 	stateGroup: StateGroup;
 
+	_visible: boolean;
+
 	constructor
 	(
 		names: string[],
 		description: string,
 		placeDestinationName: string,
 		scriptUseName: string,
+		visible: boolean,
 		stateGroup: StateGroup
 	)
 	{
@@ -23,6 +26,7 @@ export class Portal
 		this.description = description;
 		this.placeDestinationName = placeDestinationName;
 		this.scriptUseName = scriptUseName;
+		this._visible = visible || true;
 		this.stateGroup = stateGroup || StateGroup.create();
 	}
 
@@ -39,7 +43,16 @@ export class Portal
 		names: string[], placeDestinationName: string
 	): Portal
 	{
-		return new Portal(names, null, placeDestinationName, null, null);
+		return new Portal
+		(
+			names, null, placeDestinationName, null, true, null
+		);
+	}
+
+	descriptionSet(value: string): Portal
+	{
+		this.description = value;
+		return this;
 	}
 
 	name(): string
@@ -54,9 +67,17 @@ export class Portal
 
 	goThrough(universe: Universe, world: World): void
 	{
-		var placeNextName = this.placeDestinationName;
-		var placeNext = world.placeByName(placeNextName);
-		world.placeCurrentSet(placeNext);
+		var portalIsLocked = this.locked();
+		if (portalIsLocked)
+		{
+			universe.messageEnqueue("That way is not currently passable.");
+		}
+		else
+		{
+			var placeNextName = this.placeDestinationName;
+			var placeNext = world.placeByName(placeNextName);
+			world.placeCurrentSet(placeNext);
+		}
 	}
 
 	use(universe: Universe, world: World, place: Place): void
@@ -82,6 +103,7 @@ export class Portal
 			this.description,
 			this.placeDestinationName,
 			this.scriptUseName,
+			this._visible,
 			this.stateGroup.clone()
 		);
 	}
@@ -152,12 +174,13 @@ export class Portal
 
 	visible(): boolean
 	{
-		return this.stateWithNameIsTrue("Visible");
+		return this._visible;
 	}
 
 	visibleSet(value: boolean): Portal
 	{
-		return this.stateWithNameSetToTrue("Visible");
+		this._visible = value;
+		return this;
 	}
 
 }

@@ -6,6 +6,7 @@ export class Item
 {
 	names: string[];
 	description: string;
+	_scriptGetName: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
 	commands: Command[];
@@ -14,6 +15,7 @@ export class Item
 	(
 		names: string[],
 		description: string,
+		scriptGetName: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
 		commands: Command[]
@@ -21,14 +23,15 @@ export class Item
 	{
 		this.names = names;
 		this.description = description;
+		this._scriptGetName = scriptGetName;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
 		this.commands = commands || [];
 	}
 
-	static fromNameAndDescription(name: string, description: string): Item
+	static fromNamesAndDescription(names: string[], description: string): Item
 	{
-		return new Item( [ name ], description, null, null, null);
+		return new Item( names, description, null, null, null, null);
 	}
 
 	static fromNamesDescriptionAndScriptUseName
@@ -36,9 +39,16 @@ export class Item
 		names: string[], description: string, scriptUseName: string
 	): Item
 	{
-		return new Item(names, description, scriptUseName, null, null);
+		return new Item(names, description, null, scriptUseName, null, null);
 	}
 
+	static fromNamesDescriptionAndScriptGetName
+	(
+		names: string[], description: string, scriptGetName: string
+	): Item
+	{
+		return new Item(names, description, scriptGetName, null, null, null);
+	}
 	canBeUsed(): boolean
 	{
 		return (this._scriptUseName != null);
@@ -58,6 +68,11 @@ export class Item
 	namesInclude(nameToMatch: string): boolean
 	{
 		return this.names.indexOf(nameToMatch) >= 0;
+	}
+
+	scriptGet(world: World): Script
+	{
+		return this._scriptGetName == null ? null : world.scriptByName(this._scriptGetName);
 	}
 
 	scriptUse(world: World): Script
@@ -92,6 +107,7 @@ export class Item
 		(
 			this.names.map(x => x),
 			this.description,
+			this._scriptGetName,
 			this._scriptUseName,
 			this.stateGroup.clone(),
 			this.commands.map(x => x.clone() )
