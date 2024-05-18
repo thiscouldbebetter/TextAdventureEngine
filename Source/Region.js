@@ -27,7 +27,8 @@ var ThisCouldBeBetter;
             updateForTurn(universe, world) {
                 var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
                 if (scriptUpdateForTurn != null) {
-                    scriptUpdateForTurn.run(universe, world);
+                    var place = world.placeCurrent();
+                    scriptUpdateForTurn.run(universe, world, place);
                 }
             }
             // Clonable.

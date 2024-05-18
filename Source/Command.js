@@ -103,7 +103,7 @@ var ThisCouldBeBetter;
                 this.BuySomething = Command.fromTextsAndScriptExecute(["buy "], new TextAdventureEngine.Script("BuySomething", this.buySomething));
                 this.Cheat = Command.fromTextsAndScriptExecute(["cheat"], new TextAdventureEngine.Script("Cheat", this.cheat));
                 this.DropSomething = Command.fromTextsAndScriptExecute(["drop ", "discard", "dump "], new TextAdventureEngine.Script("DropSomething", this.dropSomething));
-                this.GetSomething = Command.fromTextsAndScriptExecute(["get ", "take ", "grab "], new TextAdventureEngine.Script("GetSomething", this.getSomething));
+                this.GetSomething = Command.fromTextsAndScriptExecute(["get ", "take ", "grab ", "pick up "], new TextAdventureEngine.Script("GetSomething", this.getSomething));
                 this.GiveSomething = Command.fromTextsAndScriptExecute(["give "], new TextAdventureEngine.Script("GiveSomething", this.giveSomething));
                 this.GoDirectionEast = Command.fromTextsAndScriptExecute(["e", "east", "go e",], new TextAdventureEngine.Script("GoEast", this.goDirectionEast.bind(this)));
                 this.GoDirectionNorth = Command.fromTextsAndScriptExecute(["n", "north", "go n"], new TextAdventureEngine.Script("GoNorth", this.goDirectionNorth.bind(this)));

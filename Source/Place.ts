@@ -202,12 +202,27 @@ export class Place
 
 	itemByName(name: string): Item
 	{
-		return this.items.find(x => x.names.indexOf(name) >= 0);
+		var itemsPlusContents = this.itemsPlusContents();
+		var itemFound =
+			itemsPlusContents.find(x => x.names.indexOf(name) >= 0);
+		return itemFound;
 	}
 
 	itemRemove(item: Item): void
 	{
 		this.items.splice(this.items.indexOf(item), 1);
+	}
+
+	itemsPlusContents(): Item[]
+	{
+		var itemsPlusContents = new Array<Item>();
+		itemsPlusContents.push(...this.items);
+
+		// Only get the contents of top-level containers,
+		// not containers of containers.
+		this.items.forEach(x => itemsPlusContents.push(...x.items) );
+
+		return itemsPlusContents;
 	}
 
 	objectByName(name: string): any
@@ -302,33 +317,12 @@ export class Place
 
 	hasBeenVisited(): boolean
 	{
-		return (this.stateWithNameGetValue("Visited") == true);
-	}
-
-	stateWithNameGetValue(stateToGetName: string): any
-	{
-		return this.stateGroup.stateWithNameGetValue(stateToGetName);
-	}
-
-	stateWithNameIsTrue(stateName: string): boolean
-	{
-		return (this.stateWithNameGetValue(stateName) == true);
-	}
-
-	stateWithNameSetToValue(stateToSetName: string, valueToSet: any): Place
-	{
-		this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
-		return this;
-	}
-
-	stateWithNameSetToTrue(stateToSetName: string): Place
-	{
-		return this.stateWithNameSetToValue(stateToSetName, true);
+		return this.stateGroup.stateWithNameIsTrue("Visited");
 	}
 
 	visit(): void
 	{
-		return this.stateGroup.stateWithNameSetToValue("Visited", true);
+		this.stateGroup.stateWithNameSetToTrue("Visited");
 	}
 }
 

@@ -9,6 +9,7 @@ export class Item
 	_scriptGetName: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
+	items: Item[];
 	commands: Command[];
 
 	constructor
@@ -18,6 +19,7 @@ export class Item
 		scriptGetName: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
+		items: Item[],
 		commands: Command[]
 	)
 	{
@@ -26,12 +28,23 @@ export class Item
 		this._scriptGetName = scriptGetName;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
+		this.items = items || [];
 		this.commands = commands || [];
+	}
+
+	static create(): Item
+	{
+		return new Item(null, null, null, null, null, null, null);
+	}
+
+	static fromNames(names: string[]): Item
+	{
+		return Item.create().namesSet(names);
 	}
 
 	static fromNamesAndDescription(names: string[], description: string): Item
 	{
-		return new Item( names, description, null, null, null, null);
+		return Item.fromNames(names).descriptionSet(description);
 	}
 
 	static fromNamesDescriptionAndScriptUseName
@@ -39,7 +52,7 @@ export class Item
 		names: string[], description: string, scriptUseName: string
 	): Item
 	{
-		return new Item(names, description, null, scriptUseName, null, null);
+		return Item.fromNamesAndDescription(names, description).scriptUseNameSet(scriptUseName);
 	}
 
 	static fromNamesDescriptionAndScriptGetName
@@ -47,8 +60,9 @@ export class Item
 		names: string[], description: string, scriptGetName: string
 	): Item
 	{
-		return new Item(names, description, scriptGetName, null, null, null);
+		return Item.fromNamesAndDescription(names, description).scriptGetNameSet(scriptGetName);
 	}
+
 	canBeUsed(): boolean
 	{
 		return (this._scriptUseName != null);
@@ -57,6 +71,12 @@ export class Item
 	commandAdd(command: Command): Item
 	{
 		this.commands.push(command);
+		return this;
+	}
+
+	descriptionSet(value: string): Item
+	{
+		this.description = value;
 		return this;
 	}
 
@@ -70,14 +90,44 @@ export class Item
 		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
+	itemAdd(itemToAdd: Item): Item
+	{
+		this.items.push(itemToAdd);
+		return this;
+	}
+
+	itemsAdd(itemsToAdd: Item[]): Item
+	{
+		itemsToAdd.forEach(x => this.items.push(x) );
+		return this;
+	}
+
+	namesSet(value: string[]): Item
+	{
+		this.names = value;
+		return this;
+	}
+
 	scriptGet(world: World): Script
 	{
 		return this._scriptGetName == null ? null : world.scriptByName(this._scriptGetName);
 	}
 
+	scriptGetNameSet(value: string): Item
+	{
+		this._scriptGetName = value;
+		return this;
+	}
+
 	scriptUse(world: World): Script
 	{
 		return world.scriptByName(this._scriptUseName);
+	}
+
+	scriptUseNameSet(value: string): Item
+	{
+		this._scriptUseName = value;
+		return this;
 	}
 
 	updateForTurn(): void
@@ -110,6 +160,7 @@ export class Item
 			this._scriptGetName,
 			this._scriptUseName,
 			this.stateGroup.clone(),
+			this.items.map(x => x.clone() ),
 			this.commands.map(x => x.clone() )
 		);
 	}
@@ -121,6 +172,25 @@ export class Item
 		Object.setPrototypeOf(instanceAsObject, Item.prototype);
 		StateGroup.prototypesSet(instanceAsObject.stateGroup);
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
+	}
+
+	// States - Activation.
+
+	activate(): Item
+	{
+		this.stateGroup.stateWithNameSetToTrue("Activated");
+		return this;
+	}
+
+	activated(): boolean
+	{
+		return this.stateGroup.stateWithNameIsTrue("Activated");
+	}
+
+	deactivate(): Item
+	{
+		this.stateGroup.stateWithNameSetToFalse("Activated");
+		return this;
 	}
 }
 

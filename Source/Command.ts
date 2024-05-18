@@ -229,7 +229,7 @@ export class Command_Instances
 
 		this.GetSomething = Command.fromTextsAndScriptExecute
 		(
-			[ "get ", "take ", "grab " ],
+			[ "get ", "take ", "grab ", "pick up " ],
 			new Script("GetSomething", this.getSomething)
 		);
 

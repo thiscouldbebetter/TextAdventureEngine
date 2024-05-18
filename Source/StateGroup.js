@@ -10,6 +10,12 @@ var ThisCouldBeBetter;
             static create() {
                 return new StateGroup(null);
             }
+            stateWithNameSetToFalse(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, false);
+            }
+            stateWithNameSetToTrue(stateToSetName) {
+                return this.stateWithNameSetToValue(stateToSetName, true);
+            }
             stateWithNameSetToValue(stateToSetName, value) {
                 var stateFound = this.states.find(x => x.name == stateToSetName);
                 if (stateFound == null) {
@@ -19,11 +25,15 @@ var ThisCouldBeBetter;
                 else {
                     stateFound.value = value;
                 }
+                return this;
             }
             stateWithNameGetValue(stateToGetName) {
                 var stateFound = this.states.find(x => x.name == stateToGetName);
                 var returnValue = (stateFound == null ? null : stateFound.value);
                 return returnValue;
+            }
+            stateWithNameIsTrue(stateToGetName) {
+                return (this.stateWithNameGetValue(stateToGetName) == true);
             }
             // Clonable.
             clone() {

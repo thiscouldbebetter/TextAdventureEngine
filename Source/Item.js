@@ -4,22 +4,29 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Item {
-            constructor(names, description, scriptGetName, scriptUseName, stateGroup, commands) {
+            constructor(names, description, scriptGetName, scriptUseName, stateGroup, items, commands) {
                 this.names = names;
                 this.description = description;
                 this._scriptGetName = scriptGetName;
                 this._scriptUseName = scriptUseName;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
+                this.items = items || [];
                 this.commands = commands || [];
             }
+            static create() {
+                return new Item(null, null, null, null, null, null, null);
+            }
+            static fromNames(names) {
+                return Item.create().namesSet(names);
+            }
             static fromNamesAndDescription(names, description) {
-                return new Item(names, description, null, null, null, null);
+                return Item.fromNames(names).descriptionSet(description);
             }
             static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
-                return new Item(names, description, null, scriptUseName, null, null);
+                return Item.fromNamesAndDescription(names, description).scriptUseNameSet(scriptUseName);
             }
             static fromNamesDescriptionAndScriptGetName(names, description, scriptGetName) {
-                return new Item(names, description, scriptGetName, null, null, null);
+                return Item.fromNamesAndDescription(names, description).scriptGetNameSet(scriptGetName);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -28,17 +35,41 @@ var ThisCouldBeBetter;
                 this.commands.push(command);
                 return this;
             }
+            descriptionSet(value) {
+                this.description = value;
+                return this;
+            }
             name() {
                 return this.names[0];
             }
             namesInclude(nameToMatch) {
                 return this.names.indexOf(nameToMatch) >= 0;
             }
+            itemAdd(itemToAdd) {
+                this.items.push(itemToAdd);
+                return this;
+            }
+            itemsAdd(itemsToAdd) {
+                itemsToAdd.forEach(x => this.items.push(x));
+                return this;
+            }
+            namesSet(value) {
+                this.names = value;
+                return this;
+            }
             scriptGet(world) {
                 return this._scriptGetName == null ? null : world.scriptByName(this._scriptGetName);
             }
+            scriptGetNameSet(value) {
+                this._scriptGetName = value;
+                return this;
+            }
             scriptUse(world) {
                 return world.scriptByName(this._scriptUseName);
+            }
+            scriptUseNameSet(value) {
+                this._scriptUseName = value;
+                return this;
             }
             updateForTurn() {
                 // todo
@@ -54,13 +85,25 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Item(this.names.map(x => x), this.description, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
+                return new Item(this.names.map(x => x), this.description, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
                 Object.setPrototypeOf(instanceAsObject, Item.prototype);
                 TextAdventureEngine.StateGroup.prototypesSet(instanceAsObject.stateGroup);
                 instanceAsObject.commands.forEach((x) => TextAdventureEngine.Command.prototypesSet(x));
+            }
+            // States - Activation.
+            activate() {
+                this.stateGroup.stateWithNameSetToTrue("Activated");
+                return this;
+            }
+            activated() {
+                return this.stateGroup.stateWithNameIsTrue("Activated");
+            }
+            deactivate() {
+                this.stateGroup.stateWithNameSetToFalse("Activated");
+                return this;
             }
         }
         TextAdventureEngine.Item = Item;

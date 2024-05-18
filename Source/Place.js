@@ -87,10 +87,20 @@ var ThisCouldBeBetter;
                 this.items.push(item);
             }
             itemByName(name) {
-                return this.items.find(x => x.names.indexOf(name) >= 0);
+                var itemsPlusContents = this.itemsPlusContents();
+                var itemFound = itemsPlusContents.find(x => x.names.indexOf(name) >= 0);
+                return itemFound;
             }
             itemRemove(item) {
                 this.items.splice(this.items.indexOf(item), 1);
+            }
+            itemsPlusContents() {
+                var itemsPlusContents = new Array();
+                itemsPlusContents.push(...this.items);
+                // Only get the contents of top-level containers,
+                // not containers of containers.
+                this.items.forEach(x => itemsPlusContents.push(...x.items));
+                return itemsPlusContents;
             }
             objectByName(name) {
                 var objectFound = null;
@@ -144,23 +154,10 @@ var ThisCouldBeBetter;
             }
             // States.
             hasBeenVisited() {
-                return (this.stateWithNameGetValue("Visited") == true);
-            }
-            stateWithNameGetValue(stateToGetName) {
-                return this.stateGroup.stateWithNameGetValue(stateToGetName);
-            }
-            stateWithNameIsTrue(stateName) {
-                return (this.stateWithNameGetValue(stateName) == true);
-            }
-            stateWithNameSetToValue(stateToSetName, valueToSet) {
-                this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
-                return this;
-            }
-            stateWithNameSetToTrue(stateToSetName) {
-                return this.stateWithNameSetToValue(stateToSetName, true);
+                return this.stateGroup.stateWithNameIsTrue("Visited");
             }
             visit() {
-                return this.stateGroup.stateWithNameSetToValue("Visited", true);
+                this.stateGroup.stateWithNameSetToTrue("Visited");
             }
         }
         TextAdventureEngine.Place = Place;

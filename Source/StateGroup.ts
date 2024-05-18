@@ -16,7 +16,17 @@ export class StateGroup
 		return new StateGroup(null);
 	}
 
-	stateWithNameSetToValue(stateToSetName: string, value: any): void
+	stateWithNameSetToFalse(stateToSetName: string): StateGroup
+	{
+		return this.stateWithNameSetToValue(stateToSetName, false);
+	}
+
+	stateWithNameSetToTrue(stateToSetName: string): StateGroup
+	{
+		return this.stateWithNameSetToValue(stateToSetName, true);
+	}
+
+	stateWithNameSetToValue(stateToSetName: string, value: any): StateGroup
 	{
 		var stateFound = this.states.find(x => x.name == stateToSetName);
 		if (stateFound == null)
@@ -28,6 +38,8 @@ export class StateGroup
 		{
 			stateFound.value = value;
 		}
+
+		return this;
 	}
  
 	stateWithNameGetValue(stateToGetName: string): any
@@ -35,6 +47,11 @@ export class StateGroup
 		var stateFound = this.states.find(x => x.name == stateToGetName);
 		var returnValue = (stateFound == null ? null : stateFound.value);
 		return returnValue;
+	}
+
+	stateWithNameIsTrue(stateToGetName: string): boolean
+	{
+		return (this.stateWithNameGetValue(stateToGetName) == true);
 	}
 
 	// Clonable.
