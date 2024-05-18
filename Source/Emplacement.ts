@@ -153,6 +153,26 @@ export class Emplacement
 		return this;
 	}
 
+	// Activation.
+
+	activate(): Emplacement
+	{
+		this.stateGroup.stateWithNameSetToTrue("Activated");
+		return this;
+	}
+
+	activated(): boolean
+	{
+		var stateValue = this.stateGroup.stateWithNameGetValue("Activated");
+		return stateValue || false;
+	}
+
+	deactivate(): Emplacement
+	{
+		this.stateGroup.stateWithNameSetToFalse("Activated");
+		return this;
+	}
+
 	// Locking.
 
 	lock(): Emplacement

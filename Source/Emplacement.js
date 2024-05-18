@@ -74,6 +74,19 @@ var ThisCouldBeBetter;
                 this.stateGroup.stateWithNameSetToValue(stateToSetName, valueToSet);
                 return this;
             }
+            // Activation.
+            activate() {
+                this.stateGroup.stateWithNameSetToTrue("Activated");
+                return this;
+            }
+            activated() {
+                var stateValue = this.stateGroup.stateWithNameGetValue("Activated");
+                return stateValue || false;
+            }
+            deactivate() {
+                this.stateGroup.stateWithNameSetToFalse("Activated");
+                return this;
+            }
             // Locking.
             lock() {
                 return this.lockedSet(true);

@@ -4,20 +4,32 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Agent {
-            constructor(names, description, scriptUpdateForTurnName, items, commands) {
+            constructor(names, description, scriptUpdateForTurnName, stateGroup, items, commands) {
                 this.names = names;
                 this.description = description;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+                this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
                 this.items = items || [];
                 this._commands = commands || [];
             }
             static fromNameAndDescription(name, description) {
-                return new Agent([name], description, null, null, null);
+                return new Agent([name], description, null, null, null, null);
+            }
+            static fromNames(names) {
+                return new Agent(names, null, null, null, null, null);
             }
             commands() {
                 var commandsAll = new Array();
                 this.items.forEach(x => commandsAll.push(...x.commands));
                 return commandsAll;
+            }
+            descriptionSet(value) {
+                this.description = value;
+                return this;
+            }
+            itemsAdd(itemsToAdd) {
+                this.items.push(...itemsToAdd);
+                return this;
             }
             itemGetFromPlace(itemToGet, place) {
                 place.itemRemove(itemToGet);
@@ -38,7 +50,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {

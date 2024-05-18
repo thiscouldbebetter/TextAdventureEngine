@@ -4,11 +4,11 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class World {
-            constructor(name, regions, items, player, commands, scripts, turnsSoFar, placeCurrentName) {
+            constructor(name, regions, items, agentPlayer, commands, scripts, turnsSoFar, placeCurrentName) {
                 this.name = name;
                 this.regions = regions;
                 this.items = items;
-                this.player = player;
+                this.agentPlayer = agentPlayer;
                 this.commands = commands;
                 this.scripts = scripts;
                 this.turnsSoFar = turnsSoFar || 0;
@@ -53,7 +53,7 @@ var ThisCouldBeBetter;
                 if (commandText != null) {
                     var commandsAll = [];
                     commandsAll.push(...this.commands);
-                    var player = this.player;
+                    var player = this.agentPlayer;
                     var playerCommands = player.commands();
                     playerCommands.forEach(x => commandsAll.push(...playerCommands));
                     var place = this.placeCurrent();
@@ -78,7 +78,7 @@ var ThisCouldBeBetter;
                 }
                 var world = universe.world; // Can't use "this" anymore: the command might have changed it.
                 var placeCurrent = world.placeCurrent();
-                world.player.updateForTurn(universe, this, placeCurrent);
+                world.agentPlayer.updateForTurn(universe, this, placeCurrent);
                 placeCurrent.updateForTurn(universe, world);
                 var messageForPlaceCurrent = placeCurrent.draw(universe, world);
                 universe.messageEnqueue(messageForPlaceCurrent);
@@ -91,7 +91,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new World(this.name, this.regions.map(x => x.clone()), this.items.map(x => x.clone()), this.player.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
+                return new World(this.name, this.regions.map(x => x.clone()), this.items.map(x => x.clone()), this.agentPlayer.clone(), this.commands.map(x => x.clone()), this.scripts.map(x => x.clone()), this.turnsSoFar, this.placeCurrentName);
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

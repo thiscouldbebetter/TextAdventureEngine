@@ -7,7 +7,7 @@ export class World
 	name: string;
 	regions: Region[];
 	items: Item[];
-	player: Agent;
+	agentPlayer: Agent;
 	commands: Command[];
 	scripts: Script[];
 	turnsSoFar: number;
@@ -23,7 +23,7 @@ export class World
 		name: string,
 		regions: Region[],
 		items: Item[],
-		player: Agent,
+		agentPlayer: Agent,
 		commands: Command[],
 		scripts: Script[],
 		turnsSoFar: number,
@@ -33,7 +33,7 @@ export class World
 		this.name = name;
 		this.regions = regions;
 		this.items = items;
-		this.player = player;
+		this.agentPlayer = agentPlayer;
 		this.commands = commands;
 		this.scripts = scripts;
 		this.turnsSoFar = turnsSoFar || 0;
@@ -103,7 +103,7 @@ export class World
 			var commandsAll = [];
 			commandsAll.push(...this.commands);
 
-			var player = this.player;
+			var player = this.agentPlayer;
 			var playerCommands = player.commands();
 			playerCommands.forEach(x => commandsAll.push(...playerCommands) );
 
@@ -143,7 +143,7 @@ export class World
 
 		var placeCurrent = world.placeCurrent();
 
-		world.player.updateForTurn(universe, this, placeCurrent);
+		world.agentPlayer.updateForTurn(universe, this, placeCurrent);
 
 		placeCurrent.updateForTurn(universe, world);
 
@@ -169,7 +169,7 @@ export class World
 			this.name,
 			this.regions.map(x => x.clone() ),
 			this.items.map(x => x.clone() ),
-			this.player.clone(),
+			this.agentPlayer.clone(),
 			this.commands.map(x => x.clone() ),
 			this.scripts.map(x => x.clone() ),
 			this.turnsSoFar,

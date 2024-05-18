@@ -11,6 +11,7 @@ export class GameDemo
 			[ "self" ],
 			"This is you.",
 			null, // scriptUpdateForTurnName
+			null, // stateGroup
 			[
 				Item.fromNamesAndDescription
 				(
@@ -225,7 +226,7 @@ class Scripts
 	{
 		var message;
 
-		var player = w.player;
+		var player = w.agentPlayer;
 		var playerItems = player.items;
 		var playerHasCoin = playerItems.some(x => x.name() == "coin");
 		if (playerHasCoin == false)
@@ -306,7 +307,7 @@ class Scripts
 	{
 		var message;
 
-		var player = world.player;
+		var player = world.agentPlayer;
 		var itemCoin = player.itemByName("coin");
 		if (itemCoin == null)
 		{

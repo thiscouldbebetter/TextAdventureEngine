@@ -7,6 +7,7 @@ export class Agent
 	names: string[];
 	description: string;
 	scriptUpdateForTurnName: string;
+	stateGroup : StateGroup;
 	items: Item[];
 	_commands: Command[];
 
@@ -15,6 +16,7 @@ export class Agent
 		names: string[],
 		description: string,
 		scriptUpdateForTurnName: string,
+		stateGroup: StateGroup,
 		items: Item[],
 		commands: Command[]
 	)
@@ -22,13 +24,19 @@ export class Agent
 		this.names = names;
 		this.description = description;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+		this.stateGroup = stateGroup || StateGroup.create();
 		this.items = items || [];
 		this._commands = commands || [];
 	}
 
 	static fromNameAndDescription(name: string, description: string): Agent
 	{
-		return new Agent( [ name ], description, null, null, null);
+		return new Agent( [ name ], description, null, null, null, null);
+	}
+
+	static fromNames(names: string[]): Agent
+	{
+		return new Agent(names, null, null, null, null, null);
 	}
 
 	commands(): Command[]
@@ -36,6 +44,18 @@ export class Agent
 		var commandsAll = new Array<Command>();
 		this.items.forEach(x => commandsAll.push(...x.commands) );
 		return commandsAll;
+	}
+
+	descriptionSet(value: string): Agent
+	{
+		this.description = value;
+		return this;
+	}
+
+	itemsAdd(itemsToAdd: Item[]): Agent
+	{
+		this.items.push(...itemsToAdd);
+		return this;
 	}
 
 	itemGetFromPlace(itemToGet: Item, place: Place): void
@@ -74,6 +94,7 @@ export class Agent
 			this.names.map(x => x),
 			this.description,
 			this.scriptUpdateForTurnName,
+			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),
 			this._commands.map(x => x.clone() )
 		);

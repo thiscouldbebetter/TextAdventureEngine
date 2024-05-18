@@ -471,7 +471,7 @@ export class Command_Instances
 			else
 			{
 				message = "Player receives item: " + itemToGetName + ".";
-				world.player.itemAdd(itemToGet);
+				world.agentPlayer.itemAdd(itemToGet);
 			}
 		}
 		else if (cheatOperationName == "goto")
@@ -564,7 +564,7 @@ export class Command_Instances
 		var targetName = commandText.substr(commandText.indexOf(" ") + 1);
 		var message = null;
 
-		var player = world.player;
+		var player = world.agentPlayer;
 		var itemToDrop = player.itemByName(targetName);
 		if (itemToDrop == null)
 		{
@@ -606,7 +606,7 @@ export class Command_Instances
 			}
 			else
 			{
-				var player = world.player;
+				var player = world.agentPlayer;
 
 				var itemToGet = place.itemByName(targetName);
 				if (itemToGet == null)
@@ -632,7 +632,7 @@ export class Command_Instances
 					else
 					{
 						message = "You take the " + itemToGet.name() + ".";
-						world.player.itemGetFromPlace(itemToGet, place);
+						world.agentPlayer.itemGetFromPlace(itemToGet, place);
 					}
 				}
 			}
@@ -657,7 +657,7 @@ export class Command_Instances
 		else
 		{
 			var itemToGiveName = commandTextMinusVerb.substr(0, indexOfTo);
-			var itemToGive = world.player.itemByName(itemToGiveName);
+			var itemToGive = world.agentPlayer.itemByName(itemToGiveName);
 			if (itemToGive == null)
 			{
 				message = "You don't have any " + itemToGive + "."; 
@@ -772,7 +772,7 @@ export class Command_Instances
 
 	inventoryView(universe: Universe, world: World, place: Place, command: Command): void
 	{
-		var player = world.player;
+		var player = world.agentPlayer;
 		var items = player.items;
 		var linesToWrite =
 		[
@@ -816,7 +816,7 @@ export class Command_Instances
 
 		var targetDescription = null;
 
-		var player = world.player;
+		var player = world.agentPlayer;
 		var playerItems = player.items;
 
 		place = world.placeCurrent();
@@ -1073,7 +1073,7 @@ export class Command_Instances
 			}
 			else
 			{
-				var player = world.player;
+				var player = world.agentPlayer;
 				var itemCarriedToUse =
 					player.itemByName(objectName);
 
@@ -1116,7 +1116,7 @@ export class Command_Instances
 					commandText.substr(indexOfOn + textOn.length);
 				if (targetToUseObjectOnName != null)
 				{
-					var player = world.player;
+					var player = world.agentPlayer;
 					target = player.itemByName(targetToUseObjectOnName);
 					if (target == null)
 					{

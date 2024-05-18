@@ -196,7 +196,7 @@ var ThisCouldBeBetter;
                     }
                     else {
                         message = "Player receives item: " + itemToGetName + ".";
-                        world.player.itemAdd(itemToGet);
+                        world.agentPlayer.itemAdd(itemToGet);
                     }
                 }
                 else if (cheatOperationName == "goto") {
@@ -267,7 +267,7 @@ var ThisCouldBeBetter;
                 var commandText = command.text();
                 var targetName = commandText.substr(commandText.indexOf(" ") + 1);
                 var message = null;
-                var player = world.player;
+                var player = world.agentPlayer;
                 var itemToDrop = player.itemByName(targetName);
                 if (itemToDrop == null) {
                     message = "You don't have any " + targetName + ".";
@@ -295,7 +295,7 @@ var ThisCouldBeBetter;
                         message = "The " + agentToGet.name() + " cannot be picked up.";
                     }
                     else {
-                        var player = world.player;
+                        var player = world.agentPlayer;
                         var itemToGet = place.itemByName(targetName);
                         if (itemToGet == null) {
                             var itemAlreadyCarried = player.itemByName(targetName);
@@ -313,7 +313,7 @@ var ThisCouldBeBetter;
                             }
                             else {
                                 message = "You take the " + itemToGet.name() + ".";
-                                world.player.itemGetFromPlace(itemToGet, place);
+                                world.agentPlayer.itemGetFromPlace(itemToGet, place);
                             }
                         }
                     }
@@ -331,7 +331,7 @@ var ThisCouldBeBetter;
                 }
                 else {
                     var itemToGiveName = commandTextMinusVerb.substr(0, indexOfTo);
-                    var itemToGive = world.player.itemByName(itemToGiveName);
+                    var itemToGive = world.agentPlayer.itemByName(itemToGiveName);
                     if (itemToGive == null) {
                         message = "You don't have any " + itemToGive + ".";
                     }
@@ -408,7 +408,7 @@ var ThisCouldBeBetter;
                 universe.messageEnqueue(helpText);
             }
             inventoryView(universe, world, place, command) {
-                var player = world.player;
+                var player = world.agentPlayer;
                 var items = player.items;
                 var linesToWrite = [
                     "Items Carried:"
@@ -438,7 +438,7 @@ var ThisCouldBeBetter;
                         commandText.substr(indexOfAt + textAt.length);
                 }
                 var targetDescription = null;
-                var player = world.player;
+                var player = world.agentPlayer;
                 var playerItems = player.items;
                 place = world.placeCurrent();
                 var targetsPossibleArrays = [
@@ -602,7 +602,7 @@ var ThisCouldBeBetter;
                         message = "The " + agentToUse.name() + " cannot be used.";
                     }
                     else {
-                        var player = world.player;
+                        var player = world.agentPlayer;
                         var itemCarriedToUse = player.itemByName(objectName);
                         if (itemCarriedToUse != null) {
                             objectToUse = itemCarriedToUse;
@@ -630,7 +630,7 @@ var ThisCouldBeBetter;
                     if (indexOfOn >= 0) {
                         var targetToUseObjectOnName = commandText.substr(indexOfOn + textOn.length);
                         if (targetToUseObjectOnName != null) {
-                            var player = world.player;
+                            var player = world.agentPlayer;
                             target = player.itemByName(targetToUseObjectOnName);
                             if (target == null) {
                                 target = place.objectByName(targetToUseObjectOnName);
