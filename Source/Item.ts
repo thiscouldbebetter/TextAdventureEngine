@@ -74,20 +74,16 @@ export class Item
 		return this;
 	}
 
+	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Item
+	{
+		var command = new Command(commandTexts, scriptName);
+		return this.commandAdd(command);
+	}
+
 	descriptionSet(value: string): Item
 	{
 		this.description = value;
 		return this;
-	}
-
-	name(): string
-	{
-		return this.names[0];
-	}
-
-	namesInclude(nameToMatch: string): boolean
-	{
-		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
 	itemAdd(itemToAdd: Item): Item
@@ -100,6 +96,22 @@ export class Item
 	{
 		itemsToAdd.forEach(x => this.items.push(x) );
 		return this;
+	}
+
+	itemsClear(): Item
+	{
+		this.items.length = 0;
+		return this;
+	}
+
+	name(): string
+	{
+		return this.names[0];
+	}
+
+	namesInclude(nameToMatch: string): boolean
+	{
+		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
 	namesSet(value: string[]): Item

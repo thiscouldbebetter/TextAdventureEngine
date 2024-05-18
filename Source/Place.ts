@@ -195,9 +195,16 @@ export class Place
 		this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
 	}
 
-	itemAdd(item: Item): void
+	itemAdd(item: Item): Place
 	{
 		this.items.push(item);
+		return this;
+	}
+
+	itemsAdd(itemsToAdd: Item[]): Place
+	{
+		this.items.push(...itemsToAdd);
+		return this;
 	}
 
 	itemByName(name: string): Item

@@ -35,15 +35,13 @@ var ThisCouldBeBetter;
                 this.commands.push(command);
                 return this;
             }
+            commandAddFromTextsAndScriptName(commandTexts, scriptName) {
+                var command = new TextAdventureEngine.Command(commandTexts, scriptName);
+                return this.commandAdd(command);
+            }
             descriptionSet(value) {
                 this.description = value;
                 return this;
-            }
-            name() {
-                return this.names[0];
-            }
-            namesInclude(nameToMatch) {
-                return this.names.indexOf(nameToMatch) >= 0;
             }
             itemAdd(itemToAdd) {
                 this.items.push(itemToAdd);
@@ -52,6 +50,16 @@ var ThisCouldBeBetter;
             itemsAdd(itemsToAdd) {
                 itemsToAdd.forEach(x => this.items.push(x));
                 return this;
+            }
+            itemsClear() {
+                this.items.length = 0;
+                return this;
+            }
+            name() {
+                return this.names[0];
+            }
+            namesInclude(nameToMatch) {
+                return this.names.indexOf(nameToMatch) >= 0;
             }
             namesSet(value) {
                 this.names = value;

@@ -23,6 +23,14 @@ var ThisCouldBeBetter;
                 this.items.forEach(x => commandsAll.push(...x.commands));
                 return commandsAll;
             }
+            commandAdd(command) {
+                this._commands.push(command);
+                return this;
+            }
+            commandAddFromTextsAndScriptName(commandTexts, scriptName) {
+                var command = new TextAdventureEngine.Command(commandTexts, scriptName);
+                return this.commandAdd(command);
+            }
             descriptionSet(value) {
                 this.description = value;
                 return this;

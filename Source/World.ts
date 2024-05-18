@@ -45,6 +45,22 @@ export class World
 		this.isOver = false;
 	}
 
+	commandsAll(): Command[] 
+	{
+		var commandsAll = [];
+		commandsAll.push(...this.commands);
+
+		var player = this.agentPlayer;
+		var playerCommands = player.commands();
+		playerCommands.forEach(x => commandsAll.push(...playerCommands) );
+
+		var place = this.placeCurrent();
+		var placeCommands = place.commands();
+		commandsAll.push(...placeCommands);
+
+		return commandsAll;
+	}
+
 	end(): void
 	{
 		this.isOver = true;
@@ -100,50 +116,65 @@ export class World
 	{
 		if (commandText != null)
 		{
-			var commandsAll = [];
-			commandsAll.push(...this.commands);
+			this.updateForUniverseAndCommandText_CommandExecute
+			(
+				universe, commandText
+			);
+		}
 
-			var player = this.agentPlayer;
-			var playerCommands = player.commands();
-			playerCommands.forEach(x => commandsAll.push(...playerCommands) );
+		this.updateForUniverseAndCommandText_Update(universe);
+	}
 
-			var place = this.placeCurrent();
-			var placeCommands = place.commands();
-			commandsAll.push(...placeCommands);
+	updateForUniverseAndCommandText_CommandExecute
+	(
+		universe: Universe, commandText: string
+	): void
+	{
+		var commandsAll = this.commandsAll();
 
-			this.commandToExecute =
-				Command.fromTextAndCommands(commandText, commandsAll);
+		this.commandToExecute =
+			Command.fromTextAndCommands(commandText, commandsAll);
+
+		if (this.commandToExecute != null)
+		{
+			if (this.isOver)
+			{
+				if
+				(
+					commandText.startsWith("load ") == false
+					&& commandText != "restart"
+				)
+				{
+					var message =
+						"The game is over.  You can't do anything but load or restart.\n";
+					universe.messageEnqueue(message);
+					this.commandToExecute = null;
+				}
+			}
 
 			if (this.commandToExecute != null)
 			{
-				if (this.isOver)
-				{
-					if
-					(
-						commandText.startsWith("load ") == false
-						&& commandText != "restart"
-					)
-					{
-						var message =
-							"The game is over.  You can't do anything but load or restart.\n";
-						universe.messageEnqueue(message);
-						this.commandToExecute = null;
-					}
-				}
+				var placeCurrent = this.placeCurrent();
 
-				if (this.commandToExecute != null)
-				{
-					this.commandToExecute.execute(universe, this, place, this.commandToExecute);
-					this.turnsSoFar++;
-				}
+				this.commandToExecute.execute
+				(
+					universe, this, placeCurrent, this.commandToExecute
+				);
+				this.turnsSoFar++;
 			}
 		}
+	}
 
+	updateForUniverseAndCommandText_Update
+	(
+		universe: Universe
+	): void
+	{
 		var world = universe.world; // Can't use "this" anymore: the command might have changed it.
 
 		var placeCurrent = world.placeCurrent();
 
-		world.agentPlayer.updateForTurn(universe, this, placeCurrent);
+		world.agentPlayer.updateForTurn(universe, world, placeCurrent);
 
 		placeCurrent.updateForTurn(universe, world);
 

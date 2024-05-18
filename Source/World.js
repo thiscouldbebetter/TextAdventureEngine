@@ -17,6 +17,17 @@ var ThisCouldBeBetter;
                 this.regions.forEach(x => this.places.push(...x.places));
                 this.isOver = false;
             }
+            commandsAll() {
+                var commandsAll = [];
+                commandsAll.push(...this.commands);
+                var player = this.agentPlayer;
+                var playerCommands = player.commands();
+                playerCommands.forEach(x => commandsAll.push(...playerCommands));
+                var place = this.placeCurrent();
+                var placeCommands = place.commands();
+                commandsAll.push(...placeCommands);
+                return commandsAll;
+            }
             end() {
                 this.isOver = true;
             }
@@ -51,34 +62,34 @@ var ThisCouldBeBetter;
             }
             updateForUniverseAndCommandText(universe, commandText) {
                 if (commandText != null) {
-                    var commandsAll = [];
-                    commandsAll.push(...this.commands);
-                    var player = this.agentPlayer;
-                    var playerCommands = player.commands();
-                    playerCommands.forEach(x => commandsAll.push(...playerCommands));
-                    var place = this.placeCurrent();
-                    var placeCommands = place.commands();
-                    commandsAll.push(...placeCommands);
-                    this.commandToExecute =
-                        TextAdventureEngine.Command.fromTextAndCommands(commandText, commandsAll);
-                    if (this.commandToExecute != null) {
-                        if (this.isOver) {
-                            if (commandText.startsWith("load ") == false
-                                && commandText != "restart") {
-                                var message = "The game is over.  You can't do anything but load or restart.\n";
-                                universe.messageEnqueue(message);
-                                this.commandToExecute = null;
-                            }
-                        }
-                        if (this.commandToExecute != null) {
-                            this.commandToExecute.execute(universe, this, place, this.commandToExecute);
-                            this.turnsSoFar++;
+                    this.updateForUniverseAndCommandText_CommandExecute(universe, commandText);
+                }
+                this.updateForUniverseAndCommandText_Update(universe);
+            }
+            updateForUniverseAndCommandText_CommandExecute(universe, commandText) {
+                var commandsAll = this.commandsAll();
+                this.commandToExecute =
+                    TextAdventureEngine.Command.fromTextAndCommands(commandText, commandsAll);
+                if (this.commandToExecute != null) {
+                    if (this.isOver) {
+                        if (commandText.startsWith("load ") == false
+                            && commandText != "restart") {
+                            var message = "The game is over.  You can't do anything but load or restart.\n";
+                            universe.messageEnqueue(message);
+                            this.commandToExecute = null;
                         }
                     }
+                    if (this.commandToExecute != null) {
+                        var placeCurrent = this.placeCurrent();
+                        this.commandToExecute.execute(universe, this, placeCurrent, this.commandToExecute);
+                        this.turnsSoFar++;
+                    }
                 }
+            }
+            updateForUniverseAndCommandText_Update(universe) {
                 var world = universe.world; // Can't use "this" anymore: the command might have changed it.
                 var placeCurrent = world.placeCurrent();
-                world.agentPlayer.updateForTurn(universe, this, placeCurrent);
+                world.agentPlayer.updateForTurn(universe, world, placeCurrent);
                 placeCurrent.updateForTurn(universe, world);
                 var messageForPlaceCurrent = placeCurrent.draw(universe, world);
                 universe.messageEnqueue(messageForPlaceCurrent);

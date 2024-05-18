@@ -77,6 +77,12 @@ export class Emplacement
 		return this;
 	}
 
+	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Emplacement
+	{
+		var command = new Command(commandTexts, scriptName);
+		return this.commandAdd(command);
+	}
+
 	descriptionSet(value: string): Emplacement
 	{
 		this.description = value;

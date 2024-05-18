@@ -85,6 +85,11 @@ var ThisCouldBeBetter;
             }
             itemAdd(item) {
                 this.items.push(item);
+                return this;
+            }
+            itemsAdd(itemsToAdd) {
+                this.items.push(...itemsToAdd);
+                return this;
             }
             itemByName(name) {
                 var itemsPlusContents = this.itemsPlusContents();

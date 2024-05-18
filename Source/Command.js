@@ -388,6 +388,7 @@ var ThisCouldBeBetter;
                     "Recognized commands include:",
                     "",
                     "? - This text is displayed.",
+                    "cheat <operation> <argument> - Allows the player to cheat.",
                     "delete <name> - Deletes the specified saved game.",
                     "look around - The player examines the surroundings.",
                     "look <name>, look at <name> - The player examines a particular thing.",

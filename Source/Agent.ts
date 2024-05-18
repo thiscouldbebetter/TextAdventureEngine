@@ -46,6 +46,18 @@ export class Agent
 		return commandsAll;
 	}
 
+	commandAdd(command: Command): Agent
+	{
+		this._commands.push(command);
+		return this;
+	}
+
+	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Agent
+	{
+		var command = new Command(commandTexts, scriptName);
+		return this.commandAdd(command);
+	}
+
 	descriptionSet(value: string): Agent
 	{
 		this.description = value;
