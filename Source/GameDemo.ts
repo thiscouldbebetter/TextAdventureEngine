@@ -27,6 +27,10 @@ export class GameDemo
 		var p = (name: string, description: string, objects: any[]) =>
 			Place.fromNameDescriptionAndObjects(name, description, objects);
 
+		var portal =
+			(a, b, c) =>
+				Portal.fromNamesDescriptionAndPlaceDestinationName(a, b, c);
+
 		var portalDescription = "This is a normal door with a round knob.";
 
 		var placeCenterRoomName = "Center Room";
@@ -46,10 +50,10 @@ export class GameDemo
 				(
 					[ "pool" ], "This is a shallow, dirty, foul-smelling pool of water."
 				),
-				new Portal( [ "east" ], portalDescription, placeEasternRoomName, null, null, null),
-				new Portal( [ "north" ], portalDescription, placeNorthernRoomName, null, null, null),
-				new Portal( [ "south" ], portalDescription, placeSouthernRoomName, null, null, null),
-				new Portal( [ "west" ], portalDescription, placeWesternRoomName, null, null, null),
+				portal( [ "east" ], portalDescription, placeEasternRoomName, null, null, null),
+				portal( [ "north" ], portalDescription, placeNorthernRoomName, null, null, null),
+				portal( [ "south" ], portalDescription, placeSouthernRoomName, null, null, null),
+				portal( [ "west" ], portalDescription, placeWesternRoomName, null, null, null),
 				new Agent
 				(
 					[ "captor" ],
@@ -69,7 +73,7 @@ export class GameDemo
 			placeEasternRoomName,
 			"This room is east of the center.  A doorway to the west leads back to the Center Room.",
 			[
-				new Portal( [ "west" ], portalDescription, placeCenterRoomName, null, null, null),
+				portal( [ "west" ], portalDescription, placeCenterRoomName),
 				Emplacement.fromNamesDescriptionAndScriptUseName
 				(
 					[ "chest", "box" ],
@@ -84,7 +88,7 @@ export class GameDemo
 			"Northern Room",
 			"This room is north of the center.  A doorway to the south leads back to the Center Room.",
 			[
-				new Portal( [ "south" ] , portalDescription, placeCenterRoomName, null, null, null),
+				portal( [ "south" ] , portalDescription, placeCenterRoomName),
 				Agent.fromNameAndDescription
 				(
 					"troll",
@@ -98,14 +102,11 @@ export class GameDemo
 			"Southern Room",
 			"This room is south of the center.  A doorway to the north leads back to the Center Room.",
 			[
-				new Portal
+				portal
 				(
 					[ "north" ],
 					portalDescription,
-					placeCenterRoomName,
-					null,
-					null,
-					null
+					placeCenterRoomName
 				),
 				Item.fromNamesDescriptionAndScriptUseName
 				(
@@ -121,7 +122,7 @@ export class GameDemo
 			"Western Room",
 			"This room is west of the center.  A doorway to the east leads back to the Center Room.",
 			[
-				new Portal( [ "east" ], portalDescription, placeCenterRoomName, null, null, null),
+				portal( [ "east" ], portalDescription, placeCenterRoomName),
 				Item.fromNamesDescriptionAndScriptUseName
 				(
 					[ "whetstone", "stone", "rock" ],

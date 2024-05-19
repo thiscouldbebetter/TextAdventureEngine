@@ -4,16 +4,17 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Region {
-            constructor(name, scriptUpdateForTurnName, places) {
+            constructor(name, scriptUpdateForTurnName, stateGroup, places) {
                 this.name = name;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+                this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
                 this.places = places;
             }
             static fromNameAndPlaces(name, places) {
-                return new Region(name, null, places);
+                return new Region(name, null, null, places);
             }
             static fromNameScriptUpdateForTurnNameAndPlaces(name, scriptUpdateForTurnName, places) {
-                return new Region(name, scriptUpdateForTurnName, places);
+                return new Region(name, scriptUpdateForTurnName, null, places);
             }
             placeByName(placeName) {
                 return this.places.find(x => x.name == placeName);
@@ -33,7 +34,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Region(this.name, this.scriptUpdateForTurnName, this.places.map(x => x.clone()));
+                return new Region(this.name, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.places.map(x => x.clone()));
             }
         }
         TextAdventureEngine.Region = Region;

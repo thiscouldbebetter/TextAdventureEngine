@@ -11,6 +11,7 @@ export class Portal
 	stateGroup: StateGroup;
 
 	_visible: boolean;
+	_passable: boolean;
 
 	constructor
 	(
@@ -19,6 +20,7 @@ export class Portal
 		placeDestinationName: string,
 		scriptUseName: string,
 		visible: boolean,
+		passable: boolean,
 		stateGroup: StateGroup
 	)
 	{
@@ -27,6 +29,7 @@ export class Portal
 		this.placeDestinationName = placeDestinationName;
 		this.scriptUseName = scriptUseName;
 		this._visible = visible || true;
+		this._passable = passable || false;
 		this.stateGroup = stateGroup || StateGroup.create();
 	}
 
@@ -38,15 +41,36 @@ export class Portal
 		return Portal.fromNamesAndPlaceDestinationName( [ name ], placeDestinationName );
 	}
 
+	static fromNames
+	(
+		names: string[]
+	): Portal
+	{
+		return new Portal
+		(
+			names, null, null, null, true, true, null
+		);
+	}
+
 	static fromNamesAndPlaceDestinationName
 	(
 		names: string[], placeDestinationName: string
 	): Portal
 	{
-		return new Portal
-		(
-			names, null, placeDestinationName, null, true, null
-		);
+		return Portal
+			.fromNames(names)
+			.placeDestinationNameSet(placeDestinationName);
+	}
+
+	static fromNamesDescriptionAndPlaceDestinationName
+	(
+		names: string[], description: string, placeDestinationName: string
+	): Portal
+	{
+		return Portal
+			.fromNames(names)
+			.descriptionSet(description)
+			.placeDestinationNameSet(placeDestinationName);
 	}
 
 	descriptionSet(value: string): Portal
@@ -80,6 +104,18 @@ export class Portal
 		}
 	}
 
+	placeDestinationNameSet(value: string): Portal
+	{
+		this.placeDestinationName = value;
+		return this;
+	}
+
+	scriptUseNameSet(value: string): Portal
+	{
+		this.scriptUseName = value;
+		return this;
+	}
+
 	use(universe: Universe, world: World, place: Place): void
 	{
 		if (this.scriptUseName == null)
@@ -104,6 +140,7 @@ export class Portal
 			this.placeDestinationName,
 			this.scriptUseName,
 			this._visible,
+			this._passable,
 			this.stateGroup.clone()
 		);
 	}
@@ -158,6 +195,30 @@ export class Portal
 	unlock(): Portal
 	{
 		return this.lockedSet(false);
+	}
+
+	// Blocking.
+
+	block(): Portal
+	{
+		this._passable = false;
+		return this;
+	}
+
+	blocked(): boolean
+	{
+		return (this._passable == false);
+	}
+
+	passable(): boolean
+	{
+		return this._passable;
+	}
+
+	unblock(): Portal
+	{
+		this._passable = true;
+		return this;
 	}
 
 	// Visibility.

@@ -23,6 +23,8 @@ class Game
 		var p = (name: string, description: string, objects: any[]) =>
 			Place.fromNameDescriptionAndObjects(name, description, objects);
 
+		var portal = (a, b, c) =>
+			Portal.fromNamesDescriptionAndPlaceDestinationName(a, b, c);
 		var portalDescription = "This is a normal door with a round knob.";
 
 		var placeCenterRoomName = "Center Room";
@@ -42,10 +44,10 @@ class Game
 				(
 					"pool", "This is a shallow, dirty, foul-smelling pool of water."
 				),
-				new Portal("east", portalDescription, placeEasternRoomName),
-				new Portal("north", portalDescription, placeNorthernRoomName),
-				new Portal("south", portalDescription, placeSouthernRoomName),
-				new Portal("west", portalDescription, placeWesternRoomName),
+				portal("east", portalDescription, placeEasternRoomName),
+				portal("north", portalDescription, placeNorthernRoomName),
+				portal("south", portalDescription, placeSouthernRoomName),
+				portal("west", portalDescription, placeWesternRoomName),
 				new Agent
 				(
 					"captor",

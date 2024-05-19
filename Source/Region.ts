@@ -6,23 +6,26 @@ export class Region
 {
 	name: string;
 	scriptUpdateForTurnName: string;
+	stateGroup: StateGroup;
 	places: Place[];
 
 	constructor
 	(
 		name: string,
 		scriptUpdateForTurnName: string,
+		stateGroup: StateGroup,
 		places: Place[]
 	)
 	{
 		this.name = name;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+		this.stateGroup = stateGroup || StateGroup.create();
 		this.places = places;
 	}
 
 	static fromNameAndPlaces(name: string, places: Place[])
 	{
-		return new Region(name, null, places);
+		return new Region(name, null, null, places);
 	}
 
 	static fromNameScriptUpdateForTurnNameAndPlaces
@@ -30,7 +33,7 @@ export class Region
 		name: string, scriptUpdateForTurnName: string, places: Place[]
 	)
 	{
-		return new Region(name, scriptUpdateForTurnName, places);
+		return new Region(name, scriptUpdateForTurnName, null, places);
 	}
 
 	placeByName(placeName: string): Place
@@ -66,6 +69,7 @@ export class Region
 		(
 			this.name,
 			this.scriptUpdateForTurnName,
+			this.stateGroup.clone(),
 			this.places.map(x => x.clone() )
 		);
 	}

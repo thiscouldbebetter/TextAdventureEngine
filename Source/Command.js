@@ -369,8 +369,8 @@ var ThisCouldBeBetter;
             goThroughPortalWithName(universe, world, portalName) {
                 var place = world.placeCurrent();
                 var portalsMatching = place.portalsByName(portalName);
-                var portalsMatchingVisible = portalsMatching.filter(x => x.visible());
-                var portalMatching = portalsMatchingVisible[0];
+                var portalsMatchingPassable = portalsMatching.filter(x => x.passable());
+                var portalMatching = portalsMatchingPassable[0];
                 if (portalMatching == null) {
                     universe.messageEnqueue("You can't go there.");
                 }

@@ -4,19 +4,31 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Portal {
-            constructor(names, description, placeDestinationName, scriptUseName, visible, stateGroup) {
+            constructor(names, description, placeDestinationName, scriptUseName, visible, passable, stateGroup) {
                 this.names = names;
                 this.description = description;
                 this.placeDestinationName = placeDestinationName;
                 this.scriptUseName = scriptUseName;
                 this._visible = visible || true;
+                this._passable = passable || false;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
             }
             static fromNameAndPlaceDestinationName(name, placeDestinationName) {
                 return Portal.fromNamesAndPlaceDestinationName([name], placeDestinationName);
             }
+            static fromNames(names) {
+                return new Portal(names, null, null, null, true, true, null);
+            }
             static fromNamesAndPlaceDestinationName(names, placeDestinationName) {
-                return new Portal(names, null, placeDestinationName, null, true, null);
+                return Portal
+                    .fromNames(names)
+                    .placeDestinationNameSet(placeDestinationName);
+            }
+            static fromNamesDescriptionAndPlaceDestinationName(names, description, placeDestinationName) {
+                return Portal
+                    .fromNames(names)
+                    .descriptionSet(description)
+                    .placeDestinationNameSet(placeDestinationName);
             }
             descriptionSet(value) {
                 this.description = value;
@@ -39,6 +51,14 @@ var ThisCouldBeBetter;
                     world.placeCurrentSet(placeNext);
                 }
             }
+            placeDestinationNameSet(value) {
+                this.placeDestinationName = value;
+                return this;
+            }
+            scriptUseNameSet(value) {
+                this.scriptUseName = value;
+                return this;
+            }
             use(universe, world, place) {
                 if (this.scriptUseName == null) {
                     this.goThrough(universe, world);
@@ -50,7 +70,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Portal(this.names.map(x => x), this.description, this.placeDestinationName, this.scriptUseName, this._visible, this.stateGroup.clone());
+                return new Portal(this.names.map(x => x), this.description, this.placeDestinationName, this.scriptUseName, this._visible, this._passable, this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
@@ -82,6 +102,21 @@ var ThisCouldBeBetter;
             }
             unlock() {
                 return this.lockedSet(false);
+            }
+            // Blocking.
+            block() {
+                this._passable = false;
+                return this;
+            }
+            blocked() {
+                return (this._passable == false);
+            }
+            passable() {
+                return this._passable;
+            }
+            unblock() {
+                this._passable = true;
+                return this;
             }
             // Visibility.
             hide() {
