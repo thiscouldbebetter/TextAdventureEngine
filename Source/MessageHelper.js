@@ -7,17 +7,23 @@ var ThisCouldBeBetter;
             constructor() {
                 this.vowels = ["a", "e", "i", "o", "u"];
             }
-            static combineStringArrays(stringsStart, stringsEnd) {
-                var stringsCombined = new Array();
-                for (var i = 0; i < stringsStart.length; i++) {
-                    var stringStart = stringsStart[i];
-                    for (var j = 0; j < stringsEnd.length; j++) {
-                        var stringEnd = stringsEnd[j];
-                        var stringCombined = stringStart + " " + stringEnd;
-                        stringsCombined.push(stringCombined);
+            static combinePhraseArrays(phraseArrays) {
+                var phrasesCombinedSoFar = phraseArrays[0].map(x => x);
+                for (var i = 1; i < phraseArrays.length; i++) {
+                    var phrasesToCombine = phraseArrays[i];
+                    var phrasesCombinedNext = new Array();
+                    for (var j = 0; j < phrasesCombinedSoFar.length; j++) {
+                        var phraseCombinedAlready = phrasesCombinedSoFar[j];
+                        for (var k = 0; k < phrasesToCombine.length; k++) {
+                            var phraseToCombine = phrasesToCombine[k];
+                            var phraseCombinedNew = phraseCombinedAlready
+                                + (phraseToCombine == null ? "" : " " + phraseToCombine);
+                            phrasesCombinedNext.push(phraseCombinedNew);
+                        }
                     }
+                    phrasesCombinedSoFar = phrasesCombinedNext;
                 }
-                return stringsCombined;
+                return phrasesCombinedSoFar;
             }
             wordPrefixedWithAOrAn(word) {
                 var wordStartsWithVowel = this.vowels.indexOf(word[0].toLowerCase()) >= 0;

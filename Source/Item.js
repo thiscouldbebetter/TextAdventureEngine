@@ -4,8 +4,9 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Item {
-            constructor(names, description, scriptGetName, scriptUseName, stateGroup, items, commands) {
+            constructor(names, quantity, description, scriptGetName, scriptUseName, stateGroup, items, commands) {
                 this.names = names;
+                this.quantity = quantity || 1;
                 this.description = description;
                 this._scriptGetName = scriptGetName;
                 this._scriptUseName = scriptUseName;
@@ -14,7 +15,7 @@ var ThisCouldBeBetter;
                 this.commands = commands || [];
             }
             static create() {
-                return new Item(null, null, null, null, null, null, null);
+                return new Item(null, null, null, null, null, null, null, null);
             }
             static fromNames(names) {
                 return Item.create().namesSet(names);
@@ -58,11 +59,18 @@ var ThisCouldBeBetter;
             name() {
                 return this.names[0];
             }
+            nameAndQuantity() {
+                return this.name() + (this.quantity > 1 ? " (" + this.quantity + ")" : "");
+            }
             namesInclude(nameToMatch) {
                 return this.names.indexOf(nameToMatch) >= 0;
             }
             namesSet(value) {
                 this.names = value;
+                return this;
+            }
+            quantitySet(value) {
+                this.quantity = value;
                 return this;
             }
             scriptGet(world) {
@@ -93,7 +101,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Item(this.names.map(x => x), this.description, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Item(this.names.map(x => x), this.quantity, this.description, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

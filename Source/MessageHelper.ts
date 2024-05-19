@@ -12,29 +12,39 @@ export class MessageHelper
 		this.vowels = [ "a", "e", "i", "o", "u" ];
 	}
 
-	static combineStringArrays
+	static combinePhraseArrays
 	(
-		stringsStart: string[],
-		stringsEnd: string[]
+		phraseArrays: string[][]
 	): string[]
 	{
-		var stringsCombined = new Array<string>();
+		var phrasesCombinedSoFar = phraseArrays[0].map(x => x);
 
-		for (var i = 0; i < stringsStart.length; i++)
+		for (var i = 1; i < phraseArrays.length; i++)
 		{
-			var stringStart = stringsStart[i];
+			var phrasesToCombine = phraseArrays[i];
 
-			for (var j = 0; j < stringsEnd.length; j++)
+			var phrasesCombinedNext = new Array<string>();
+
+			for (var j = 0; j < phrasesCombinedSoFar.length; j++)
 			{
-				var stringEnd = stringsEnd[j];
+				var phraseCombinedAlready = phrasesCombinedSoFar[j];
 
-				var stringCombined = stringStart + " " + stringEnd;
+				for (var k = 0; k < phrasesToCombine.length; k++)
+				{
+					var phraseToCombine = phrasesToCombine[k];
 
-				stringsCombined.push(stringCombined);
+					var phraseCombinedNew =
+						phraseCombinedAlready
+						+ (phraseToCombine == null ? "" : " " + phraseToCombine);
+
+					phrasesCombinedNext.push(phraseCombinedNew);
+				}
 			}
+
+			phrasesCombinedSoFar = phrasesCombinedNext;
 		}
 
-		return stringsCombined;
+		return phrasesCombinedSoFar;
 	}
 
 	wordPrefixedWithAOrAn(word: string): string

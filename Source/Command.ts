@@ -573,9 +573,7 @@ export class Command_Instances
 		else
 		{
 			message = "You drop the " + itemToDrop.name() + ".";
-			player.itemRemove(itemToDrop);
-			place = world.placeCurrent();
-			place.itemAdd(itemToDrop);
+			player.itemDropQuantityIntoPlace(itemToDrop, 1, place);
 		}
 
 		universe.messageEnqueue(message);
@@ -779,7 +777,7 @@ export class Command_Instances
 		[
 			"Items Carried:"
 		];
-		items.forEach(x => linesToWrite.push(x.name() ) );
+		items.forEach(x => linesToWrite.push(x.nameAndQuantity() ) );
 		var message = linesToWrite.join("\n");
 		universe.messageEnqueue(message);
 	}

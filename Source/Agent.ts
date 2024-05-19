@@ -64,18 +64,6 @@ export class Agent
 		return this;
 	}
 
-	itemsAdd(itemsToAdd: Item[]): Agent
-	{
-		this.items.push(...itemsToAdd);
-		return this;
-	}
-
-	itemGetFromPlace(itemToGet: Item, place: Place): void
-	{
-		place.itemRemove(itemToGet);
-		this.itemAdd(itemToGet);
-	}
-
 	name(): string
 	{
 		return this.names[0];
@@ -124,9 +112,57 @@ export class Agent
 		return this.items.find(x => x.names.indexOf(name) >= 0);
 	}
 
+	itemDropQuantityIntoPlace
+	(
+		itemToDrop: Item,
+		quantityToDrop: number,
+		place: Place
+	): void
+	{
+		var itemToDrop = this.itemRemoveQuantity(itemToDrop, quantityToDrop);
+		if (itemToDrop != null)
+		{
+			place.itemAdd(itemToDrop);
+		}
+	}
+
+	itemGetFromPlace(itemToGet: Item, place: Place): void
+	{
+		place.itemRemove(itemToGet);
+		this.itemAdd(itemToGet);
+	}
+	
+	itemsAdd(itemsToAdd: Item[]): Agent
+	{
+		this.items.push(...itemsToAdd);
+		return this;
+	}
+
 	itemRemove(item: Item): void
 	{
 		this.items.splice(this.items.indexOf(item), 1);
+	}
+
+	itemRemoveQuantity(itemToRemoveFrom: Item, quantityToRemove: number): Item
+	{
+		var itemRemoved: Item;
+
+		var itemQuantityBefore = itemToRemoveFrom.quantity;
+		if (itemQuantityBefore < quantityToRemove)
+		{
+			itemRemoved = null;
+		}
+		else
+		{
+			itemRemoved = itemToRemoveFrom.clone().quantitySet(quantityToRemove);
+			itemToRemoveFrom.quantity -= quantityToRemove;
+			if (itemToRemoveFrom.quantity <= 0)
+			{
+				this.itemRemove(itemToRemoveFrom);
+			}
+		}
+
+		return itemRemoved;
 	}
 
 	// Serialization.

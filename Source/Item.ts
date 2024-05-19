@@ -5,6 +5,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class Item
 {
 	names: string[];
+	quantity: number;
 	description: string;
 	_scriptGetName: string;
 	_scriptUseName: string;
@@ -15,6 +16,7 @@ export class Item
 	constructor
 	(
 		names: string[],
+		quantity: number,
 		description: string,
 		scriptGetName: string,
 		scriptUseName: string,
@@ -24,6 +26,7 @@ export class Item
 	)
 	{
 		this.names = names;
+		this.quantity = quantity || 1;
 		this.description = description;
 		this._scriptGetName = scriptGetName;
 		this._scriptUseName = scriptUseName;
@@ -34,7 +37,7 @@ export class Item
 
 	static create(): Item
 	{
-		return new Item(null, null, null, null, null, null, null);
+		return new Item(null, null, null, null, null, null, null, null);
 	}
 
 	static fromNames(names: string[]): Item
@@ -109,6 +112,11 @@ export class Item
 		return this.names[0];
 	}
 
+	nameAndQuantity(): string
+	{
+		return this.name() + (this.quantity > 1 ? " (" + this.quantity + ")" : "");
+	}
+
 	namesInclude(nameToMatch: string): boolean
 	{
 		return this.names.indexOf(nameToMatch) >= 0;
@@ -117,6 +125,12 @@ export class Item
 	namesSet(value: string[]): Item
 	{
 		this.names = value;
+		return this;
+	}
+
+	quantitySet(value: number): Item
+	{
+		this.quantity = value;
 		return this;
 	}
 
@@ -168,6 +182,7 @@ export class Item
 		return new Item
 		(
 			this.names.map(x => x),
+			this.quantity,
 			this.description,
 			this._scriptGetName,
 			this._scriptUseName,

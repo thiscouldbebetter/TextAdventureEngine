@@ -35,14 +35,6 @@ var ThisCouldBeBetter;
                 this.description = value;
                 return this;
             }
-            itemsAdd(itemsToAdd) {
-                this.items.push(...itemsToAdd);
-                return this;
-            }
-            itemGetFromPlace(itemToGet, place) {
-                place.itemRemove(itemToGet);
-                this.itemAdd(itemToGet);
-            }
             name() {
                 return this.names[0];
             }
@@ -67,8 +59,37 @@ var ThisCouldBeBetter;
             itemByName(name) {
                 return this.items.find(x => x.names.indexOf(name) >= 0);
             }
+            itemDropQuantityIntoPlace(itemToDrop, quantityToDrop, place) {
+                var itemToDrop = this.itemRemoveQuantity(itemToDrop, quantityToDrop);
+                if (itemToDrop != null) {
+                    place.itemAdd(itemToDrop);
+                }
+            }
+            itemGetFromPlace(itemToGet, place) {
+                place.itemRemove(itemToGet);
+                this.itemAdd(itemToGet);
+            }
+            itemsAdd(itemsToAdd) {
+                this.items.push(...itemsToAdd);
+                return this;
+            }
             itemRemove(item) {
                 this.items.splice(this.items.indexOf(item), 1);
+            }
+            itemRemoveQuantity(itemToRemoveFrom, quantityToRemove) {
+                var itemRemoved;
+                var itemQuantityBefore = itemToRemoveFrom.quantity;
+                if (itemQuantityBefore < quantityToRemove) {
+                    itemRemoved = null;
+                }
+                else {
+                    itemRemoved = itemToRemoveFrom.clone().quantitySet(quantityToRemove);
+                    itemToRemoveFrom.quantity -= quantityToRemove;
+                    if (itemToRemoveFrom.quantity <= 0) {
+                        this.itemRemove(itemToRemoveFrom);
+                    }
+                }
+                return itemRemoved;
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
