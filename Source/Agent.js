@@ -18,6 +18,9 @@ var ThisCouldBeBetter;
             static fromNames(names) {
                 return new Agent(names, null, null, null, null, null);
             }
+            static fromNamesAndDescription(names, description) {
+                return new Agent(names, description, null, null, null, null);
+            }
             commands() {
                 var commandsAll = new Array();
                 this.items.forEach(x => commandsAll.push(...x.commands));

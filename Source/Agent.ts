@@ -39,6 +39,11 @@ export class Agent
 		return new Agent(names, null, null, null, null, null);
 	}
 
+	static fromNamesAndDescription(names: string[], description: string): Agent
+	{
+		return new Agent(names, description, null, null, null, null);
+	}
+
 	commands(): Command[]
 	{
 		var commandsAll = new Array<Command>();

@@ -6,12 +6,14 @@ var ThisCouldBeBetter;
         class GameDemo {
             static worldBuild() {
                 var player = new TextAdventureEngine.Agent(["self"], "This is you.", null, // scriptUpdateForTurnName
+                null, // stateGroup
                 [
                     TextAdventureEngine.Item.fromNamesAndDescription(["locket"], "This small copper locket contains a picture of your sweetie.")
                 ], null // commands
                 );
                 var scriptsCustom = new Scripts();
                 var p = (name, description, objects) => TextAdventureEngine.Place.fromNameDescriptionAndObjects(name, description, objects);
+                var portal = (a, b, c) => TextAdventureEngine.Portal.fromNamesDescriptionAndPlaceDestinationName(a, b, c);
                 var portalDescription = "This is a normal door with a round knob.";
                 var placeCenterRoomName = "Center Room";
                 var placeEasternRoomName = "Eastern Room";
@@ -21,30 +23,31 @@ var ThisCouldBeBetter;
                 var placeCenterRoom = TextAdventureEngine.Place.fromNameDescriptionScriptNameAndObjects(placeCenterRoomName, "This is the room you landed in when your captor threw you down here."
                     + "  There are doors to the north, south, east, and west.", scriptsCustom.PlaceCenterRoomUpdate.name, [
                     TextAdventureEngine.Emplacement.fromNamesAndDescription(["pool"], "This is a shallow, dirty, foul-smelling pool of water."),
-                    new TextAdventureEngine.Portal(["east"], portalDescription, placeEasternRoomName, null, null, null),
-                    new TextAdventureEngine.Portal(["north"], portalDescription, placeNorthernRoomName, null, null, null),
-                    new TextAdventureEngine.Portal(["south"], portalDescription, placeSouthernRoomName, null, null, null),
-                    new TextAdventureEngine.Portal(["west"], portalDescription, placeWesternRoomName, null, null, null),
-                    new TextAdventureEngine.Agent(["captor"], "Your captor lingers by the trap door, waiting for you to retrieve his property.", scriptsCustom.AgentCaptorUpdate.name, null, // items
+                    portal(["east"], portalDescription, placeEasternRoomName),
+                    portal(["north"], portalDescription, placeNorthernRoomName),
+                    portal(["south"], portalDescription, placeSouthernRoomName),
+                    portal(["west"], portalDescription, placeWesternRoomName),
+                    new TextAdventureEngine.Agent(["captor"], "Your captor lingers by the trap door, waiting for you to retrieve his property.", scriptsCustom.AgentCaptorUpdate.name, null, // stateGroup
+                    null, // items
                     [
                         new TextAdventureEngine.Command(["talk to captor"], scriptsCustom.AgentCaptorTalkTo.name),
                         new TextAdventureEngine.Command(["give coin to captor"], scriptsCustom.ItemCoinGiveToCaptor.name)
                     ])
                 ]);
                 var placeEasternRoom = p(placeEasternRoomName, "This room is east of the center.  A doorway to the west leads back to the Center Room.", [
-                    new TextAdventureEngine.Portal(["west"], portalDescription, placeCenterRoomName, null, null, null),
+                    portal(["west"], portalDescription, placeCenterRoomName),
                     TextAdventureEngine.Emplacement.fromNamesDescriptionAndScriptUseName(["chest", "box"], "This is a sturdy, and very heavy, oaken chest with a lock.", scriptsCustom.EmplacementChestUse.name)
                 ]);
                 var placeNorthernRoom = p("Northern Room", "This room is north of the center.  A doorway to the south leads back to the Center Room.", [
-                    new TextAdventureEngine.Portal(["south"], portalDescription, placeCenterRoomName, null, null, null),
+                    portal(["south"], portalDescription, placeCenterRoomName),
                     TextAdventureEngine.Agent.fromNameAndDescription("troll", "The scabrous troll leers malevolently at you.")
                 ]);
                 var placeSouthernRoom = p("Southern Room", "This room is south of the center.  A doorway to the north leads back to the Center Room.", [
-                    new TextAdventureEngine.Portal(["north"], portalDescription, placeCenterRoomName, null, null, null),
+                    portal(["north"], portalDescription, placeCenterRoomName),
                     TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["key"], "This is a large brass key.", scriptsCustom.ItemKeyUse.name)
                 ]);
                 var placeWesternRoom = p("Western Room", "This room is west of the center.  A doorway to the east leads back to the Center Room.", [
-                    new TextAdventureEngine.Portal(["east"], portalDescription, placeCenterRoomName, null, null, null),
+                    portal(["east"], portalDescription, placeCenterRoomName),
                     TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["whetstone", "stone", "rock"], "This is a flat stone for sharpening tools and weapons.", scriptsCustom.ItemWhetstoneUse.name)
                 ]);
                 var places = [
@@ -99,7 +102,7 @@ var ThisCouldBeBetter;
             }
             agentCaptorTalkTo(u, w, p, agent) {
                 var message;
-                var player = w.player;
+                var player = w.agentPlayer;
                 var playerItems = player.items;
                 var playerHasCoin = playerItems.some(x => x.name() == "coin");
                 if (playerHasCoin == false) {
@@ -146,7 +149,7 @@ var ThisCouldBeBetter;
             }
             itemCoinGiveToCaptor(universe, world, place) {
                 var message;
-                var player = world.player;
+                var player = world.agentPlayer;
                 var itemCoin = player.itemByName("coin");
                 if (itemCoin == null) {
                     message = "You don't have any coin.";
@@ -208,9 +211,11 @@ var ThisCouldBeBetter;
                     place.agentRemove(target);
                     var emplacementTrollBody = TextAdventureEngine.Emplacement.fromNamesDescriptionAndScriptUseName(["troll body", "body", "corpse", "troll body", "troll corpse", "dead troll"], "This is the headless corpse of the troll, naked except for a small coin purse.", "EmplacementTrollBodyUse");
                     place.emplacementAdd(emplacementTrollBody);
-                    var itemTrollHead = new TextAdventureEngine.Item(["troll head"], "This is the head of the troll you killed.", null, // scriptNameGet
+                    var itemTrollHead = new TextAdventureEngine.Item(["troll head"], null, // quantity
+                    "This is the head of the troll you killed.", null, // scriptNameGet
                     null, // scriptNameUse
                     null, // stateGroup
+                    null, // items
                     [
                         new TextAdventureEngine.Command(["talk to troll", "talk to the troll", "talk to troll head", "talk to the troll head"], "ItemTrollHeadTalkTo")
                     ]);

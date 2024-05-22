@@ -28,7 +28,7 @@ export class GameDemo
 			Place.fromNameDescriptionAndObjects(name, description, objects);
 
 		var portal =
-			(a, b, c) =>
+			(a: string[], b: string, c: string) =>
 				Portal.fromNamesDescriptionAndPlaceDestinationName(a, b, c);
 
 		var portalDescription = "This is a normal door with a round knob.";
@@ -50,15 +50,16 @@ export class GameDemo
 				(
 					[ "pool" ], "This is a shallow, dirty, foul-smelling pool of water."
 				),
-				portal( [ "east" ], portalDescription, placeEasternRoomName, null, null, null),
-				portal( [ "north" ], portalDescription, placeNorthernRoomName, null, null, null),
-				portal( [ "south" ], portalDescription, placeSouthernRoomName, null, null, null),
-				portal( [ "west" ], portalDescription, placeWesternRoomName, null, null, null),
+				portal( [ "east" ], portalDescription, placeEasternRoomName),
+				portal( [ "north" ], portalDescription, placeNorthernRoomName),
+				portal( [ "south" ], portalDescription, placeSouthernRoomName),
+				portal( [ "west" ], portalDescription, placeWesternRoomName),
 				new Agent
 				(
 					[ "captor" ],
 					"Your captor lingers by the trap door, waiting for you to retrieve his property.",
 					scriptsCustom.AgentCaptorUpdate.name,
+					null, // stateGroup
 					null, // items
 					[
 						new Command( [ "talk to captor" ], scriptsCustom.AgentCaptorTalkTo.name),
@@ -410,10 +411,12 @@ class Scripts
 			var itemTrollHead = new Item
 			(
 				[ "troll head" ] ,
+				null, // quantity
 				"This is the head of the troll you killed.",
 				null, // scriptNameGet
 				null, // scriptNameUse
 				null, // stateGroup
+				null, // items
 				[
 					new Command
 					(
