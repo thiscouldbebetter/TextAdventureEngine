@@ -23,6 +23,7 @@ var ThisCouldBeBetter;
             }
             commands() {
                 var commandsAll = new Array();
+                commandsAll.push(...this._commands);
                 this.items.forEach(x => commandsAll.push(...x.commands));
                 return commandsAll;
             }
