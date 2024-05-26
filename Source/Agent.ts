@@ -47,6 +47,7 @@ export class Agent
 	commands(): Command[]
 	{
 		var commandsAll = new Array<Command>();
+		commandsAll.push(...this._commands);
 		this.items.forEach(x => commandsAll.push(...x.commands) );
 		return commandsAll;
 	}
