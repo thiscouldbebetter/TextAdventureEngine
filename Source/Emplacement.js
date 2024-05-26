@@ -4,11 +4,12 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Emplacement {
-            constructor(names, description, scriptUseName, stateGroup, commands) {
+            constructor(names, description, scriptUseName, stateGroup, items, commands) {
                 this.names = names;
                 this.description = description;
                 this._scriptUseName = scriptUseName;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
+                this.items = items || [];
                 this.commands = commands || [];
             }
             static fromName(name) {
@@ -19,10 +20,10 @@ var ThisCouldBeBetter;
                 return Emplacement.fromNamesAndDescription(names, description);
             }
             static fromNamesAndDescription(names, description) {
-                return new Emplacement(names, description, null, null, null);
+                return new Emplacement(names, description, null, null, null, null);
             }
             static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
-                return new Emplacement(names, description, scriptUseName, null, null);
+                return new Emplacement(names, description, scriptUseName, null, null, null);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -38,6 +39,13 @@ var ThisCouldBeBetter;
             descriptionSet(value) {
                 this.description = value;
                 return this;
+            }
+            itemAdd(itemToAdd) {
+                this.items.push(itemToAdd);
+                return this;
+            }
+            itemByName(name) {
+                return this.items.find(x => x.namesInclude(name));
             }
             name() {
                 return this.names[0];
@@ -56,7 +64,7 @@ var ThisCouldBeBetter;
             }
             // Clone.
             clone() {
-                return new Emplacement(this.names.map(x => x), this.description, this._scriptUseName, this.stateGroup.clone(), this.commands.map(x => x.clone()));
+                return new Emplacement(this.names.map(x => x), this.description, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

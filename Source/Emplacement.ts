@@ -8,6 +8,7 @@ export class Emplacement
 	description: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
+	items: Item[];
 	commands: Command[];
 
 	constructor
@@ -16,6 +17,7 @@ export class Emplacement
 		description: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
+		items: Item[],
 		commands: Command[]
 	)
 	{
@@ -23,6 +25,7 @@ export class Emplacement
 		this.description = description;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
+		this.items = items || [];
 		this.commands = commands || [];
 	}
 
@@ -48,7 +51,7 @@ export class Emplacement
 		(
 			names,
 			description,
-			null, null, null
+			null, null, null, null
 		);
 	}
 
@@ -62,7 +65,7 @@ export class Emplacement
 			names,
 			description,
 			scriptUseName,
-			null, null
+			null, null, null
 		);
 	}
 
@@ -87,6 +90,17 @@ export class Emplacement
 	{
 		this.description = value;
 		return this;
+	}
+
+	itemAdd(itemToAdd: Item): Emplacement
+	{
+		this.items.push(itemToAdd);
+		return this;
+	}
+
+	itemByName(name: string): Item
+	{
+		return this.items.find(x => x.namesInclude(name) );
 	}
 
 	name(): string
@@ -123,6 +137,7 @@ export class Emplacement
 			this.description,
 			this._scriptUseName,
 			this.stateGroup.clone(),
+			this.items.map(x => x.clone() ),
 			this.commands.map(x => x.clone() )
 		);
 	}
