@@ -23,6 +23,17 @@ export class MessageQueue
 		this.messages.push(message);
 	}
 
+	flushToConsole(console: ConsoleTextarea): MessageQueue
+	{
+		while (this.hasMessages() )
+		{
+			var message = this.dequeue();
+			console.writeLinePlusBlankLine(message);
+		}
+
+		return this;
+	}
+
 	hasMessages(): boolean
 	{
 		return (this.messages.length > 0);

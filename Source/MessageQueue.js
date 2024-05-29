@@ -15,6 +15,13 @@ var ThisCouldBeBetter;
             enqueue(message) {
                 this.messages.push(message);
             }
+            flushToConsole(console) {
+                while (this.hasMessages()) {
+                    var message = this.dequeue();
+                    console.writeLinePlusBlankLine(message);
+                }
+                return this;
+            }
             hasMessages() {
                 return (this.messages.length > 0);
             }

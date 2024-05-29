@@ -30,6 +30,10 @@ var ThisCouldBeBetter;
                 this.messageQueue.enqueue(message);
                 return this;
             }
+            messagesFlushToConsole() {
+                this.messageQueue.flushToConsole(this.console);
+                return this;
+            }
             updateForTimerTick() {
                 var console = this.console;
                 if (console.reading()) {

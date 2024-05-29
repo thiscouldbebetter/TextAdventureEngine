@@ -71,6 +71,12 @@ export class Universe
 		return this;
 	}
 
+	messagesFlushToConsole(): Universe
+	{
+		this.messageQueue.flushToConsole(this.console);
+		return this;
+	}
+
 	updateForTimerTick(): void
 	{
 		var console = this.console;

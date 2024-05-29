@@ -97,12 +97,7 @@ var ThisCouldBeBetter;
                 var messageForPlaceCurrent = placeCurrent.draw(universe, world);
                 universe.messageEnqueue(messageForPlaceCurrent);
                 universe.console.clear();
-                var messageQueue = universe.messageQueue;
-                var console = universe.console;
-                while (messageQueue.hasMessages()) {
-                    var message = messageQueue.dequeue();
-                    console.writeLinePlusBlankLine(message);
-                }
+                universe.messagesFlushToConsole();
             }
             // Clonable.
             clone() {

@@ -188,13 +188,7 @@ export class World
 
 		universe.console.clear();
 
-		var messageQueue = universe.messageQueue;
-		var console = universe.console;
-		while (messageQueue.hasMessages() )
-		{
-			var message = messageQueue.dequeue();
-			console.writeLinePlusBlankLine(message);
-		}
+		universe.messagesFlushToConsole();
 	}
 
 	// Clonable.
