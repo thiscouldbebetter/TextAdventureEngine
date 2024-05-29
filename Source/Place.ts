@@ -109,9 +109,11 @@ export class Place
 		);
 	}
 
-	agentAdd(agent: Agent): void
+	agentAdd(agent: Agent, world: World): void
 	{
 		this.agents.push(agent);
+		var region = this.region(world);
+		region.agentAdd(agent);
 	}
 
 	agentByName(name: string): Agent
@@ -187,7 +189,7 @@ export class Place
 
 	emplacementByName(name: string): Emplacement
 	{
-		return this.emplacements.find(x => x.names.indexOf(name) >= 0);
+		return this.emplacements.find(x => x.namesInclude(name) );
 	}
 
 	emplacementRemove(emplacement: Emplacement): void
@@ -289,6 +291,8 @@ export class Place
 		{
 			scriptUpdateForTurn.run(universe, world, this);
 		}
+
+		this.items.forEach(x => x.updateForTurn(universe, world, this) );
 	}
 
 	// Clonable.

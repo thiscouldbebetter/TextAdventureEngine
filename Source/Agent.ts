@@ -80,6 +80,11 @@ export class Agent
 		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
+	place(world: World): Place
+	{
+		return world.placeContainingAgent(this);
+	}
+
 	updateForTurn(universe: Universe, world: World, place: Place): void
 	{
 		if (this.scriptUpdateForTurnName != null)
@@ -88,7 +93,7 @@ export class Agent
 			scriptUpdate.run(universe, world, place, this);
 		}
 
-		this.items.forEach(x => x.updateForTurn());
+		this.items.forEach(x => x.updateForTurn(universe, world, place) );
 	}
 
 	// Clonable.

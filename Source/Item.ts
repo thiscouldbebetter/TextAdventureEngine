@@ -156,7 +156,7 @@ export class Item
 		return this;
 	}
 
-	updateForTurn(): void
+	updateForTurn(universe: Universe, world: World, place: Place): void
 	{
 		// todo
 	}

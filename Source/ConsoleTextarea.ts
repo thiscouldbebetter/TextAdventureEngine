@@ -8,7 +8,7 @@ export class ConsoleTextarea
 	textarea: any;
 
 	lineReadPrevious: string;
-	_isReading: boolean;
+	_reading: boolean;
 	_textReadSoFar: string;
 
 	constructor(textarea: any)
@@ -17,7 +17,7 @@ export class ConsoleTextarea
 		this.textarea = textarea;
 
 		this.lineReadPrevious = "";
-		this._isReading = false;
+		this._reading = false;
 		this._textReadSoFar = null;
 	}
 
@@ -35,23 +35,28 @@ export class ConsoleTextarea
 	draw(): void
 	{
 		this.textarea.value = this.textCurrent;
-		if (this.isReading())
+		if (this.reading())
 		{
 			this.textarea.value += "_";
 		}
-	}
-
-	isReading(): boolean
-	{
-		return this._isReading;
 	}
 
 	readLine(): void
 	{
 		this.lineReadPrevious = this.textRead();
 
-		this._isReading = true;
+		this._reading = true;
 		this._textReadSoFar = "";
+	}
+
+	reading(): boolean
+	{
+		return this._reading;
+	}
+
+	readingStop(): void
+	{
+		this._reading = false;
 	}
 
 	textRead(): string
@@ -66,7 +71,7 @@ export class ConsoleTextarea
 
 	updateForTimerTick(universe: Universe): void
 	{
-		if (this.isReading() )
+		if (this.reading() )
 		{
 			var inputTracker = universe.inputTracker;
 			var keysPressedSinceLastTick = inputTracker.keysPressed();
@@ -85,7 +90,7 @@ export class ConsoleTextarea
 				else if (keyPressed == "Enter")
 				{
 					this.writeLine("");
-					this._isReading = false;
+					this.readingStop();
 				}
 				else if (keyPressed == "Escape")
 				{

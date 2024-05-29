@@ -189,13 +189,23 @@ var ThisCouldBeBetter;
                 var cheatOperationName = commandTextParts[1] || "[none]";
                 var message = null;
                 if (cheatOperationName == "get") {
+                    var quantityOrNot = parseInt(commandTextParts[commandTextParts.length - 1]);
+                    var quantityIsSpecified = (isNaN(quantityOrNot) == false);
+                    if (quantityIsSpecified) {
+                        commandTextParts.splice(commandTextParts.length - 1);
+                    }
                     var itemToGetName = commandTextParts.slice(2).join(" ");
                     var itemToGet = world.itemByName(itemToGetName);
                     if (itemToGet == null) {
                         message = "Unknown item: " + itemToGetName + ".";
                     }
                     else {
-                        message = "Player receives item: " + itemToGetName + ".";
+                        message = "Player receives item: " + itemToGetName;
+                        if (quantityIsSpecified) {
+                            itemToGet.quantity = quantityOrNot;
+                            message += "(" + itemToGet.quantity + ")";
+                        }
+                        message += ".";
                         world.agentPlayer.itemAdd(itemToGet);
                     }
                 }
@@ -244,6 +254,10 @@ var ThisCouldBeBetter;
                             "Unrecognized list type: " + objectsToListTypeName + ".\n\n"
                                 + Command_Instances.cheat_HelpMessage();
                     }
+                }
+                else if (cheatOperationName == "random") {
+                    var randomValueToSet = parseFloat(commandTextParts[2] || "0");
+                    universe.randomNumberGenerator.enqueue(randomValueToSet);
                 }
                 else {
                     message =

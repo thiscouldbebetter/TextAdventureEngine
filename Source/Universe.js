@@ -15,6 +15,7 @@ var ThisCouldBeBetter;
             initialize() {
                 this.world = this.worldCreate();
                 this.messageQueue = new TextAdventureEngine.MessageQueue();
+                this.randomNumberGenerator = new TextAdventureEngine.RandomNumberGenerator();
                 this.storageManager = new TextAdventureEngine.StorageManagerMemory();
                 this.saveStateManager =
                     new TextAdventureEngine.SaveStateManager(this, this.storageManager);
@@ -27,10 +28,11 @@ var ThisCouldBeBetter;
             }
             messageEnqueue(message) {
                 this.messageQueue.enqueue(message);
+                return this;
             }
             updateForTimerTick() {
                 var console = this.console;
-                if (console.isReading()) {
+                if (console.reading()) {
                     console.updateForTimerTick(this);
                 }
                 else {

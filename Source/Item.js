@@ -87,7 +87,7 @@ var ThisCouldBeBetter;
                 this._scriptUseName = value;
                 return this;
             }
-            updateForTurn() {
+            updateForTurn(universe, world, place) {
                 // todo
             }
             use(universe, world, place, target) {

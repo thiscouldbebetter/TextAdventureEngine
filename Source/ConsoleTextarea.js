@@ -8,7 +8,7 @@ var ThisCouldBeBetter;
                 this.textCurrent = "";
                 this.textarea = textarea;
                 this.lineReadPrevious = "";
-                this._isReading = false;
+                this._reading = false;
                 this._textReadSoFar = null;
             }
             static default() {
@@ -20,17 +20,20 @@ var ThisCouldBeBetter;
             }
             draw() {
                 this.textarea.value = this.textCurrent;
-                if (this.isReading()) {
+                if (this.reading()) {
                     this.textarea.value += "_";
                 }
             }
-            isReading() {
-                return this._isReading;
-            }
             readLine() {
                 this.lineReadPrevious = this.textRead();
-                this._isReading = true;
+                this._reading = true;
                 this._textReadSoFar = "";
+            }
+            reading() {
+                return this._reading;
+            }
+            readingStop() {
+                this._reading = false;
             }
             textRead() {
                 return this._textReadSoFar;
@@ -39,7 +42,7 @@ var ThisCouldBeBetter;
                 this.writeBackspaces(this._textReadSoFar.length);
             }
             updateForTimerTick(universe) {
-                if (this.isReading()) {
+                if (this.reading()) {
                     var inputTracker = universe.inputTracker;
                     var keysPressedSinceLastTick = inputTracker.keysPressed();
                     for (var i = 0; i < keysPressedSinceLastTick.length; i++) {
@@ -53,7 +56,7 @@ var ThisCouldBeBetter;
                         }
                         else if (keyPressed == "Enter") {
                             this.writeLine("");
-                            this._isReading = false;
+                            this.readingStop();
                         }
                         else if (keyPressed == "Escape") {
                             this.textReadSoFarClear();

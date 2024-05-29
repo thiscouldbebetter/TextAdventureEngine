@@ -45,12 +45,15 @@ var ThisCouldBeBetter;
             namesInclude(nameToMatch) {
                 return this.names.indexOf(nameToMatch) >= 0;
             }
+            place(world) {
+                return world.placeContainingAgent(this);
+            }
             updateForTurn(universe, world, place) {
                 if (this.scriptUpdateForTurnName != null) {
                     var scriptUpdate = world.scriptByName(this.scriptUpdateForTurnName);
                     scriptUpdate.run(universe, world, place, this);
                 }
-                this.items.forEach(x => x.updateForTurn());
+                this.items.forEach(x => x.updateForTurn(universe, world, place));
             }
             // Clonable.
             clone() {

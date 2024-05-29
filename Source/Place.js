@@ -28,8 +28,10 @@ var ThisCouldBeBetter;
             static fromNameDescriptionScriptNameAndObjects(name, description, scriptUpdateForTurnName, objects) {
                 return new Place(name, description, scriptUpdateForTurnName, objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null);
             }
-            agentAdd(agent) {
+            agentAdd(agent, world) {
                 this.agents.push(agent);
+                var region = this.region(world);
+                region.agentAdd(agent);
             }
             agentByName(name) {
                 return this.agents.find(x => x.names.indexOf(name) >= 0);
@@ -78,7 +80,7 @@ var ThisCouldBeBetter;
                 this.emplacements.push(emplacement);
             }
             emplacementByName(name) {
-                return this.emplacements.find(x => x.names.indexOf(name) >= 0);
+                return this.emplacements.find(x => x.namesInclude(name));
             }
             emplacementRemove(emplacement) {
                 this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
@@ -143,6 +145,7 @@ var ThisCouldBeBetter;
                 if (scriptUpdateForTurn != null) {
                     scriptUpdateForTurn.run(universe, world, this);
                 }
+                this.items.forEach(x => x.updateForTurn(universe, world, this));
             }
             // Clonable.
             clone() {

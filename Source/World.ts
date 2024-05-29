@@ -76,6 +76,11 @@ export class World
 		return this.places.find(x => x.name == name);
 	}
 
+	placeContainingAgent(agentToFind: Agent): Place
+	{
+		return this.places.find(x => x.agents.indexOf(agentToFind) >= 0);
+	}
+
 	placeCurrent(): Place
 	{
 		return this.placeByName(this.placeCurrentName);
@@ -184,10 +189,11 @@ export class World
 		universe.console.clear();
 
 		var messageQueue = universe.messageQueue;
-		while (messageQueue.hasMessages())
+		var console = universe.console;
+		while (messageQueue.hasMessages() )
 		{
 			var message = messageQueue.dequeue();
-			universe.console.writeLinePlusBlankLine(message);
+			console.writeLinePlusBlankLine(message);
 		}
 	}
 

@@ -7,10 +7,11 @@ export class Universe
 	console: ConsoleTextarea;
 	inputTracker: InputTracker;
 	messageQueue: MessageQueue;
+	randomNumberGenerator: RandomNumberGenerator;
 	saveStateManager: SaveStateManager;
 	storageManager: StorageManager2;
 	timerManager: TimerManager;
-	worldCreate: ()=>World;
+	worldCreate: () => World;
 
 	world: World;
 	commandEnteredAsText: string;
@@ -19,7 +20,7 @@ export class Universe
 	(
 		console: ConsoleTextarea,
 		timerManager: TimerManager,
-		worldCreate: ()=>World
+		worldCreate: () => World
 	)
 	{
 		this.console = console;
@@ -27,7 +28,7 @@ export class Universe
 		this.worldCreate = worldCreate;
 	}
 
-	static fromWorldCreate(worldCreate: ()=>World): Universe
+	static fromWorldCreate(worldCreate: () => World): Universe
 	{
 		return new Universe
 		(
@@ -42,6 +43,8 @@ export class Universe
 		this.world = this.worldCreate();
 
 		this.messageQueue = new MessageQueue();
+
+		this.randomNumberGenerator = new RandomNumberGenerator();
 
 		this.storageManager = new StorageManagerMemory();
 
@@ -62,15 +65,16 @@ export class Universe
 		this.inputTracker.start();
 	}
 
-	messageEnqueue(message: string): void
+	messageEnqueue(message: string): Universe
 	{
 		this.messageQueue.enqueue(message);
+		return this;
 	}
 
 	updateForTimerTick(): void
 	{
 		var console = this.console;
-		if (console.isReading() )
+		if (console.reading() )
 		{
 			console.updateForTimerTick(this);
 		}

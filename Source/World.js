@@ -37,6 +37,9 @@ var ThisCouldBeBetter;
             placeByName(name) {
                 return this.places.find(x => x.name == name);
             }
+            placeContainingAgent(agentToFind) {
+                return this.places.find(x => x.agents.indexOf(agentToFind) >= 0);
+            }
             placeCurrent() {
                 return this.placeByName(this.placeCurrentName);
             }
@@ -95,9 +98,10 @@ var ThisCouldBeBetter;
                 universe.messageEnqueue(messageForPlaceCurrent);
                 universe.console.clear();
                 var messageQueue = universe.messageQueue;
+                var console = universe.console;
                 while (messageQueue.hasMessages()) {
                     var message = messageQueue.dequeue();
-                    universe.console.writeLinePlusBlankLine(message);
+                    console.writeLinePlusBlankLine(message);
                 }
             }
             // Clonable.
