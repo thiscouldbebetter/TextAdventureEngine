@@ -2,23 +2,28 @@
 namespace ThisCouldBeBetter.TextAdventureEngine
 {
 
+export interface Message
+{
+	consoleUpdate(console: ConsoleTextarea): void;
+}
+
 export class MessageQueue
 {
-	messages: string[];
+	messages: Message[];
 
 	constructor()
 	{
 		this.messages = [];
 	}
 
-	dequeue(): string
+	dequeue(): Message
 	{
 		var message = this.messages[0];
 		this.messages.splice(0, 1);
 		return message;
 	}
 
-	enqueue(message: string): void
+	enqueue(message: Message): void
 	{
 		this.messages.push(message);
 	}
@@ -28,7 +33,7 @@ export class MessageQueue
 		while (this.hasMessages() )
 		{
 			var message = this.dequeue();
-			console.writeLinePlusBlankLine(message);
+			message.consoleUpdate(console);
 		}
 
 		return this;
@@ -39,5 +44,21 @@ export class MessageQueue
 		return (this.messages.length > 0);
 	}
 }
+
+export class MessageText
+{
+	text: string;
+
+	constructor(text: string)
+	{
+		this.text = text;
+	}
+
+	consoleUpdate(console: ConsoleTextarea): void
+	{
+		console.writeLinePlusBlankLine(this.text);
+	}
+}
+
 
 }

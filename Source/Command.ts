@@ -142,6 +142,11 @@ export class Command
 		return this;
 	}
 
+	textsInclude(textToCheck: string): boolean
+	{
+		return this.texts.indexOf(textToCheck) >= 0;
+	}
+
 	// Clonable.
 
 	clone(): Command

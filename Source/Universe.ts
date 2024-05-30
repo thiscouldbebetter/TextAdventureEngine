@@ -65,8 +65,9 @@ export class Universe
 		this.inputTracker.start();
 	}
 
-	messageEnqueue(message: string): Universe
+	messageEnqueue(messageAsText: string): Universe
 	{
+		var message = new MessageText(messageAsText);
 		this.messageQueue.enqueue(message);
 		return this;
 	}

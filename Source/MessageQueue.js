@@ -18,7 +18,7 @@ var ThisCouldBeBetter;
             flushToConsole(console) {
                 while (this.hasMessages()) {
                     var message = this.dequeue();
-                    console.writeLinePlusBlankLine(message);
+                    message.consoleUpdate(console);
                 }
                 return this;
             }
@@ -27,5 +27,14 @@ var ThisCouldBeBetter;
             }
         }
         TextAdventureEngine.MessageQueue = MessageQueue;
+        class MessageText {
+            constructor(text) {
+                this.text = text;
+            }
+            consoleUpdate(console) {
+                console.writeLinePlusBlankLine(this.text);
+            }
+        }
+        TextAdventureEngine.MessageText = MessageText;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));
 })(ThisCouldBeBetter || (ThisCouldBeBetter = {}));

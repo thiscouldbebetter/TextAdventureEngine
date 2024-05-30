@@ -130,7 +130,8 @@ export class Agent
 		place: Place
 	): void
 	{
-		var itemToDrop = this.itemRemoveQuantity(itemToDrop, quantityToDrop);
+		var itemToDrop =
+			this.itemRemoveQuantity(itemToDrop, quantityToDrop);
 		if (itemToDrop != null)
 		{
 			place.itemAdd(itemToDrop);
@@ -174,6 +175,18 @@ export class Agent
 		}
 
 		return itemRemoved;
+	}
+
+	itemWithNameRemove(name: string): Agent
+	{
+		var itemToRemove = this.itemByName(name);
+
+		if (itemToRemove != null)
+		{
+			this.itemRemove(itemToRemove);
+		}
+
+		return this;
 	}
 
 	// Serialization.

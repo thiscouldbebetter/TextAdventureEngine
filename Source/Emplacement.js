@@ -36,6 +36,13 @@ var ThisCouldBeBetter;
                 var command = new TextAdventureEngine.Command(commandTexts, scriptName);
                 return this.commandAdd(command);
             }
+            commandWithTextRemove(commandText) {
+                var commandToRemove = this.commands.find(x => x.textsInclude(commandText));
+                if (commandToRemove != null) {
+                    this.commands.splice(this.commands.indexOf(commandToRemove), 1);
+                }
+                return this;
+            }
             descriptionSet(value) {
                 this.description = value;
                 return this;

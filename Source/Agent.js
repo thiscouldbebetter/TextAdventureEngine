@@ -98,6 +98,13 @@ var ThisCouldBeBetter;
                 }
                 return itemRemoved;
             }
+            itemWithNameRemove(name) {
+                var itemToRemove = this.itemByName(name);
+                if (itemToRemove != null) {
+                    this.itemRemove(itemToRemove);
+                }
+                return this;
+            }
             // Serialization.
             static prototypesSet(instanceAsObject) {
                 Object.setPrototypeOf(instanceAsObject, Agent.prototype);

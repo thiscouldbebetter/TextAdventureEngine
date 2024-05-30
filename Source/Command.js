@@ -84,6 +84,9 @@ var ThisCouldBeBetter;
                 this.texts[0] = value;
                 return this;
             }
+            textsInclude(textToCheck) {
+                return this.texts.indexOf(textToCheck) >= 0;
+            }
             // Clonable.
             clone() {
                 return new Command(this.texts.map(x => x), this.scriptExecuteName);

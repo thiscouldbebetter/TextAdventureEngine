@@ -80,10 +80,25 @@ export class Emplacement
 		return this;
 	}
 
-	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Emplacement
+	commandAddFromTextsAndScriptName
+	(
+		commandTexts: string[], scriptName: string
+	): Emplacement
 	{
 		var command = new Command(commandTexts, scriptName);
 		return this.commandAdd(command);
+	}
+
+	commandWithTextRemove(commandText: string): Emplacement
+	{
+		var commandToRemove =
+			this.commands.find(x => x.textsInclude(commandText) );
+		if (commandToRemove != null)
+		{
+			this.commands.splice(this.commands.indexOf(commandToRemove), 1);
+		}
+
+		return this;
 	}
 
 	descriptionSet(value: string): Emplacement

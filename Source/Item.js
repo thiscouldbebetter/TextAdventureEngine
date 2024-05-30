@@ -60,7 +60,10 @@ var ThisCouldBeBetter;
                 return this.names[0];
             }
             nameAndQuantity() {
-                return this.name() + (this.quantity > 1 ? " (" + this.quantity + ")" : "");
+                var quantityOrNotAsString = (this.quantity > 1 ? "" + this.quantity + " " : "");
+                var name = this.name();
+                var returnValue = quantityOrNotAsString + name;
+                return returnValue;
             }
             namesInclude(nameToMatch) {
                 return this.names.indexOf(nameToMatch) >= 0;

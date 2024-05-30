@@ -114,7 +114,14 @@ export class Item
 
 	nameAndQuantity(): string
 	{
-		return this.name() + (this.quantity > 1 ? " (" + this.quantity + ")" : "");
+		var quantityOrNotAsString =
+			(this.quantity > 1 ? "" + this.quantity + " " : "");
+
+		var name = this.name();
+
+		var returnValue = quantityOrNotAsString + name;
+
+		return returnValue;
 	}
 
 	namesInclude(nameToMatch: string): boolean

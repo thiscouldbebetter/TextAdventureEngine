@@ -26,7 +26,8 @@ var ThisCouldBeBetter;
                 this.timerManager.start();
                 this.inputTracker.start();
             }
-            messageEnqueue(message) {
+            messageEnqueue(messageAsText) {
+                var message = new TextAdventureEngine.MessageText(messageAsText);
                 this.messageQueue.enqueue(message);
                 return this;
             }

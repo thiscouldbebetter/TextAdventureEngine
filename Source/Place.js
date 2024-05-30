@@ -84,6 +84,14 @@ var ThisCouldBeBetter;
             }
             emplacementRemove(emplacement) {
                 this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
+                return this;
+            }
+            emplacementWithNameRemove(name) {
+                var emplacementToRemove = this.emplacementByName(name);
+                if (emplacementToRemove != null) {
+                    this.emplacementRemove(emplacementToRemove);
+                }
+                return this;
             }
             itemAdd(item) {
                 this.items.push(item);

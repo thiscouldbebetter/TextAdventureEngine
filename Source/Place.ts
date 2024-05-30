@@ -192,9 +192,20 @@ export class Place
 		return this.emplacements.find(x => x.namesInclude(name) );
 	}
 
-	emplacementRemove(emplacement: Emplacement): void
+	emplacementRemove(emplacement: Emplacement): Place
 	{
 		this.emplacements.splice(this.emplacements.indexOf(emplacement), 1);
+		return this;
+	}
+
+	emplacementWithNameRemove(name: string): Place
+	{
+		var emplacementToRemove = this.emplacementByName(name);
+		if (emplacementToRemove != null)
+		{
+			this.emplacementRemove(emplacementToRemove);
+		}
+		return this;
 	}
 
 	itemAdd(item: Item): Place
