@@ -4,22 +4,22 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Agent {
-            constructor(names, description, scriptUpdateForTurnName, stateGroup, items, commands) {
+            constructor(names, descriptionWhenExamined, scriptUpdateForTurnName, stateGroup, items, commands) {
                 this.names = names;
-                this.description = description;
+                this.descriptionWhenExamined = descriptionWhenExamined;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
                 this.items = items || [];
                 this._commands = commands || [];
             }
-            static fromNameAndDescription(name, description) {
-                return new Agent([name], description, null, null, null, null);
+            static fromNameAndDescription(name, descriptionWhenExamined) {
+                return new Agent([name], descriptionWhenExamined, null, null, null, null);
             }
             static fromNames(names) {
                 return new Agent(names, null, null, null, null, null);
             }
-            static fromNamesAndDescription(names, description) {
-                return new Agent(names, description, null, null, null, null);
+            static fromNamesAndDescription(names, descriptionWhenExamined) {
+                return new Agent(names, descriptionWhenExamined, null, null, null, null);
             }
             commands() {
                 var commandsAll = new Array();
@@ -35,8 +35,8 @@ var ThisCouldBeBetter;
                 var command = TextAdventureEngine.Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
                 return this.commandAdd(command);
             }
-            descriptionSet(value) {
-                this.description = value;
+            descriptionWhenExaminedSet(value) {
+                this.descriptionWhenExamined = value;
                 return this;
             }
             name() {
@@ -57,7 +57,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Agent(this.names.map(x => x), this.description, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.descriptionWhenExamined, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {

@@ -126,15 +126,11 @@ var ThisCouldBeBetter;
                 this.Help = Command.fromTextsAndScriptExecute(["?", "help"], new TextAdventureEngine.Script("Help", this.help));
                 this.InventoryView = Command.fromTextsAndScriptExecute(["inventory", "look at possessions"], new TextAdventureEngine.Script("InventoryView", this.inventoryView));
                 this.LockOrUnlockSomething = Command.fromTextsAndScriptExecute(["lock ", "unlock "], new TextAdventureEngine.Script("LockOrUnlockSomething", this.lockOrUnlockSomething));
-                this.LookAround = Command.fromTextsAndScriptExecute([
-                    "look around",
-                    "look",
-                    "look at place",
-                    "look at room",
-                    "examine place",
-                    "examine room",
-                    "examine surroundings"
-                ], new TextAdventureEngine.Script("LookAround", this.lookAround));
+                this.LookAround = Command.fromTextSourceAndScriptExecute(TextAdventureEngine.TextSourcePhraseCombination.fromPhraseArrays([
+                    ["look", "examine"],
+                    [null, "at"],
+                    ["around", "place", "room", "surroundings"]
+                ]), new TextAdventureEngine.Script("LookAround", this.lookAround));
                 this.LookAtSomething = Command.fromTextsAndScriptExecute(["look at ", "examine ", "watch ", "view "], new TextAdventureEngine.Script("LookAtSomething", this.lookAtSomething));
                 this.LookSomewhere = Command.fromTextsAndScriptExecute(["look "], new TextAdventureEngine.Script("LookSomewhere", this.lookAtSomething) // hack
                 );
@@ -448,7 +444,8 @@ var ThisCouldBeBetter;
             }
             lookAround(universe, world, place, command) {
                 place = world.placeCurrent();
-                universe.messageEnqueue(place.description);
+                var placeDescriptionIncludingObjects = place.descriptionIncludingObjects();
+                universe.messageEnqueue(placeDescriptionIncludingObjects);
             }
             lookAtSomething(universe, world, place, command) {
                 var commandText = command.text();
@@ -484,7 +481,7 @@ var ThisCouldBeBetter;
                         }
                         else if (targetsFound.length > 0) {
                             var targetFound = targetsFound[0];
-                            targetDescription = targetFound.description;
+                            targetDescription = targetFound.descriptionWhenExamined;
                             if (targetDescription == null) {
                                 targetDescription = "You don't see anything notable.";
                             }

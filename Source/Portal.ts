@@ -5,7 +5,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class Portal
 {
 	names: string[];
-	description: string;
+	descriptionWhenExamined: string;
 	placeDestinationName: string;
 	scriptUseName: string;
 	stateGroup: StateGroup;
@@ -16,7 +16,7 @@ export class Portal
 	constructor
 	(
 		names: string[],
-		description: string,
+		descriptionWhenExamined: string,
 		placeDestinationName: string,
 		scriptUseName: string,
 		visible: boolean,
@@ -25,7 +25,7 @@ export class Portal
 	)
 	{
 		this.names = names;
-		this.description = description;
+		this.descriptionWhenExamined = descriptionWhenExamined;
 		this.placeDestinationName = placeDestinationName;
 		this.scriptUseName = scriptUseName;
 		this._visible = visible || true;
@@ -64,18 +64,18 @@ export class Portal
 
 	static fromNamesDescriptionAndPlaceDestinationName
 	(
-		names: string[], description: string, placeDestinationName: string
+		names: string[], descriptionWhenExamined: string, placeDestinationName: string
 	): Portal
 	{
 		return Portal
 			.fromNames(names)
-			.descriptionSet(description)
+			.descriptionWhenExaminedSet(descriptionWhenExamined)
 			.placeDestinationNameSet(placeDestinationName);
 	}
 
-	descriptionSet(value: string): Portal
+	descriptionWhenExaminedSet(value: string): Portal
 	{
-		this.description = value;
+		this.descriptionWhenExamined = value;
 		return this;
 	}
 
@@ -136,7 +136,7 @@ export class Portal
 		return new Portal
 		(
 			this.names.map(x => x),
-			this.description,
+			this.descriptionWhenExamined,
 			this.placeDestinationName,
 			this.scriptUseName,
 			this._visible,

@@ -5,7 +5,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class Agent
 {
 	names: string[];
-	description: string;
+	descriptionWhenExamined: string;
 	scriptUpdateForTurnName: string;
 	stateGroup : StateGroup;
 	items: Item[];
@@ -14,7 +14,7 @@ export class Agent
 	constructor
 	(
 		names: string[],
-		description: string,
+		descriptionWhenExamined: string,
 		scriptUpdateForTurnName: string,
 		stateGroup: StateGroup,
 		items: Item[],
@@ -22,16 +22,16 @@ export class Agent
 	)
 	{
 		this.names = names;
-		this.description = description;
+		this.descriptionWhenExamined = descriptionWhenExamined;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
 		this.stateGroup = stateGroup || StateGroup.create();
 		this.items = items || [];
 		this._commands = commands || [];
 	}
 
-	static fromNameAndDescription(name: string, description: string): Agent
+	static fromNameAndDescription(name: string, descriptionWhenExamined: string): Agent
 	{
-		return new Agent( [ name ], description, null, null, null, null);
+		return new Agent( [ name ], descriptionWhenExamined, null, null, null, null);
 	}
 
 	static fromNames(names: string[]): Agent
@@ -39,9 +39,9 @@ export class Agent
 		return new Agent(names, null, null, null, null, null);
 	}
 
-	static fromNamesAndDescription(names: string[], description: string): Agent
+	static fromNamesAndDescription(names: string[], descriptionWhenExamined: string): Agent
 	{
-		return new Agent(names, description, null, null, null, null);
+		return new Agent(names, descriptionWhenExamined, null, null, null, null);
 	}
 
 	commands(): Command[]
@@ -64,9 +64,9 @@ export class Agent
 		return this.commandAdd(command);
 	}
 
-	descriptionSet(value: string): Agent
+	descriptionWhenExaminedSet(value: string): Agent
 	{
-		this.description = value;
+		this.descriptionWhenExamined = value;
 		return this;
 	}
 
@@ -103,7 +103,7 @@ export class Agent
 		return new Agent
 		(
 			this.names.map(x => x),
-			this.description,
+			this.descriptionWhenExamined,
 			this.scriptUpdateForTurnName,
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),

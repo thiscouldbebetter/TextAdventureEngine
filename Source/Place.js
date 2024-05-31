@@ -46,13 +46,24 @@ var ThisCouldBeBetter;
                 this.agents.forEach(x => commandsAll.push(...x.commands()));
                 return commandsAll;
             }
+            descriptionIncludingObjects() {
+                var placeAndObjectDescriptions = [
+                    this.description
+                ];
+                var emplacementDescriptions = this.emplacements.map(x => x.descriptionAsPartOfPlace).filter(x => x != null);
+                placeAndObjectDescriptions.push(...emplacementDescriptions);
+                var blankLine = "\n\n";
+                var placeDescriptionIncludingObjects = placeAndObjectDescriptions.join(blankLine);
+                return placeDescriptionIncludingObjects;
+            }
             draw(universe, world) {
                 var linesToWrite = [
                     "Location: " + this.name
                 ];
                 var hasBeenVisited = this.hasBeenVisited();
                 if (hasBeenVisited == false) {
-                    linesToWrite.push(this.description);
+                    var descriptionIncludingObjects = this.descriptionIncludingObjects();
+                    linesToWrite.push(descriptionIncludingObjects);
                 }
                 this.visit(); // hack
                 var objectArraysPresent = [

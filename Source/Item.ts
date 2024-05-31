@@ -6,7 +6,7 @@ export class Item
 {
 	names: string[];
 	quantity: number;
-	description: string;
+	descriptionWhenExamined: string;
 	_scriptGetName: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
@@ -17,7 +17,7 @@ export class Item
 	(
 		names: string[],
 		quantity: number,
-		description: string,
+		descriptionWhenExamined: string,
 		scriptGetName: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
@@ -27,7 +27,7 @@ export class Item
 	{
 		this.names = names;
 		this.quantity = quantity || 1;
-		this.description = description;
+		this.descriptionWhenExamined = descriptionWhenExamined;
 		this._scriptGetName = scriptGetName;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
@@ -47,7 +47,7 @@ export class Item
 
 	static fromNamesAndDescription(names: string[], description: string): Item
 	{
-		return Item.fromNames(names).descriptionSet(description);
+		return Item.fromNames(names).descriptionWhenExaminedSet(description);
 	}
 
 	static fromNamesDescriptionAndScriptUseName
@@ -89,9 +89,9 @@ export class Item
 		return this.commandAdd(command);
 	}
 
-	descriptionSet(value: string): Item
+	descriptionWhenExaminedSet(value: string): Item
 	{
-		this.description = value;
+		this.descriptionWhenExamined = value;
 		return this;
 	}
 
@@ -196,7 +196,7 @@ export class Item
 		(
 			this.names.map(x => x),
 			this.quantity,
-			this.description,
+			this.descriptionWhenExamined,
 			this._scriptGetName,
 			this._scriptUseName,
 			this.stateGroup.clone(),

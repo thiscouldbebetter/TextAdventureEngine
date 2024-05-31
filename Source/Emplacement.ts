@@ -5,7 +5,8 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class Emplacement
 {
 	names: string[];
-	description: string;
+	descriptionAsPartOfPlace: string;
+	descriptionWhenExamined: string;
 	_scriptUseName: string;
 	stateGroup: StateGroup;
 	items: Item[];
@@ -14,7 +15,8 @@ export class Emplacement
 	constructor
 	(
 		names: string[],
-		description: string,
+		descriptionAsPartOfPlace: string,
+		descriptionWhenExamined: string,
 		scriptUseName: string,
 		stateGroup: StateGroup,
 		items: Item[],
@@ -22,7 +24,8 @@ export class Emplacement
 	)
 	{
 		this.names = names;
-		this.description = description;
+		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
+		this.descriptionWhenExamined = descriptionWhenExamined;
 		this._scriptUseName = scriptUseName;
 		this.stateGroup = stateGroup || new StateGroup([]);
 		this.items = items || [];
@@ -38,32 +41,43 @@ export class Emplacement
 	{
 		var description = "You don't see anything notable.";
 
-		return Emplacement.fromNamesAndDescription
+		return Emplacement.fromNamesAndDescriptions
 		(
 			names,
+			description,
 			description
 		);
 	}
 
-	static fromNamesAndDescription(names: string[], description: string): Emplacement
-	{
-		return new Emplacement
-		(
-			names,
-			description,
-			null, null, null, null
-		);
-	}
-
-	static fromNamesDescriptionAndScriptUseName
+	static fromNamesAndDescriptions
 	(
-		names: string[], description: string, scriptUseName: string
+		names: string[],
+		descriptionAsPartOfPlace: string,
+		descriptionWhenExamined: string
 	): Emplacement
 	{
 		return new Emplacement
 		(
 			names,
-			description,
+			descriptionAsPartOfPlace,
+			descriptionWhenExamined,
+			null, null, null, null
+		);
+	}
+
+	static fromNamesDescriptionsAndScriptUseName
+	(
+		names: string[],
+		descriptionAsPartOfPlace: string,
+		descriptionWhenExamined: string,
+		scriptUseName: string
+	): Emplacement
+	{
+		return new Emplacement
+		(
+			names,
+			descriptionAsPartOfPlace,
+			descriptionWhenExamined,
 			scriptUseName,
 			null, null, null
 		);
@@ -110,9 +124,15 @@ export class Emplacement
 		return this;
 	}
 
-	descriptionSet(value: string): Emplacement
+	descriptionAsPartOfPlaceSet(value: string): Emplacement
 	{
-		this.description = value;
+		this.descriptionAsPartOfPlace = value;
+		return this;
+	}
+
+	descriptionWhenExaminedSet(value: string): Emplacement
+	{
+		this.descriptionWhenExamined = value;
 		return this;
 	}
 
@@ -158,7 +178,8 @@ export class Emplacement
 		return new Emplacement
 		(
 			this.names.map(x => x),
-			this.description,
+			this.descriptionAsPartOfPlace,
+			this.descriptionWhenExamined,
 			this._scriptUseName,
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),

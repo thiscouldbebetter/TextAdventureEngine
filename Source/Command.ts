@@ -329,17 +329,14 @@ export class Command_Instances
 			new Script("LockOrUnlockSomething", this.lockOrUnlockSomething)
 		);
 
-		this.LookAround = Command.fromTextsAndScriptExecute
+		this.LookAround = Command.fromTextSourceAndScriptExecute
 		(
-			[
-				"look around",
-				"look",
-				"look at place",
-				"look at room",
-				"examine place",
-				"examine room",
-				"examine surroundings"
-			],
+			TextSourcePhraseCombination.fromPhraseArrays
+			([
+				[ "look", "examine" ],
+				[ null, "at" ],
+				[ "around", "place", "room", "surroundings" ]
+			]),
 			new Script("LookAround", this.lookAround)
 		);
 
@@ -854,7 +851,11 @@ export class Command_Instances
 	lookAround(universe: Universe, world: World, place: Place, command: Command): void
 	{
 		place = world.placeCurrent();
-		universe.messageEnqueue(place.description);
+
+		var placeDescriptionIncludingObjects =
+			place.descriptionIncludingObjects();
+
+		universe.messageEnqueue(placeDescriptionIncludingObjects);
 	}
 
 	lookAtSomething(universe: Universe, world: World, place: Place, command: Command): void
@@ -907,7 +908,7 @@ export class Command_Instances
 				else if (targetsFound.length > 0)
 				{
 					var targetFound = targetsFound[0];
-					targetDescription = targetFound.description;
+					targetDescription = targetFound.descriptionWhenExamined;
 					if (targetDescription == null)
 					{
 						targetDescription = "You don't see anything notable."

@@ -137,6 +137,26 @@ export class Place
 		return commandsAll;
 	}
 
+	descriptionIncludingObjects(): string
+	{
+		var placeAndObjectDescriptions =
+		[
+			this.description
+		];
+
+		var emplacementDescriptions =
+			this.emplacements.map(x => x.descriptionAsPartOfPlace).filter(x => x != null);
+
+		placeAndObjectDescriptions.push(...emplacementDescriptions);
+
+		var blankLine = "\n\n";
+
+		var placeDescriptionIncludingObjects =
+			placeAndObjectDescriptions.join(blankLine);
+
+		return placeDescriptionIncludingObjects;
+	}
+
 	draw(universe: Universe, world: World): string
 	{
 		var linesToWrite =
@@ -147,7 +167,9 @@ export class Place
 		var hasBeenVisited = this.hasBeenVisited();
 		if (hasBeenVisited == false)
 		{
-			linesToWrite.push(this.description);
+			var descriptionIncludingObjects =
+				this.descriptionIncludingObjects();
+			linesToWrite.push(descriptionIncludingObjects);
 		}
 
 		this.visit(); // hack

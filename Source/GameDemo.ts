@@ -46,9 +46,11 @@ export class GameDemo
 				+ "  There are doors to the north, south, east, and west.",
 			scriptsCustom.PlaceCenterRoomUpdate.name,
 			[
-				Emplacement.fromNamesAndDescription
+				Emplacement.fromNamesAndDescriptions
 				(
-					[ "pool" ], "This is a shallow, dirty, foul-smelling pool of water."
+					[ "pool" ],
+					"The center of the room is occupied by a shallow pool of water.",
+					"This is a shallow, dirty, foul-smelling pool of water."
 				),
 				portal( [ "east" ], portalDescription, placeEasternRoomName),
 				portal( [ "north" ], portalDescription, placeNorthernRoomName),
@@ -83,9 +85,10 @@ export class GameDemo
 			"This room is east of the center.  A doorway to the west leads back to the Center Room.",
 			[
 				portal( [ "west" ], portalDescription, placeCenterRoomName),
-				Emplacement.fromNamesDescriptionAndScriptUseName
+				Emplacement.fromNamesDescriptionsAndScriptUseName
 				(
 					[ "chest", "box" ],
+					"There is a chest here.",
 					"This is a sturdy, and very heavy, oaken chest with a lock.",
 					scriptsCustom.EmplacementChestUse.name
 				)
@@ -408,9 +411,10 @@ class Scripts
 			u.messageEnqueue(message);
 			place.agentRemove(target);
 
-			var emplacementTrollBody = Emplacement.fromNamesDescriptionAndScriptUseName
+			var emplacementTrollBody = Emplacement.fromNamesDescriptionsAndScriptUseName
 			(
 				[ "troll body", "body", "corpse", "troll body", "troll corpse", "dead troll" ],
+				"A headless troll corpse is here.",
 				"This is the headless corpse of the troll, naked except for a small coin purse.",
 				"EmplacementTrollBodyUse"
 			);

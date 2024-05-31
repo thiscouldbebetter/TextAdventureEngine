@@ -4,9 +4,9 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Portal {
-            constructor(names, description, placeDestinationName, scriptUseName, visible, passable, stateGroup) {
+            constructor(names, descriptionWhenExamined, placeDestinationName, scriptUseName, visible, passable, stateGroup) {
                 this.names = names;
-                this.description = description;
+                this.descriptionWhenExamined = descriptionWhenExamined;
                 this.placeDestinationName = placeDestinationName;
                 this.scriptUseName = scriptUseName;
                 this._visible = visible || true;
@@ -24,14 +24,14 @@ var ThisCouldBeBetter;
                     .fromNames(names)
                     .placeDestinationNameSet(placeDestinationName);
             }
-            static fromNamesDescriptionAndPlaceDestinationName(names, description, placeDestinationName) {
+            static fromNamesDescriptionAndPlaceDestinationName(names, descriptionWhenExamined, placeDestinationName) {
                 return Portal
                     .fromNames(names)
-                    .descriptionSet(description)
+                    .descriptionWhenExaminedSet(descriptionWhenExamined)
                     .placeDestinationNameSet(placeDestinationName);
             }
-            descriptionSet(value) {
-                this.description = value;
+            descriptionWhenExaminedSet(value) {
+                this.descriptionWhenExamined = value;
                 return this;
             }
             name() {
@@ -70,7 +70,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Portal(this.names.map(x => x), this.description, this.placeDestinationName, this.scriptUseName, this._visible, this._passable, this.stateGroup.clone());
+                return new Portal(this.names.map(x => x), this.descriptionWhenExamined, this.placeDestinationName, this.scriptUseName, this._visible, this._passable, this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

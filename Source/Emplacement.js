@@ -4,9 +4,10 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Emplacement {
-            constructor(names, description, scriptUseName, stateGroup, items, commands) {
+            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUseName, stateGroup, items, commands) {
                 this.names = names;
-                this.description = description;
+                this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
+                this.descriptionWhenExamined = descriptionWhenExamined;
                 this._scriptUseName = scriptUseName;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
                 this.items = items || [];
@@ -17,13 +18,13 @@ var ThisCouldBeBetter;
             }
             static fromNames(names) {
                 var description = "You don't see anything notable.";
-                return Emplacement.fromNamesAndDescription(names, description);
+                return Emplacement.fromNamesAndDescriptions(names, description, description);
             }
-            static fromNamesAndDescription(names, description) {
-                return new Emplacement(names, description, null, null, null, null);
+            static fromNamesAndDescriptions(names, descriptionAsPartOfPlace, descriptionWhenExamined) {
+                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, null, null, null, null);
             }
-            static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
-                return new Emplacement(names, description, scriptUseName, null, null, null);
+            static fromNamesDescriptionsAndScriptUseName(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUseName) {
+                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUseName, null, null, null);
             }
             canBeUsed() {
                 return (this._scriptUseName != null);
@@ -47,8 +48,12 @@ var ThisCouldBeBetter;
                 }
                 return this;
             }
-            descriptionSet(value) {
-                this.description = value;
+            descriptionAsPartOfPlaceSet(value) {
+                this.descriptionAsPartOfPlace = value;
+                return this;
+            }
+            descriptionWhenExaminedSet(value) {
+                this.descriptionWhenExamined = value;
                 return this;
             }
             itemAdd(itemToAdd) {
@@ -75,7 +80,7 @@ var ThisCouldBeBetter;
             }
             // Clone.
             clone() {
-                return new Emplacement(this.names.map(x => x), this.description, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Emplacement(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
