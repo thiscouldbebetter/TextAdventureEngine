@@ -4,57 +4,90 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 
 export class Command
 {
-	texts: string[];
+	textSource: TextSource;
 	scriptExecuteName: string;
 
 	_scriptExecute: any; // hack
 
 	constructor
 	(
-		texts: string[],
+		textSource: TextSource,
 		scriptExecuteName: string
 	)
 	{
-		this.texts = texts;
+		this.textSource = textSource;
 		this.scriptExecuteName = scriptExecuteName;
 	}
 
 	static fromTextAndScriptExecuteName(text: string, scriptExecuteName: string): Command
 	{
-		return new Command( [ text ], scriptExecuteName);
+		return new Command( TextSourceStrings.fromString(text), scriptExecuteName);
 	}
 
-	static fromTextsAndScriptExecute(texts: string[], scriptExecute: any): Command
+	static fromTextSourceAndScriptExecute
+	(
+		textSource: TextSource, scriptExecute: Script
+	): Command
 	{
 		var returnValue =
-			new Command(texts, scriptExecute.name);
+			Command.fromTextSourceAndScriptExecuteName
+			(
+				textSource, scriptExecute.name
+			);
 		returnValue._scriptExecute = scriptExecute;
 		return returnValue;
 	}
 
-	static fromTextsAndScriptExecuteName(texts: string[], scriptExecuteName: string): Command
+	static fromTextSourceAndScriptExecuteName
+	(
+		textSource: TextSource, scriptExecuteName: string
+	): Command
 	{
-		return new Command( texts, scriptExecuteName);
+		return new Command(textSource, scriptExecuteName);
+	}
+
+	static fromTextsAndScriptExecute
+	(
+		texts: string[],
+		scriptExecute: Script
+	): Command
+	{
+		return Command.fromTextSourceAndScriptExecute
+		(
+			TextSourceStrings.fromStrings(texts), scriptExecute
+		);
+	}
+
+	static fromTextsAndScriptExecuteName
+	(
+		texts: string[], scriptExecuteName: string
+	): Command
+	{
+		return new Command(TextSourceStrings.fromStrings(texts), scriptExecuteName);
 	}
 
 	static fromTextAndCommands(commandTextToMatch: string, commands: Command[]): Command
 	{
 		var commandsMatching = commands.filter
 		(
-			command => command.texts.some(text => commandTextToMatch.startsWith(text) )
+			command => command.textSource.textMatchesAtStart(commandTextToMatch)
 		);
 
 		var commandMatching: Command;
 		if (commandsMatching.length == 0)
 		{
 			commandMatching = commands.find(x => x.text() == "unrecognized");
-			commandMatching = commandMatching.clone().textSet(commandTextToMatch);
+			commandMatching =
+				commandMatching.clone().textSourceSet
+				(
+					TextSourceStrings.fromString(commandTextToMatch)
+				);
 		}
 		else
 		{
 			var commandMatchingExactly = commands.find
 			(
-				command => command.texts.some(text => text == commandTextToMatch)
+				command => command.textSource.textMatches(commandTextToMatch)
 			);
 
 			if (commandMatchingExactly == null)
@@ -64,10 +97,14 @@ export class Command
 				for (var c = 0; c < commandsMatching.length; c++)
 				{
 					var commandMatching = commandsMatching[c];
-					var commandTextMatching = commandMatching.texts.find
+					var commandTextMatches = commandMatching.textSource.textMatchesAtStart
 					(
-						x => commandTextToMatch.startsWith(x)
+						commandTextToMatch
 					);
+					var commandTextMatching =
+						commandTextMatches
+						? commandMatching.textSource.textDefault()
+						: "";
 					if (commandTextMatching.length > commandTextMatchingLongestSoFar.length)
 					{
 						commandTextMatchingLongestSoFar =
@@ -82,7 +119,7 @@ export class Command
 				commandMatching = commandMatchingExactly;
 			}
 			commandMatching = commandMatching.clone();
-			commandMatching.textSet(commandTextToMatch);
+			commandMatching.textSourceSet(TextSourceStrings.fromString(commandTextToMatch) );
 		}
 
 		return commandMatching;
@@ -133,18 +170,18 @@ export class Command
 
 	text(): string
 	{
-		return this.texts[0];
+		return this.textSource.textDefault();
 	}
 
-	textSet(value: string): Command
+	textSourceSet(value: TextSource): Command
 	{
-		this.texts[0] = value;
+		this.textSource = value;
 		return this;
 	}
 
 	textsInclude(textToCheck: string): boolean
 	{
-		return this.texts.indexOf(textToCheck) >= 0;
+		return this.textSource.textMatches(textToCheck);
 	}
 
 	// Clonable.
@@ -153,7 +190,7 @@ export class Command
 	{
 		return new Command
 		(
-			this.texts.map(x => x),
+			this.textSource.clone(),
 			this.scriptExecuteName
 		);
 	}

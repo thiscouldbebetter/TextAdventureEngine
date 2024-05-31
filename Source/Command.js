@@ -4,35 +4,45 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Command {
-            constructor(texts, scriptExecuteName) {
-                this.texts = texts;
+            constructor(textSource, scriptExecuteName) {
+                this.textSource = textSource;
                 this.scriptExecuteName = scriptExecuteName;
             }
             static fromTextAndScriptExecuteName(text, scriptExecuteName) {
-                return new Command([text], scriptExecuteName);
+                return new Command(TextAdventureEngine.TextSourceStrings.fromString(text), scriptExecuteName);
             }
-            static fromTextsAndScriptExecute(texts, scriptExecute) {
-                var returnValue = new Command(texts, scriptExecute.name);
+            static fromTextSourceAndScriptExecute(textSource, scriptExecute) {
+                var returnValue = Command.fromTextSourceAndScriptExecuteName(textSource, scriptExecute.name);
                 returnValue._scriptExecute = scriptExecute;
                 return returnValue;
             }
+            static fromTextSourceAndScriptExecuteName(textSource, scriptExecuteName) {
+                return new Command(textSource, scriptExecuteName);
+            }
+            static fromTextsAndScriptExecute(texts, scriptExecute) {
+                return Command.fromTextSourceAndScriptExecute(TextAdventureEngine.TextSourceStrings.fromStrings(texts), scriptExecute);
+            }
             static fromTextsAndScriptExecuteName(texts, scriptExecuteName) {
-                return new Command(texts, scriptExecuteName);
+                return new Command(TextAdventureEngine.TextSourceStrings.fromStrings(texts), scriptExecuteName);
             }
             static fromTextAndCommands(commandTextToMatch, commands) {
-                var commandsMatching = commands.filter(command => command.texts.some(text => commandTextToMatch.startsWith(text)));
+                var commandsMatching = commands.filter(command => command.textSource.textMatchesAtStart(commandTextToMatch));
                 var commandMatching;
                 if (commandsMatching.length == 0) {
                     commandMatching = commands.find(x => x.text() == "unrecognized");
-                    commandMatching = commandMatching.clone().textSet(commandTextToMatch);
+                    commandMatching =
+                        commandMatching.clone().textSourceSet(TextAdventureEngine.TextSourceStrings.fromString(commandTextToMatch));
                 }
                 else {
-                    var commandMatchingExactly = commands.find(command => command.texts.some(text => text == commandTextToMatch));
+                    var commandMatchingExactly = commands.find(command => command.textSource.textMatches(commandTextToMatch));
                     if (commandMatchingExactly == null) {
                         var commandTextMatchingLongestSoFar = "";
                         for (var c = 0; c < commandsMatching.length; c++) {
                             var commandMatching = commandsMatching[c];
-                            var commandTextMatching = commandMatching.texts.find(x => commandTextToMatch.startsWith(x));
+                            var commandTextMatches = commandMatching.textSource.textMatchesAtStart(commandTextToMatch);
+                            var commandTextMatching = commandTextMatches
+                                ? commandMatching.textSource.textDefault()
+                                : "";
                             if (commandTextMatching.length > commandTextMatchingLongestSoFar.length) {
                                 commandTextMatchingLongestSoFar =
                                     commandTextMatching;
@@ -44,7 +54,7 @@ var ThisCouldBeBetter;
                         commandMatching = commandMatchingExactly;
                     }
                     commandMatching = commandMatching.clone();
-                    commandMatching.textSet(commandTextToMatch);
+                    commandMatching.textSourceSet(TextAdventureEngine.TextSourceStrings.fromString(commandTextToMatch));
                 }
                 return commandMatching;
             }
@@ -78,18 +88,18 @@ var ThisCouldBeBetter;
                 return world.scriptByName(this.scriptExecuteName);
             }
             text() {
-                return this.texts[0];
+                return this.textSource.textDefault();
             }
-            textSet(value) {
-                this.texts[0] = value;
+            textSourceSet(value) {
+                this.textSource = value;
                 return this;
             }
             textsInclude(textToCheck) {
-                return this.texts.indexOf(textToCheck) >= 0;
+                return this.textSource.textMatches(textToCheck);
             }
             // Clonable.
             clone() {
-                return new Command(this.texts.map(x => x), this.scriptExecuteName);
+                return new Command(this.textSource.clone(), this.scriptExecuteName);
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

@@ -36,8 +36,8 @@ var ThisCouldBeBetter;
                 this.commands.push(command);
                 return this;
             }
-            commandAddFromTextsAndScriptName(commandTexts, scriptName) {
-                var command = new TextAdventureEngine.Command(commandTexts, scriptName);
+            commandAddFromTextSourceAndScriptName(commandTextSource, scriptName) {
+                var command = TextAdventureEngine.Command.fromTextSourceAndScriptExecuteName(commandTextSource, scriptName);
                 return this.commandAdd(command);
             }
             descriptionSet(value) {

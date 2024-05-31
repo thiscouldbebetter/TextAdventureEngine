@@ -32,7 +32,7 @@ var ThisCouldBeBetter;
                 return this;
             }
             commandAddFromTextsAndScriptName(commandTexts, scriptName) {
-                var command = new TextAdventureEngine.Command(commandTexts, scriptName);
+                var command = TextAdventureEngine.Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
                 return this.commandAdd(command);
             }
             descriptionSet(value) {

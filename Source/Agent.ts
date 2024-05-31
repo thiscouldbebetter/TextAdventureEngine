@@ -60,7 +60,7 @@ export class Agent
 
 	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Agent
 	{
-		var command = new Command(commandTexts, scriptName);
+		var command = Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
 		return this.commandAdd(command);
 	}
 

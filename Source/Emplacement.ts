@@ -85,7 +85,7 @@ export class Emplacement
 		commandTexts: string[], scriptName: string
 	): Emplacement
 	{
-		var command = new Command(commandTexts, scriptName);
+		var command = Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
 		return this.commandAdd(command);
 	}
 

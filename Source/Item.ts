@@ -77,9 +77,15 @@ export class Item
 		return this;
 	}
 
-	commandAddFromTextsAndScriptName(commandTexts: string[], scriptName: string): Item
+	commandAddFromTextSourceAndScriptName
+	(
+		commandTextSource: TextSource, scriptName: string
+	): Item
 	{
-		var command = new Command(commandTexts, scriptName);
+		var command = Command.fromTextSourceAndScriptExecuteName
+		(
+			commandTextSource, scriptName
+		);
 		return this.commandAdd(command);
 	}
 

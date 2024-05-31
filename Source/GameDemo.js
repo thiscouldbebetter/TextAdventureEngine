@@ -30,8 +30,8 @@ var ThisCouldBeBetter;
                     new TextAdventureEngine.Agent(["captor"], "Your captor lingers by the trap door, waiting for you to retrieve his property.", scriptsCustom.AgentCaptorUpdate.name, null, // stateGroup
                     null, // items
                     [
-                        new TextAdventureEngine.Command(["talk to captor"], scriptsCustom.AgentCaptorTalkTo.name),
-                        new TextAdventureEngine.Command(["give coin to captor"], scriptsCustom.ItemCoinGiveToCaptor.name)
+                        TextAdventureEngine.Command.fromTextsAndScriptExecuteName(["talk to captor"], scriptsCustom.AgentCaptorTalkTo.name),
+                        TextAdventureEngine.Command.fromTextsAndScriptExecuteName(["give coin to captor"], scriptsCustom.ItemCoinGiveToCaptor.name)
                     ])
                 ]);
                 var placeEasternRoom = p(placeEasternRoomName, "This room is east of the center.  A doorway to the west leads back to the Center Room.", [
@@ -217,7 +217,12 @@ var ThisCouldBeBetter;
                     null, // stateGroup
                     null, // items
                     [
-                        new TextAdventureEngine.Command(["talk to troll", "talk to the troll", "talk to troll head", "talk to the troll head"], "ItemTrollHeadTalkTo")
+                        TextAdventureEngine.Command.fromTextsAndScriptExecuteName([
+                            "talk to troll",
+                            "talk to the troll",
+                            "talk to troll head",
+                            "talk to the troll head"
+                        ], "ItemTrollHeadTalkTo")
                     ]);
                     place.itemAdd(itemTrollHead);
                 }

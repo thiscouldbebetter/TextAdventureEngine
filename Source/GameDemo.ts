@@ -62,8 +62,16 @@ export class GameDemo
 					null, // stateGroup
 					null, // items
 					[
-						new Command( [ "talk to captor" ], scriptsCustom.AgentCaptorTalkTo.name),
-						new Command( [ "give coin to captor" ], scriptsCustom.ItemCoinGiveToCaptor.name)
+						Command.fromTextsAndScriptExecuteName
+						(
+							[ "talk to captor" ],
+							scriptsCustom.AgentCaptorTalkTo.name
+						),
+						Command.fromTextsAndScriptExecuteName
+						(
+							[ "give coin to captor" ],
+							scriptsCustom.ItemCoinGiveToCaptor.name
+						)
 					]
 				)
 			]
@@ -418,9 +426,14 @@ class Scripts
 				null, // stateGroup
 				null, // items
 				[
-					new Command
+					Command.fromTextsAndScriptExecuteName
 					(
-						[ "talk to troll", "talk to the troll", "talk to troll head", "talk to the troll head" ],
+						[
+							"talk to troll",
+							"talk to the troll",
+							"talk to troll head",
+							"talk to the troll head"
+						],
 						"ItemTrollHeadTalkTo"
 					)
 				]
