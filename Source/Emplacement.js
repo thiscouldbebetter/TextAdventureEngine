@@ -32,6 +32,10 @@ var ThisCouldBeBetter;
                 this.commands.push(command);
                 return this;
             }
+            commandAddFromTextSourceAndScriptName(textSource, scriptName) {
+                var command = TextAdventureEngine.Command.fromTextSourceAndScriptExecuteName(textSource, scriptName);
+                return this.commandAdd(command);
+            }
             commandAddFromTextsAndScriptName(commandTexts, scriptName) {
                 var command = TextAdventureEngine.Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
                 return this.commandAdd(command);

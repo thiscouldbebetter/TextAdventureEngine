@@ -87,7 +87,7 @@ export class Command
 		{
 			var commandMatchingExactly = commands.find
 			(
-				command => command.textSource.textMatches(commandTextToMatch)
+				command => command.textSource.textMatchesExactly(commandTextToMatch)
 			);
 
 			if (commandMatchingExactly == null)
@@ -181,7 +181,7 @@ export class Command
 
 	textsInclude(textToCheck: string): boolean
 	{
-		return this.textSource.textMatches(textToCheck);
+		return this.textSource.textMatchesExactly(textToCheck);
 	}
 
 	// Clonable.

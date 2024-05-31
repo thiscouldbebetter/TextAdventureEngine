@@ -80,6 +80,15 @@ export class Emplacement
 		return this;
 	}
 
+	commandAddFromTextSourceAndScriptName
+	(
+		textSource: TextSource, scriptName: string
+	): Emplacement
+	{
+		var command = Command.fromTextSourceAndScriptExecuteName(textSource, scriptName);
+		return this.commandAdd(command);
+	}
+
 	commandAddFromTextsAndScriptName
 	(
 		commandTexts: string[], scriptName: string

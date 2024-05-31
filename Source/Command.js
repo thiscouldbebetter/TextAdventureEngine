@@ -34,7 +34,7 @@ var ThisCouldBeBetter;
                         commandMatching.clone().textSourceSet(TextAdventureEngine.TextSourceStrings.fromString(commandTextToMatch));
                 }
                 else {
-                    var commandMatchingExactly = commands.find(command => command.textSource.textMatches(commandTextToMatch));
+                    var commandMatchingExactly = commands.find(command => command.textSource.textMatchesExactly(commandTextToMatch));
                     if (commandMatchingExactly == null) {
                         var commandTextMatchingLongestSoFar = "";
                         for (var c = 0; c < commandsMatching.length; c++) {
@@ -95,7 +95,7 @@ var ThisCouldBeBetter;
                 return this;
             }
             textsInclude(textToCheck) {
-                return this.textSource.textMatches(textToCheck);
+                return this.textSource.textMatchesExactly(textToCheck);
             }
             // Clonable.
             clone() {

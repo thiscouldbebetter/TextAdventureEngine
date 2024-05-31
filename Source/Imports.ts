@@ -18,6 +18,7 @@ import StorageManager2 = tea.StorageManager2;
 import StorageManagerLocalStorage = tea.StorageManagerLocalStorage;
 import StorageManagerMemory = tea.StorageManagerMemory;
 import TextSource = tea.TextSource;
+import TextSourcePhraseCombination = tea.TextSourcePhraseCombination;
 import TextSourceStrings = tea.TextSourceStrings;
 import TimerManager = tea.TimerManager;
 import Universe = tea.Universe;
