@@ -502,14 +502,21 @@ export class Command_Instances
 		if (cheatOperationName == "get")
 		{
 			var quantityOrNot =
-				parseInt(commandTextParts[commandTextParts.length - 1]);
+				parseInt(commandTextParts[2]);
 			var quantityIsSpecified = (isNaN(quantityOrNot) == false);
+
+			var quantity: number;
+			var itemToGetName: string;
 			if (quantityIsSpecified)
 			{
-				commandTextParts.splice(commandTextParts.length - 1);
+				quantity = quantityOrNot;
+				itemToGetName = commandTextParts.slice(3).join(" ");
+			}
+			else
+			{
+				itemToGetName = commandTextParts.slice(3).join(" ");
 			}
 
-			var itemToGetName = commandTextParts.slice(2).join(" ");
 			var itemToGet = world.itemByName(itemToGetName);
 			if (itemToGet == null)
 			{
@@ -517,12 +524,13 @@ export class Command_Instances
 			}
 			else
 			{
-				message = "Player receives item: " + itemToGetName;
+				message = "Player receives item(s): "
 				if (quantityIsSpecified)
 				{
-					itemToGet.quantity = quantityOrNot;
-					message += "(" + itemToGet.quantity + ")"
+					itemToGet.quantity = quantity;
+					message += quantity + " "; 
 				}
+				message += itemToGetName;
 				message += ".";
 				world.agentPlayer.itemAdd(itemToGet);
 			}

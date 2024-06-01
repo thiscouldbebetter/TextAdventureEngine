@@ -4,8 +4,9 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Agent {
-            constructor(names, descriptionWhenExamined, scriptUpdateForTurnName, stateGroup, items, commands) {
+            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName, stateGroup, items, commands) {
                 this.names = names;
+                this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
                 this.descriptionWhenExamined = descriptionWhenExamined;
                 this.scriptUpdateForTurnName = scriptUpdateForTurnName;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
@@ -13,13 +14,13 @@ var ThisCouldBeBetter;
                 this._commands = commands || [];
             }
             static fromNameAndDescription(name, descriptionWhenExamined) {
-                return new Agent([name], descriptionWhenExamined, null, null, null, null);
+                return new Agent([name], null, descriptionWhenExamined, null, null, null, null);
             }
             static fromNames(names) {
-                return new Agent(names, null, null, null, null, null);
+                return new Agent(names, null, null, null, null, null, null);
             }
             static fromNamesAndDescription(names, descriptionWhenExamined) {
-                return new Agent(names, descriptionWhenExamined, null, null, null, null);
+                return new Agent(names, null, descriptionWhenExamined, null, null, null, null);
             }
             commands() {
                 var commandsAll = new Array();
@@ -35,6 +36,10 @@ var ThisCouldBeBetter;
                 var command = TextAdventureEngine.Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
                 return this.commandAdd(command);
             }
+            descriptionAsPartOfPlaceSet(value) {
+                this.descriptionAsPartOfPlace = value;
+                return this;
+            }
             descriptionWhenExaminedSet(value) {
                 this.descriptionWhenExamined = value;
                 return this;
@@ -48,6 +53,10 @@ var ThisCouldBeBetter;
             place(world) {
                 return world.placeContainingAgent(this);
             }
+            scriptUpdateForTurnNameSet(value) {
+                this.scriptUpdateForTurnName = value;
+                return this;
+            }
             updateForTurn(universe, world, place) {
                 if (this.scriptUpdateForTurnName != null) {
                     var scriptUpdate = world.scriptByName(this.scriptUpdateForTurnName);
@@ -57,11 +66,17 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Agent(this.names.map(x => x), this.descriptionWhenExamined, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {
-                this.items.push(item);
+                var itemExisting = this.itemByName(item.name());
+                if (itemExisting == null) {
+                    this.items.push(item);
+                }
+                else {
+                    itemExisting.quantity += item.quantity;
+                }
             }
             itemByName(name) {
                 return this.items.find(x => x.names.indexOf(name) >= 0);

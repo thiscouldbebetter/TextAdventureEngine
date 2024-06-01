@@ -5,6 +5,7 @@ namespace ThisCouldBeBetter.TextAdventureEngine
 export class Agent
 {
 	names: string[];
+	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
 	scriptUpdateForTurnName: string;
 	stateGroup : StateGroup;
@@ -14,6 +15,7 @@ export class Agent
 	constructor
 	(
 		names: string[],
+		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
 		scriptUpdateForTurnName: string,
 		stateGroup: StateGroup,
@@ -22,6 +24,7 @@ export class Agent
 	)
 	{
 		this.names = names;
+		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
 		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
 		this.stateGroup = stateGroup || StateGroup.create();
@@ -31,17 +34,17 @@ export class Agent
 
 	static fromNameAndDescription(name: string, descriptionWhenExamined: string): Agent
 	{
-		return new Agent( [ name ], descriptionWhenExamined, null, null, null, null);
+		return new Agent( [ name ], null, descriptionWhenExamined, null, null, null, null);
 	}
 
 	static fromNames(names: string[]): Agent
 	{
-		return new Agent(names, null, null, null, null, null);
+		return new Agent(names, null, null, null, null, null, null);
 	}
 
 	static fromNamesAndDescription(names: string[], descriptionWhenExamined: string): Agent
 	{
-		return new Agent(names, descriptionWhenExamined, null, null, null, null);
+		return new Agent(names, null, descriptionWhenExamined, null, null, null, null);
 	}
 
 	commands(): Command[]
@@ -62,6 +65,12 @@ export class Agent
 	{
 		var command = Command.fromTextsAndScriptExecuteName(commandTexts, scriptName);
 		return this.commandAdd(command);
+	}
+
+	descriptionAsPartOfPlaceSet(value: string): Agent
+	{
+		this.descriptionAsPartOfPlace = value;
+		return this;
 	}
 
 	descriptionWhenExaminedSet(value: string): Agent
@@ -85,6 +94,12 @@ export class Agent
 		return world.placeContainingAgent(this);
 	}
 
+	scriptUpdateForTurnNameSet(value: string): Agent
+	{
+		this.scriptUpdateForTurnName = value;
+		return this;
+	}
+
 	updateForTurn(universe: Universe, world: World, place: Place): void
 	{
 		if (this.scriptUpdateForTurnName != null)
@@ -103,6 +118,7 @@ export class Agent
 		return new Agent
 		(
 			this.names.map(x => x),
+			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
 			this.scriptUpdateForTurnName,
 			this.stateGroup.clone(),
@@ -115,7 +131,15 @@ export class Agent
 
 	itemAdd(item: Item): void
 	{
-		this.items.push(item);
+		var itemExisting = this.itemByName(item.name() );
+		if (itemExisting == null)
+		{
+			this.items.push(item);
+		}
+		else
+		{
+			itemExisting.quantity += item.quantity;
+		}
 	}
 
 	itemByName(name: string): Item

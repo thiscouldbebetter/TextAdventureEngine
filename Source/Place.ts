@@ -121,9 +121,10 @@ export class Place
 		return this.agents.find(x => x.names.indexOf(name) >= 0);
 	}
 
-	agentRemove(agent: Agent): void
+	agentRemove(agent: Agent, world: World): void
 	{
 		this.agents.splice(this.agents.indexOf(agent), 1);
+		this.region(world).agentRemove(agent);
 	}
 
 	commands(): Command[]
@@ -190,11 +191,11 @@ export class Place
 				var objectIsVisible = objectToMention.visible();
 				if (objectIsVisible)
 				{
-					var message =
-						"There is "
-						+ MessageHelper.Instance.wordPrefixedWithAOrAn(objectToMention.name() )
-						+ " here.";
-					linesToWrite.push(message);
+					var message = objectToMention.descriptionAsPartOfPlace;
+					if (message != null)
+					{
+						linesToWrite.push(message);
+					}
 				}
 			}
 		}

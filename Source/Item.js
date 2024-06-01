@@ -4,9 +4,10 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Item {
-            constructor(names, quantity, descriptionWhenExamined, scriptGetName, scriptUseName, stateGroup, items, commands) {
+            constructor(names, quantity, descriptionAsPartOfPlace, descriptionWhenExamined, scriptGetName, scriptUseName, stateGroup, items, commands) {
                 this.names = names;
                 this.quantity = quantity || 1;
+                this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
                 this.descriptionWhenExamined = descriptionWhenExamined;
                 this._scriptGetName = scriptGetName;
                 this._scriptUseName = scriptUseName;
@@ -15,7 +16,7 @@ var ThisCouldBeBetter;
                 this.commands = commands || [];
             }
             static create() {
-                return new Item(null, null, null, null, null, null, null, null);
+                return new Item(null, null, null, null, null, null, null, null, null);
             }
             static fromNames(names) {
                 return Item.create().namesSet(names);
@@ -23,8 +24,8 @@ var ThisCouldBeBetter;
             static fromNamesAndDescription(names, description) {
                 return Item.fromNames(names).descriptionWhenExaminedSet(description);
             }
-            static fromNamesDescriptionAndScriptUseName(names, description, scriptUseName) {
-                return Item.fromNamesAndDescription(names, description).scriptUseNameSet(scriptUseName);
+            static fromNamesDescriptionAndScriptUseName(names, descriptionWhenExamined, scriptUseName) {
+                return Item.fromNamesAndDescription(names, descriptionWhenExamined).scriptUseNameSet(scriptUseName);
             }
             static fromNamesDescriptionAndScriptGetName(names, description, scriptGetName) {
                 return Item.fromNamesAndDescription(names, description).scriptGetNameSet(scriptGetName);
@@ -39,6 +40,10 @@ var ThisCouldBeBetter;
             commandAddFromTextSourceAndScriptName(commandTextSource, scriptName) {
                 var command = TextAdventureEngine.Command.fromTextSourceAndScriptExecuteName(commandTextSource, scriptName);
                 return this.commandAdd(command);
+            }
+            descriptionAsPartOfPlaceSet(value) {
+                this.descriptionAsPartOfPlace = value;
+                return this;
             }
             descriptionWhenExaminedSet(value) {
                 this.descriptionWhenExamined = value;
@@ -104,7 +109,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Item(this.names.map(x => x), this.quantity, this.descriptionWhenExamined, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Item(this.names.map(x => x), this.quantity, this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

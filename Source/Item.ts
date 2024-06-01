@@ -6,6 +6,7 @@ export class Item
 {
 	names: string[];
 	quantity: number;
+	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
 	_scriptGetName: string;
 	_scriptUseName: string;
@@ -17,6 +18,7 @@ export class Item
 	(
 		names: string[],
 		quantity: number,
+		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
 		scriptGetName: string,
 		scriptUseName: string,
@@ -27,6 +29,7 @@ export class Item
 	{
 		this.names = names;
 		this.quantity = quantity || 1;
+		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
 		this._scriptGetName = scriptGetName;
 		this._scriptUseName = scriptUseName;
@@ -37,7 +40,7 @@ export class Item
 
 	static create(): Item
 	{
-		return new Item(null, null, null, null, null, null, null, null);
+		return new Item(null, null, null, null, null, null, null, null, null);
 	}
 
 	static fromNames(names: string[]): Item
@@ -52,10 +55,15 @@ export class Item
 
 	static fromNamesDescriptionAndScriptUseName
 	(
-		names: string[], description: string, scriptUseName: string
+		names: string[],
+		descriptionWhenExamined: string,
+		scriptUseName: string
 	): Item
 	{
-		return Item.fromNamesAndDescription(names, description).scriptUseNameSet(scriptUseName);
+		return Item.fromNamesAndDescription
+		(
+			names, descriptionWhenExamined
+		).scriptUseNameSet(scriptUseName);
 	}
 
 	static fromNamesDescriptionAndScriptGetName
@@ -87,6 +95,12 @@ export class Item
 			commandTextSource, scriptName
 		);
 		return this.commandAdd(command);
+	}
+
+	descriptionAsPartOfPlaceSet(value: string): Item
+	{
+		this.descriptionAsPartOfPlace = value;
+		return this;
 	}
 
 	descriptionWhenExaminedSet(value: string): Item
@@ -196,6 +210,7 @@ export class Item
 		(
 			this.names.map(x => x),
 			this.quantity,
+			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
 			this._scriptGetName,
 			this._scriptUseName,
