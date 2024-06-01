@@ -22,6 +22,9 @@ var ThisCouldBeBetter;
             static fromNamesAndDescription(names, descriptionWhenExamined) {
                 return new Agent(names, null, descriptionWhenExamined, null, null, null, null);
             }
+            static fromNamesDescriptionsAndScriptUpdateForTurnName(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName) {
+                return new Agent(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName, null, null, null);
+            }
             commands() {
                 var commandsAll = new Array();
                 commandsAll.push(...this._commands);
@@ -42,6 +45,14 @@ var ThisCouldBeBetter;
             }
             descriptionWhenExaminedSet(value) {
                 this.descriptionWhenExamined = value;
+                return this;
+            }
+            goThroughPortal(portal, world) {
+                var placeThroughPortalName = portal.placeDestinationName;
+                var placeThroughPortal = world.placeByName(placeThroughPortalName);
+                var placeBeingDeparted = this.place(world);
+                placeBeingDeparted.agentRemove(this, world);
+                placeThroughPortal.agentAdd(this, world);
                 return this;
             }
             name() {

@@ -10,6 +10,7 @@ var ThisCouldBeBetter;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
                 this.places = places;
                 this.agents = agents || [];
+                this.places.forEach(x => this.agents.push(...x.agents));
             }
             static fromNameAndPlaces(name, places) {
                 return new Region(name, null, null, places, null);

@@ -38,6 +38,13 @@ export class RandomNumberGenerator
 		return this.dequeue();
 	}
 
+	randomElementFromArray(arrayToGetElementFrom: any[]): any
+	{
+		var randomNumber = this.next();
+		var randomIndex = Math.floor(randomNumber * arrayToGetElementFrom.length);
+		var randomElement = arrayToGetElementFrom[randomIndex];
+		return randomElement;
+	}
 }
 
 }

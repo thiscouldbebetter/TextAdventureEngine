@@ -47,6 +47,24 @@ export class Agent
 		return new Agent(names, null, descriptionWhenExamined, null, null, null, null);
 	}
 
+	static fromNamesDescriptionsAndScriptUpdateForTurnName
+	(
+		names: string[],
+		descriptionAsPartOfPlace: string,
+		descriptionWhenExamined: string,
+		scriptUpdateForTurnName: string
+	): Agent
+	{
+		return new Agent
+		(
+			names,
+			descriptionAsPartOfPlace,
+			descriptionWhenExamined,
+			scriptUpdateForTurnName,
+			null, null, null
+		);
+	}
+
 	commands(): Command[]
 	{
 		var commandsAll = new Array<Command>();
@@ -76,6 +94,16 @@ export class Agent
 	descriptionWhenExaminedSet(value: string): Agent
 	{
 		this.descriptionWhenExamined = value;
+		return this;
+	}
+
+	goThroughPortal(portal: Portal, world: World): Agent
+	{
+		var placeThroughPortalName = portal.placeDestinationName;
+		var placeThroughPortal = world.placeByName(placeThroughPortalName);
+		var placeBeingDeparted = this.place(world);
+		placeBeingDeparted.agentRemove(this, world);
+		placeThroughPortal.agentAdd(this, world);
 		return this;
 	}
 

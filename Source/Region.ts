@@ -24,6 +24,8 @@ export class Region
 		this.stateGroup = stateGroup || StateGroup.create();
 		this.places = places;
 		this.agents = agents || [];
+
+		this.places.forEach(x => this.agents.push(...x.agents) );
 	}
 
 	static fromNameAndPlaces(name: string, places: Place[])

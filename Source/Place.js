@@ -149,6 +149,9 @@ var ThisCouldBeBetter;
             portalsByName(name) {
                 return this.portals.filter(x => x.namesInclude(name));
             }
+            portalsVisible() {
+                return this.portals.filter(x => x.visible());
+            }
             region(world) {
                 return world.regionByPlace(this);
             }

@@ -39,13 +39,11 @@ export class Emplacement
 
 	static fromNames(names: string[]): Emplacement
 	{
-		var description = "You don't see anything notable.";
-
 		return Emplacement.fromNamesAndDescriptions
 		(
 			names,
-			description,
-			description
+			null, // descriptionAsPartOfPlace
+			null // descriptionWhenExamined
 		);
 	}
 

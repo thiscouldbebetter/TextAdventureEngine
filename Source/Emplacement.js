@@ -17,8 +17,9 @@ var ThisCouldBeBetter;
                 return Emplacement.fromNames([name]);
             }
             static fromNames(names) {
-                var description = "You don't see anything notable.";
-                return Emplacement.fromNamesAndDescriptions(names, description, description);
+                return Emplacement.fromNamesAndDescriptions(names, null, // descriptionAsPartOfPlace
+                null // descriptionWhenExamined
+                );
             }
             static fromNamesAndDescriptions(names, descriptionAsPartOfPlace, descriptionWhenExamined) {
                 return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, null, null, null, null);

@@ -301,6 +301,11 @@ export class Place
 		return this.portals.filter(x => x.namesInclude(name) );
 	}
 
+	portalsVisible(): Portal[]
+	{
+		return this.portals.filter(x => x.visible() );
+	}
+
 	region(world: World): Region
 	{
 		return world.regionByPlace(this);
