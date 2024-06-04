@@ -9,6 +9,7 @@ export class GameDemo
 		var player = new Agent
 		(
 			[ "self" ],
+			null, // descriptionAsPartOfPlace
 			"This is you.",
 			null, // scriptUpdateForTurnName
 			null, // stateGroup
@@ -59,8 +60,9 @@ export class GameDemo
 				new Agent
 				(
 					[ "captor" ],
+					null, // descriptionAsPartOfPlace
 					"Your captor lingers by the trap door, waiting for you to retrieve his property.",
-					scriptsCustom.AgentCaptorUpdate.name,
+					Script.fromName(scriptsCustom.AgentCaptorUpdate.name),
 					null, // stateGroup
 					null, // items
 					[
@@ -124,7 +126,7 @@ export class GameDemo
 				(
 					[ "key" ],
 					"This is a large brass key.",
-					scriptsCustom.ItemKeyUse.name
+					Script.fromName(scriptsCustom.ItemKeyUse.name)
 				)
 			]
 		);
@@ -139,7 +141,7 @@ export class GameDemo
 				(
 					[ "whetstone", "stone", "rock" ],
 					"This is a flat stone for sharpening tools and weapons.",
-					scriptsCustom.ItemWhetstoneUse.name
+					Script.fromName(scriptsCustom.ItemWhetstoneUse.name)
 				)
 			]
 		);
@@ -279,7 +281,7 @@ class Scripts
 			(
 				[ "sword" ],
 				"This is a steel sword, too dull to cut anything.",
-				"ItemSwordUse"
+				Script.fromName("ItemSwordUse")
 			);
 			place.itemAdd(itemSword);
 			emplacement.stateGroup.stateWithNameSetToValue(StateNames.isEmpty(), true);
@@ -340,7 +342,7 @@ class Scripts
 
 			var agentCaptor = place.agentByName("captor");
 			agentCaptor.itemAdd(itemCoin);
-			place.agentRemove(agentCaptor);
+			place.agentRemove(agentCaptor, world);
 
 			var itemRope = Item.fromNamesAndDescription
 			(
@@ -409,7 +411,7 @@ class Scripts
 			var message =
 				"The sharp sword slices the troll's head off, killing it.";
 			u.messageEnqueue(message);
-			place.agentRemove(target);
+			place.agentRemove(target, w);
 
 			var emplacementTrollBody = Emplacement.fromNamesDescriptionsAndScriptUseName
 			(
@@ -424,6 +426,7 @@ class Scripts
 			(
 				[ "troll head" ] ,
 				null, // quantity
+				null, // descriptionAsPartOfPlace
 				"This is the head of the troll you killed.",
 				null, // scriptNameGet
 				null, // scriptNameUse

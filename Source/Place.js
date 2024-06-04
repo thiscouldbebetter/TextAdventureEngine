@@ -4,10 +4,10 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Place {
-            constructor(name, description, scriptUpdateForTurnName, portals, emplacements, items, agents, stateGroup) {
+            constructor(name, description, scriptUpdateForTurn, portals, emplacements, items, agents, stateGroup) {
                 this.name = name;
                 this.description = description;
-                this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+                this._scriptUpdateForTurn = scriptUpdateForTurn;
                 this.portals = portals || [];
                 this.emplacements = emplacements || [];
                 this.items = items || [];
@@ -18,15 +18,15 @@ var ThisCouldBeBetter;
                 return new Place(name, description, null, null, null, null, null, null);
             }
             static fromNameDescriptionAndObjects(name, description, objects) {
-                return new Place(name, description, null, // scriptUpdateForTurnName
+                return new Place(name, description, null, // scriptUpdateForTurn
                 objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null // stateGroup
                 );
             }
-            static fromNameDescriptionAndScriptName(name, description, scriptUpdateForTurnName) {
-                return new Place(name, description, scriptUpdateForTurnName, null, null, null, null, null);
+            static fromNameDescriptionAndScriptName(name, description, scriptUpdateForTurn) {
+                return new Place(name, description, scriptUpdateForTurn.clone(), null, null, null, null, null);
             }
-            static fromNameDescriptionScriptNameAndObjects(name, description, scriptUpdateForTurnName, objects) {
-                return new Place(name, description, scriptUpdateForTurnName, objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null);
+            static fromNameDescriptionScriptNameAndObjects(name, description, scriptUpdateForTurn, objects) {
+                return new Place(name, description, scriptUpdateForTurn, objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null);
             }
             agentAdd(agent, world) {
                 this.agents.push(agent);
@@ -156,23 +156,20 @@ var ThisCouldBeBetter;
                 return world.regionByPlace(this);
             }
             scriptUpdateForTurn(world) {
-                var script = this.scriptUpdateForTurnName == null
-                    ? null
-                    : world.scriptByName(this.scriptUpdateForTurnName);
-                return script;
+                return this._scriptUpdateForTurn;
             }
             updateForTurn(universe, world) {
                 var region = this.region(world);
                 region.updateForTurn(universe, world);
                 var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
                 if (scriptUpdateForTurn != null) {
-                    scriptUpdateForTurn.run(universe, world, this);
+                    scriptUpdateForTurn.run(universe, world, this, null, null);
                 }
                 this.items.forEach(x => x.updateForTurn(universe, world, this));
             }
             // Clonable.
             clone() {
-                return new Place(this.name, this.description, this.scriptUpdateForTurnName, this.portals.map(x => x.clone()), this.emplacements.map(x => x.clone()), this.items.map(x => x.clone()), this.agents.map(x => x.clone()), this.stateGroup.clone());
+                return new Place(this.name, this.description, this._scriptUpdateForTurn.clone(), this.portals.map(x => x.clone()), this.emplacements.map(x => x.clone()), this.items.map(x => x.clone()), this.agents.map(x => x.clone()), this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

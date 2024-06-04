@@ -7,7 +7,7 @@ export class Emplacement
 	names: string[];
 	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
-	_scriptUseName: string;
+	_scriptUse: Script;
 	stateGroup: StateGroup;
 	items: Item[];
 	commands: Command[];
@@ -17,7 +17,7 @@ export class Emplacement
 		names: string[],
 		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
-		scriptUseName: string,
+		scriptUse: Script,
 		stateGroup: StateGroup,
 		items: Item[],
 		commands: Command[]
@@ -26,7 +26,7 @@ export class Emplacement
 		this.names = names;
 		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
-		this._scriptUseName = scriptUseName;
+		this._scriptUse = scriptUse;
 		this.stateGroup = stateGroup || new StateGroup([]);
 		this.items = items || [];
 		this.commands = commands || [];
@@ -76,14 +76,14 @@ export class Emplacement
 			names,
 			descriptionAsPartOfPlace,
 			descriptionWhenExamined,
-			scriptUseName,
+			Script.fromName(scriptUseName),
 			null, null, null
 		);
 	}
 
 	canBeUsed(): boolean
 	{
-		return (this._scriptUseName != null);
+		return (this._scriptUse != null);
 	}
 
 	commandAdd(command: Command): Emplacement
@@ -155,14 +155,14 @@ export class Emplacement
 		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
-	scriptUse(world: World): Script
+	scriptUse(): Script
 	{
-		return world.scriptByName(this._scriptUseName);
+		return this._scriptUse;
 	}
 
 	use(universe: Universe, world: World, place: Place, target: any): void
 	{
-		var scriptUse = this.scriptUse(world);
+		var scriptUse = this.scriptUse();
 		if (scriptUse != null)
 		{
 			scriptUse.run(universe, world, place, this, target);
@@ -178,7 +178,7 @@ export class Emplacement
 			this.names.map(x => x),
 			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
-			this._scriptUseName,
+			this._scriptUse.clone(),
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),
 			this.commands.map(x => x.clone() )

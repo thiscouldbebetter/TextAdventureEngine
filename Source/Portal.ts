@@ -125,7 +125,7 @@ export class Portal
 		else
 		{
 			var scriptUse = world.scriptByName(this.scriptUseName);
-			scriptUse.run(universe, world, place, this);
+			scriptUse.run(universe, world, place, this, null);
 		}
 	}
 

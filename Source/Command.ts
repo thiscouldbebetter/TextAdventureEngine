@@ -160,7 +160,7 @@ export class Command
 		var message = "Command entered: " + this.text();
 		universe.messageEnqueue(message);
 		var scriptExecute = this.scriptExecute(world);
-		scriptExecute.run(universe, world, place, this);
+		scriptExecute.run(universe, world, place, this, null);
 	}
 
 	scriptExecute(world: World): Script
@@ -687,11 +687,11 @@ export class Command_Instances
 				}
 				else
 				{
-					var scriptGet = itemToGet.scriptGet(world);
+					var scriptGet = itemToGet.scriptGet();
 
 					if (scriptGet != null)
 					{
-						scriptGet.run(universe, world, place, command);
+						scriptGet.run(universe, world, place, command, null);
 					}
 					else
 					{

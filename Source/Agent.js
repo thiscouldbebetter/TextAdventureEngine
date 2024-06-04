@@ -4,11 +4,11 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Agent {
-            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName, stateGroup, items, commands) {
+            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurn, stateGroup, items, commands) {
                 this.names = names;
                 this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
                 this.descriptionWhenExamined = descriptionWhenExamined;
-                this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+                this._scriptUpdateForTurn = scriptUpdateForTurn;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
                 this.items = items || [];
                 this._commands = commands || [];
@@ -22,8 +22,8 @@ var ThisCouldBeBetter;
             static fromNamesAndDescription(names, descriptionWhenExamined) {
                 return new Agent(names, null, descriptionWhenExamined, null, null, null, null);
             }
-            static fromNamesDescriptionsAndScriptUpdateForTurnName(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName) {
-                return new Agent(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurnName, null, null, null);
+            static fromNamesDescriptionsAndScriptUpdateForTurnName(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurn) {
+                return new Agent(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurn, null, null, null);
             }
             commands() {
                 var commandsAll = new Array();
@@ -64,20 +64,23 @@ var ThisCouldBeBetter;
             place(world) {
                 return world.placeContainingAgent(this);
             }
-            scriptUpdateForTurnNameSet(value) {
-                this.scriptUpdateForTurnName = value;
+            scriptUpdateForTurn() {
+                return this._scriptUpdateForTurn;
+            }
+            scriptUpdateForTurnSet(value) {
+                this._scriptUpdateForTurn = value;
                 return this;
             }
             updateForTurn(universe, world, place) {
-                if (this.scriptUpdateForTurnName != null) {
-                    var scriptUpdate = world.scriptByName(this.scriptUpdateForTurnName);
-                    scriptUpdate.run(universe, world, place, this);
+                var scriptUpdateForTurn = this.scriptUpdateForTurn();
+                if (scriptUpdateForTurn != null) {
+                    scriptUpdateForTurn.run.call(scriptUpdateForTurn, universe, world, place, this, null);
                 }
                 this.items.forEach(x => x.updateForTurn(universe, world, place));
             }
             // Clonable.
             clone() {
-                return new Agent(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this.scriptUpdateForTurnName, this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
+                return new Agent(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptUpdateForTurn.clone(), this.stateGroup.clone(), this.items.map(x => x.clone()), this._commands.map(x => x.clone()));
             }
             // Items.
             itemAdd(item) {
@@ -134,6 +137,7 @@ var ThisCouldBeBetter;
             // Serialization.
             static prototypesSet(instanceAsObject) {
                 Object.setPrototypeOf(instanceAsObject, Agent.prototype);
+                TextAdventureEngine.Script.prototypesSet(instanceAsObject._scriptUpdateForTurn);
                 instanceAsObject.items.forEach((x) => TextAdventureEngine.Item.prototypesSet(x));
                 instanceAsObject.commands.forEach((x) => TextAdventureEngine.Command.prototypesSet(x));
             }

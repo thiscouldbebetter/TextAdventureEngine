@@ -82,7 +82,7 @@ var ThisCouldBeBetter;
                 var message = "Command entered: " + this.text();
                 universe.messageEnqueue(message);
                 var scriptExecute = this.scriptExecute(world);
-                scriptExecute.run(universe, world, place, this);
+                scriptExecute.run(universe, world, place, this, null);
             }
             scriptExecute(world) {
                 return world.scriptByName(this.scriptExecuteName);
@@ -334,9 +334,9 @@ var ThisCouldBeBetter;
                             }
                         }
                         else {
-                            var scriptGet = itemToGet.scriptGet(world);
+                            var scriptGet = itemToGet.scriptGet();
                             if (scriptGet != null) {
-                                scriptGet.run(universe, world, place, command);
+                                scriptGet.run(universe, world, place, command, null);
                             }
                             else {
                                 message = "You take the " + itemToGet.name() + ".";

@@ -6,7 +6,7 @@ export class Place
 {
 	name: string;
 	description: string;
-	scriptUpdateForTurnName: string;
+	_scriptUpdateForTurn: Script;
 	portals: Portal[];
 	emplacements: Emplacement[];
 	items: Item[];
@@ -17,7 +17,7 @@ export class Place
 	(
 		name: string,
 		description: string,
-		scriptUpdateForTurnName: string,
+		scriptUpdateForTurn: Script,
 		portals: Portal[],
 		emplacements: Emplacement[],
 		items: Item[],
@@ -27,7 +27,7 @@ export class Place
 	{
 		this.name = name;
 		this.description = description;
-		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+		this._scriptUpdateForTurn = scriptUpdateForTurn;
 		this.portals = portals || [];
 		this.emplacements = emplacements || [];
 		this.items = items || [];
@@ -59,7 +59,7 @@ export class Place
 		(
 			name,
 			description,
-			null, // scriptUpdateForTurnName
+			null, // scriptUpdateForTurn
 			objects.filter(x => x.constructor.name == Portal.name),
 			objects.filter(x => x.constructor.name == Emplacement.name),
 			objects.filter(x => x.constructor.name == Item.name),
@@ -72,14 +72,14 @@ export class Place
 	(
 		name: string,
 		description: string,
-		scriptUpdateForTurnName: string,
+		scriptUpdateForTurn: Script,
 	): Place
 	{
 		return new Place
 		(
 			name,
 			description,
-			scriptUpdateForTurnName,
+			scriptUpdateForTurn.clone(),
 			null,
 			null,
 			null,
@@ -92,7 +92,7 @@ export class Place
 	(
 		name: string,
 		description: string,
-		scriptUpdateForTurnName: string,
+		scriptUpdateForTurn: Script,
 		objects: any[]
 	): Place
 	{
@@ -100,7 +100,7 @@ export class Place
 		(
 			name,
 			description,
-			scriptUpdateForTurnName,
+			scriptUpdateForTurn,
 			objects.filter(x => x.constructor.name == Portal.name),
 			objects.filter(x => x.constructor.name == Emplacement.name),
 			objects.filter(x => x.constructor.name == Item.name),
@@ -313,11 +313,7 @@ export class Place
 
 	scriptUpdateForTurn(world: World): Script
 	{
-		var script =
-			this.scriptUpdateForTurnName == null
-			? null
-			: world.scriptByName(this.scriptUpdateForTurnName);
-		return script;
+		return this._scriptUpdateForTurn;
 	}
 
 	updateForTurn(universe: Universe, world: World): void
@@ -328,7 +324,7 @@ export class Place
 		var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
 		if (scriptUpdateForTurn != null)
 		{
-			scriptUpdateForTurn.run(universe, world, this);
+			scriptUpdateForTurn.run(universe, world, this, null, null);
 		}
 
 		this.items.forEach(x => x.updateForTurn(universe, world, this) );
@@ -342,7 +338,7 @@ export class Place
 		(
 			this.name,
 			this.description,
-			this.scriptUpdateForTurnName,
+			this._scriptUpdateForTurn.clone(),
 			this.portals.map(x => x.clone()),
 			this.emplacements.map(x => x.clone()),
 			this.items.map(x => x.clone()),

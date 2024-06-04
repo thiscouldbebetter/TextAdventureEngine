@@ -4,13 +4,13 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Item {
-            constructor(names, quantity, descriptionAsPartOfPlace, descriptionWhenExamined, scriptGetName, scriptUseName, stateGroup, items, commands) {
+            constructor(names, quantity, descriptionAsPartOfPlace, descriptionWhenExamined, scriptGet, scriptUse, stateGroup, items, commands) {
                 this.names = names;
                 this.quantity = quantity || 1;
                 this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
                 this.descriptionWhenExamined = descriptionWhenExamined;
-                this._scriptGetName = scriptGetName;
-                this._scriptUseName = scriptUseName;
+                this._scriptGet = scriptGet;
+                this._scriptUse = scriptUse;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
                 this.items = items || [];
                 this.commands = commands || [];
@@ -24,14 +24,14 @@ var ThisCouldBeBetter;
             static fromNamesAndDescription(names, description) {
                 return Item.fromNames(names).descriptionWhenExaminedSet(description);
             }
-            static fromNamesDescriptionAndScriptUseName(names, descriptionWhenExamined, scriptUseName) {
-                return Item.fromNamesAndDescription(names, descriptionWhenExamined).scriptUseNameSet(scriptUseName);
+            static fromNamesDescriptionAndScriptUseName(names, descriptionWhenExamined, scriptUse) {
+                return Item.fromNamesAndDescription(names, descriptionWhenExamined).scriptUseSet(scriptUse);
             }
             static fromNamesDescriptionAndScriptGetName(names, description, scriptGetName) {
-                return Item.fromNamesAndDescription(names, description).scriptGetNameSet(scriptGetName);
+                return Item.fromNamesAndDescription(names, description).scriptGetSet(TextAdventureEngine.Script.fromName(scriptGetName));
             }
             canBeUsed() {
-                return (this._scriptUseName != null);
+                return (this._scriptUse != null);
             }
             commandAdd(command) {
                 this.commands.push(command);
@@ -81,25 +81,25 @@ var ThisCouldBeBetter;
                 this.quantity = value;
                 return this;
             }
-            scriptGet(world) {
-                return this._scriptGetName == null ? null : world.scriptByName(this._scriptGetName);
+            scriptGet() {
+                return this._scriptGet;
             }
-            scriptGetNameSet(value) {
-                this._scriptGetName = value;
+            scriptGetSet(value) {
+                this._scriptGet = value;
                 return this;
             }
-            scriptUse(world) {
-                return world.scriptByName(this._scriptUseName);
+            scriptUse() {
+                return this._scriptUse;
             }
-            scriptUseNameSet(value) {
-                this._scriptUseName = value;
+            scriptUseSet(value) {
+                this._scriptUse = value;
                 return this;
             }
             updateForTurn(universe, world, place) {
                 // todo
             }
             use(universe, world, place, target) {
-                var scriptUse = this.scriptUse(world);
+                var scriptUse = this.scriptUse();
                 if (scriptUse != null) {
                     scriptUse.run(universe, world, place, this, target);
                 }
@@ -109,7 +109,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Item(this.names.map(x => x), this.quantity, this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptGetName, this._scriptUseName, this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Item(this.names.map(x => x), this.quantity, this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptGet == null ? null : this._scriptGet.clone(), this._scriptUse == null ? null : this._scriptUse.clone(), this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

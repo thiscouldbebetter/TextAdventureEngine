@@ -7,7 +7,7 @@ export class Agent
 	names: string[];
 	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
-	scriptUpdateForTurnName: string;
+	_scriptUpdateForTurn: Script;
 	stateGroup : StateGroup;
 	items: Item[];
 	_commands: Command[];
@@ -17,7 +17,7 @@ export class Agent
 		names: string[],
 		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
-		scriptUpdateForTurnName: string,
+		scriptUpdateForTurn: Script,
 		stateGroup: StateGroup,
 		items: Item[],
 		commands: Command[]
@@ -26,7 +26,7 @@ export class Agent
 		this.names = names;
 		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
-		this.scriptUpdateForTurnName = scriptUpdateForTurnName;
+		this._scriptUpdateForTurn = scriptUpdateForTurn;
 		this.stateGroup = stateGroup || StateGroup.create();
 		this.items = items || [];
 		this._commands = commands || [];
@@ -52,7 +52,7 @@ export class Agent
 		names: string[],
 		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
-		scriptUpdateForTurnName: string
+		scriptUpdateForTurn: Script
 	): Agent
 	{
 		return new Agent
@@ -60,7 +60,7 @@ export class Agent
 			names,
 			descriptionAsPartOfPlace,
 			descriptionWhenExamined,
-			scriptUpdateForTurnName,
+			scriptUpdateForTurn,
 			null, null, null
 		);
 	}
@@ -122,18 +122,23 @@ export class Agent
 		return world.placeContainingAgent(this);
 	}
 
-	scriptUpdateForTurnNameSet(value: string): Agent
+	scriptUpdateForTurn(): Script
 	{
-		this.scriptUpdateForTurnName = value;
+		return this._scriptUpdateForTurn;
+	}
+
+	scriptUpdateForTurnSet(value: Script): Agent
+	{
+		this._scriptUpdateForTurn = value;
 		return this;
 	}
 
 	updateForTurn(universe: Universe, world: World, place: Place): void
 	{
-		if (this.scriptUpdateForTurnName != null)
+		var scriptUpdateForTurn = this.scriptUpdateForTurn();
+		if (scriptUpdateForTurn != null)
 		{
-			var scriptUpdate = world.scriptByName(this.scriptUpdateForTurnName);
-			scriptUpdate.run(universe, world, place, this);
+			scriptUpdateForTurn.run.call(scriptUpdateForTurn, universe, world, place, this, null);
 		}
 
 		this.items.forEach(x => x.updateForTurn(universe, world, place) );
@@ -148,7 +153,7 @@ export class Agent
 			this.names.map(x => x),
 			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
-			this.scriptUpdateForTurnName,
+			this._scriptUpdateForTurn.clone(),
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),
 			this._commands.map(x => x.clone() )
@@ -246,6 +251,7 @@ export class Agent
 	static prototypesSet(instanceAsObject: any): void
 	{
 		Object.setPrototypeOf(instanceAsObject, Agent.prototype);
+		Script.prototypesSet(instanceAsObject._scriptUpdateForTurn);
 		instanceAsObject.items.forEach( (x: any) => Item.prototypesSet(x) );
 		instanceAsObject.commands.forEach( (x: any) => Command.prototypesSet(x) );
 	}

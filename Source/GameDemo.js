@@ -5,7 +5,8 @@ var ThisCouldBeBetter;
     (function (TextAdventureEngine) {
         class GameDemo {
             static worldBuild() {
-                var player = new TextAdventureEngine.Agent(["self"], "This is you.", null, // scriptUpdateForTurnName
+                var player = new TextAdventureEngine.Agent(["self"], null, // descriptionAsPartOfPlace
+                "This is you.", null, // scriptUpdateForTurnName
                 null, // stateGroup
                 [
                     TextAdventureEngine.Item.fromNamesAndDescription(["locket"], "This small copper locket contains a picture of your sweetie.")
@@ -27,7 +28,8 @@ var ThisCouldBeBetter;
                     portal(["north"], portalDescription, placeNorthernRoomName),
                     portal(["south"], portalDescription, placeSouthernRoomName),
                     portal(["west"], portalDescription, placeWesternRoomName),
-                    new TextAdventureEngine.Agent(["captor"], "Your captor lingers by the trap door, waiting for you to retrieve his property.", scriptsCustom.AgentCaptorUpdate.name, null, // stateGroup
+                    new TextAdventureEngine.Agent(["captor"], null, // descriptionAsPartOfPlace
+                    "Your captor lingers by the trap door, waiting for you to retrieve his property.", TextAdventureEngine.Script.fromName(scriptsCustom.AgentCaptorUpdate.name), null, // stateGroup
                     null, // items
                     [
                         TextAdventureEngine.Command.fromTextsAndScriptExecuteName(["talk to captor"], scriptsCustom.AgentCaptorTalkTo.name),
@@ -44,11 +46,11 @@ var ThisCouldBeBetter;
                 ]);
                 var placeSouthernRoom = p("Southern Room", "This room is south of the center.  A doorway to the north leads back to the Center Room.", [
                     portal(["north"], portalDescription, placeCenterRoomName),
-                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["key"], "This is a large brass key.", scriptsCustom.ItemKeyUse.name)
+                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["key"], "This is a large brass key.", TextAdventureEngine.Script.fromName(scriptsCustom.ItemKeyUse.name))
                 ]);
                 var placeWesternRoom = p("Western Room", "This room is west of the center.  A doorway to the east leads back to the Center Room.", [
                     portal(["east"], portalDescription, placeCenterRoomName),
-                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["whetstone", "stone", "rock"], "This is a flat stone for sharpening tools and weapons.", scriptsCustom.ItemWhetstoneUse.name)
+                    TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["whetstone", "stone", "rock"], "This is a flat stone for sharpening tools and weapons.", TextAdventureEngine.Script.fromName(scriptsCustom.ItemWhetstoneUse.name))
                 ]);
                 var places = [
                     placeCenterRoom,
@@ -128,7 +130,7 @@ var ThisCouldBeBetter;
                 }
                 else {
                     message = "You open the chest and find a sword.";
-                    var itemSword = TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["sword"], "This is a steel sword, too dull to cut anything.", "ItemSwordUse");
+                    var itemSword = TextAdventureEngine.Item.fromNamesDescriptionAndScriptUseName(["sword"], "This is a steel sword, too dull to cut anything.", TextAdventureEngine.Script.fromName("ItemSwordUse"));
                     place.itemAdd(itemSword);
                     emplacement.stateGroup.stateWithNameSetToValue(StateNames.isEmpty(), true);
                 }
@@ -164,7 +166,7 @@ var ThisCouldBeBetter;
                     place = world.placeCurrent();
                     var agentCaptor = place.agentByName("captor");
                     agentCaptor.itemAdd(itemCoin);
-                    place.agentRemove(agentCaptor);
+                    place.agentRemove(agentCaptor, world);
                     var itemRope = TextAdventureEngine.Item.fromNamesAndDescription(["rope", "line", "cord"], "This is a coil of weathered hempen rope.");
                     place.itemAdd(itemRope);
                 }
@@ -208,10 +210,11 @@ var ThisCouldBeBetter;
                 else {
                     var message = "The sharp sword slices the troll's head off, killing it.";
                     u.messageEnqueue(message);
-                    place.agentRemove(target);
+                    place.agentRemove(target, w);
                     var emplacementTrollBody = TextAdventureEngine.Emplacement.fromNamesDescriptionsAndScriptUseName(["troll body", "body", "corpse", "troll body", "troll corpse", "dead troll"], "A headless troll corpse is here.", "This is the headless corpse of the troll, naked except for a small coin purse.", "EmplacementTrollBodyUse");
                     place.emplacementAdd(emplacementTrollBody);
                     var itemTrollHead = new TextAdventureEngine.Item(["troll head"], null, // quantity
+                    null, // descriptionAsPartOfPlace
                     "This is the head of the troll you killed.", null, // scriptNameGet
                     null, // scriptNameUse
                     null, // stateGroup

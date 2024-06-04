@@ -8,8 +8,8 @@ export class Item
 	quantity: number;
 	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
-	_scriptGetName: string;
-	_scriptUseName: string;
+	_scriptGet: Script;
+	_scriptUse: Script;
 	stateGroup: StateGroup;
 	items: Item[];
 	commands: Command[];
@@ -20,8 +20,8 @@ export class Item
 		quantity: number,
 		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
-		scriptGetName: string,
-		scriptUseName: string,
+		scriptGet: Script,
+		scriptUse: Script,
 		stateGroup: StateGroup,
 		items: Item[],
 		commands: Command[]
@@ -31,8 +31,8 @@ export class Item
 		this.quantity = quantity || 1;
 		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
-		this._scriptGetName = scriptGetName;
-		this._scriptUseName = scriptUseName;
+		this._scriptGet = scriptGet;
+		this._scriptUse = scriptUse;
 		this.stateGroup = stateGroup || new StateGroup([]);
 		this.items = items || [];
 		this.commands = commands || [];
@@ -57,13 +57,13 @@ export class Item
 	(
 		names: string[],
 		descriptionWhenExamined: string,
-		scriptUseName: string
+		scriptUse: Script
 	): Item
 	{
 		return Item.fromNamesAndDescription
 		(
 			names, descriptionWhenExamined
-		).scriptUseNameSet(scriptUseName);
+		).scriptUseSet(scriptUse);
 	}
 
 	static fromNamesDescriptionAndScriptGetName
@@ -71,12 +71,12 @@ export class Item
 		names: string[], description: string, scriptGetName: string
 	): Item
 	{
-		return Item.fromNamesAndDescription(names, description).scriptGetNameSet(scriptGetName);
+		return Item.fromNamesAndDescription(names, description).scriptGetSet(Script.fromName(scriptGetName) );
 	}
 
 	canBeUsed(): boolean
 	{
-		return (this._scriptUseName != null);
+		return (this._scriptUse != null);
 	}
 
 	commandAdd(command: Command): Item
@@ -161,25 +161,25 @@ export class Item
 		return this;
 	}
 
-	scriptGet(world: World): Script
+	scriptGet(): Script
 	{
-		return this._scriptGetName == null ? null : world.scriptByName(this._scriptGetName);
+		return this._scriptGet;
 	}
 
-	scriptGetNameSet(value: string): Item
+	scriptGetSet(value: Script): Item
 	{
-		this._scriptGetName = value;
+		this._scriptGet = value;
 		return this;
 	}
 
-	scriptUse(world: World): Script
+	scriptUse(): Script
 	{
-		return world.scriptByName(this._scriptUseName);
+		return this._scriptUse;
 	}
 
-	scriptUseNameSet(value: string): Item
+	scriptUseSet(value: Script): Item
 	{
-		this._scriptUseName = value;
+		this._scriptUse = value;
 		return this;
 	}
 
@@ -190,7 +190,7 @@ export class Item
 
 	use(universe: Universe, world: World, place: Place, target: any): void
 	{
-		var scriptUse = this.scriptUse(world);
+		var scriptUse = this.scriptUse();
 		if (scriptUse != null)
 		{
 			scriptUse.run(universe, world, place, this, target);
@@ -212,8 +212,8 @@ export class Item
 			this.quantity,
 			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
-			this._scriptGetName,
-			this._scriptUseName,
+			this._scriptGet == null ? null : this._scriptGet.clone(),
+			this._scriptUse == null ? null : this._scriptUse.clone(),
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),
 			this.commands.map(x => x.clone() )

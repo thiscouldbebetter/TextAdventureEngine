@@ -6,12 +6,24 @@ var ThisCouldBeBetter;
         class Script {
             constructor(name, run) {
                 this.name = name;
-                this.run = run;
+                this._run = run;
+            }
+            static fromName(name) {
+                return new Script(name, null);
+            }
+            run(u, w, p, x, y) {
+                var run = this._run || w.scriptByName(this.name)._run;
+                run(u, w, p, x, y);
             }
             // Clonable.
             clone() {
-                return new Script(this.name, this.run // todo
+                return new Script(this.name, this._run // todo
                 );
+            }
+            // Serialization.
+            static prototypesSet(instanceAsObject) {
+                Object.setPrototypeOf(instanceAsObject, Script.prototype);
+                // todo - run?
             }
         }
         TextAdventureEngine.Script = Script;

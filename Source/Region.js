@@ -42,7 +42,7 @@ var ThisCouldBeBetter;
                 var scriptUpdateForTurn = this.scriptUpdateForTurn(world);
                 if (scriptUpdateForTurn != null) {
                     var placeCurrent = world.placeCurrent();
-                    scriptUpdateForTurn.run(universe, world, placeCurrent);
+                    scriptUpdateForTurn.run(universe, world, placeCurrent, null, null);
                 }
                 for (var i = 0; i < this.agents.length; i++) {
                     var agent = this.agents[i];
