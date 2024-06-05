@@ -7,7 +7,7 @@ export class Portal
 	names: string[];
 	descriptionWhenExamined: string;
 	placeDestinationName: string;
-	scriptUseName: string;
+	_scriptUse: Script;
 	stateGroup: StateGroup;
 
 	_visible: boolean;
@@ -18,7 +18,7 @@ export class Portal
 		names: string[],
 		descriptionWhenExamined: string,
 		placeDestinationName: string,
-		scriptUseName: string,
+		scriptUse: Script,
 		visible: boolean,
 		passable: boolean,
 		stateGroup: StateGroup
@@ -27,7 +27,7 @@ export class Portal
 		this.names = names;
 		this.descriptionWhenExamined = descriptionWhenExamined;
 		this.placeDestinationName = placeDestinationName;
-		this.scriptUseName = scriptUseName;
+		this._scriptUse = scriptUse;
 		this._visible = visible || true;
 		this._passable = passable || false;
 		this.stateGroup = stateGroup || StateGroup.create();
@@ -110,21 +110,21 @@ export class Portal
 		return this;
 	}
 
-	scriptUseNameSet(value: string): Portal
+	scriptUseSet(value: Script): Portal
 	{
-		this.scriptUseName = value;
+		this._scriptUse = value;
 		return this;
 	}
 
 	use(universe: Universe, world: World, place: Place): void
 	{
-		if (this.scriptUseName == null)
+		if (this._scriptUse == null)
 		{
 			this.goThrough(universe, world);
 		}
 		else
 		{
-			var scriptUse = world.scriptByName(this.scriptUseName);
+			var scriptUse = this._scriptUse;
 			scriptUse.run(universe, world, place, this, null);
 		}
 	}
@@ -138,7 +138,7 @@ export class Portal
 			this.names.map(x => x),
 			this.descriptionWhenExamined,
 			this.placeDestinationName,
-			this.scriptUseName,
+			this._scriptUse == null ? null : this._scriptUse.clone(),
 			this._visible,
 			this._passable,
 			this.stateGroup.clone()

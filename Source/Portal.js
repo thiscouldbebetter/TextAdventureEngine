@@ -4,11 +4,11 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Portal {
-            constructor(names, descriptionWhenExamined, placeDestinationName, scriptUseName, visible, passable, stateGroup) {
+            constructor(names, descriptionWhenExamined, placeDestinationName, scriptUse, visible, passable, stateGroup) {
                 this.names = names;
                 this.descriptionWhenExamined = descriptionWhenExamined;
                 this.placeDestinationName = placeDestinationName;
-                this.scriptUseName = scriptUseName;
+                this._scriptUse = scriptUse;
                 this._visible = visible || true;
                 this._passable = passable || false;
                 this.stateGroup = stateGroup || TextAdventureEngine.StateGroup.create();
@@ -55,22 +55,22 @@ var ThisCouldBeBetter;
                 this.placeDestinationName = value;
                 return this;
             }
-            scriptUseNameSet(value) {
-                this.scriptUseName = value;
+            scriptUseSet(value) {
+                this._scriptUse = value;
                 return this;
             }
             use(universe, world, place) {
-                if (this.scriptUseName == null) {
+                if (this._scriptUse == null) {
                     this.goThrough(universe, world);
                 }
                 else {
-                    var scriptUse = world.scriptByName(this.scriptUseName);
+                    var scriptUse = this._scriptUse;
                     scriptUse.run(universe, world, place, this, null);
                 }
             }
             // Clonable.
             clone() {
-                return new Portal(this.names.map(x => x), this.descriptionWhenExamined, this.placeDestinationName, this.scriptUseName, this._visible, this._passable, this.stateGroup.clone());
+                return new Portal(this.names.map(x => x), this.descriptionWhenExamined, this.placeDestinationName, this._scriptUse == null ? null : this._scriptUse.clone(), this._visible, this._passable, this.stateGroup.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {

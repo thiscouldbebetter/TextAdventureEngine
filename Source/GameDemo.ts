@@ -43,9 +43,12 @@ export class GameDemo
 		var placeCenterRoom = Place.fromNameDescriptionScriptNameAndObjects
 		(
 			placeCenterRoomName,
+
 			"This is the room you landed in when your captor threw you down here."
 				+ "  There are doors to the north, south, east, and west.",
-			scriptsCustom.PlaceCenterRoomUpdate.name,
+
+			scriptsCustom.PlaceCenterRoomUpdate,
+
 			[
 				Emplacement.fromNamesAndDescriptions
 				(

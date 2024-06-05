@@ -4,26 +4,24 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Command {
-            constructor(textSource, scriptExecuteName) {
+            constructor(textSource, scriptExecute) {
                 this.textSource = textSource;
-                this.scriptExecuteName = scriptExecuteName;
+                this._scriptExecute = scriptExecute;
             }
             static fromTextAndScriptExecuteName(text, scriptExecuteName) {
-                return new Command(TextAdventureEngine.TextSourceStrings.fromString(text), scriptExecuteName);
+                return new Command(TextAdventureEngine.TextSourceStrings.fromString(text), TextAdventureEngine.Script.fromName(scriptExecuteName));
             }
             static fromTextSourceAndScriptExecute(textSource, scriptExecute) {
-                var returnValue = Command.fromTextSourceAndScriptExecuteName(textSource, scriptExecute.name);
-                returnValue._scriptExecute = scriptExecute;
-                return returnValue;
+                return new Command(textSource, scriptExecute);
             }
             static fromTextSourceAndScriptExecuteName(textSource, scriptExecuteName) {
-                return new Command(textSource, scriptExecuteName);
+                return new Command(textSource, TextAdventureEngine.Script.fromName(scriptExecuteName));
             }
             static fromTextsAndScriptExecute(texts, scriptExecute) {
                 return Command.fromTextSourceAndScriptExecute(TextAdventureEngine.TextSourceStrings.fromStrings(texts), scriptExecute);
             }
             static fromTextsAndScriptExecuteName(texts, scriptExecuteName) {
-                return new Command(TextAdventureEngine.TextSourceStrings.fromStrings(texts), scriptExecuteName);
+                return new Command(TextAdventureEngine.TextSourceStrings.fromStrings(texts), TextAdventureEngine.Script.fromName(scriptExecuteName));
             }
             static fromTextAndCommands(commandTextToMatch, commands) {
                 var commandsMatching = commands.filter(command => command.textSource.textMatchesAtStart(commandTextToMatch));
@@ -81,11 +79,11 @@ var ThisCouldBeBetter;
             execute(universe, world, place, command) {
                 var message = "Command entered: " + this.text();
                 universe.messageEnqueue(message);
-                var scriptExecute = this.scriptExecute(world);
+                var scriptExecute = this.scriptExecute();
                 scriptExecute.run(universe, world, place, this, null);
             }
-            scriptExecute(world) {
-                return world.scriptByName(this.scriptExecuteName);
+            scriptExecute() {
+                return this._scriptExecute;
             }
             text() {
                 return this.textSource.textDefault();
@@ -99,7 +97,7 @@ var ThisCouldBeBetter;
             }
             // Clonable.
             clone() {
-                return new Command(this.textSource.clone(), this.scriptExecuteName);
+                return new Command(this.textSource.clone(), this._scriptExecute.clone());
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
@@ -124,6 +122,7 @@ var ThisCouldBeBetter;
                 this.GoDirectionWest = Command.fromTextsAndScriptExecute(["w", "west", "go w"], new TextAdventureEngine.Script("GoWest", this.goDirectionWest.bind(this)));
                 this.GoSomewhere = Command.fromTextsAndScriptExecute(["go ", "walk ", "run ", "go to", "go through"], new TextAdventureEngine.Script("GoSomewhere", this.goSomewhere));
                 this.Help = Command.fromTextsAndScriptExecute(["?", "help"], new TextAdventureEngine.Script("Help", this.help));
+                this.Instructions = Command.fromTextsAndScriptExecute(["instructions"], new TextAdventureEngine.Script("Instructions", this.instructions));
                 this.InventoryView = Command.fromTextsAndScriptExecute(["inventory", "look at possessions"], new TextAdventureEngine.Script("InventoryView", this.inventoryView));
                 this.LockOrUnlockSomething = Command.fromTextsAndScriptExecute(["lock ", "unlock "], new TextAdventureEngine.Script("LockOrUnlockSomething", this.lockOrUnlockSomething));
                 this.LookAround = Command.fromTextSourceAndScriptExecute(TextAdventureEngine.TextSourcePhraseCombination.fromPhraseArrays([
@@ -411,16 +410,18 @@ var ThisCouldBeBetter;
             help(universe, world, place, command) {
                 var helpTextAsLines = [
                     "To play, type a command and press the Enter key.",
+                    "For general instructions on how to play, enter 'instructions'.",
                     "",
                     "Recognized commands include:",
                     "",
                     "? - This text is displayed.",
                     "cheat <operation> <argument> - Allows the player to cheat.",
                     "delete <name> - Deletes the specified saved game.",
-                    "look around - The player examines the surroundings.",
+                    "look, look around - The player examines the surroundings.",
                     "look <name>, look at <name> - The player examines a particular thing.",
                     "go <name> - The player attempts to leave the area by the specified exit.",
                     "get <name> - The player attempts to pick up the item named.",
+                    "instructions - Lists some general instructions for playing text games.",
                     "inventory - Displays a list of the player's possessions.",
                     "list saves - Lists saved game states.",
                     "quit - Quit the game.",
@@ -434,6 +435,37 @@ var ThisCouldBeBetter;
                 ];
                 var helpText = helpTextAsLines.join("\n");
                 universe.messageEnqueue(helpText);
+            }
+            instructions(universe, world, place, command) {
+                var instructionsAsLines = [
+                    "In a text adventure game, your character is always in a place.  ",
+                    "Type 'look' and press enter to look around the place you're in.",
+                    "",
+                    "In addition to your character, places may contain items, ",
+                    "which can be picked up.  For example, if there's a coin in the place,",
+                    "you could pick it up by entering the command 'get coin'.",
+                    "The coin will then be added to the list of items you hold, ",
+                    "which can be viewed by entering the command 'inventory'.",
+                    "You could examine the coin in more detail by entering the command 'look coin'.",
+                    "",
+                    "There may be other things, or even people, in a place, ",
+                    "that cannot be picked up.  You can still look at them, ",
+                    "and sometimes you can interact with them in other ways. ",
+                    "For example, if a button is present, you could enter 'push button'.",
+                    "Sometimes you can use items held by your character on other things, ",
+                    "by entering commands like 'put coin in slot'.",
+                    "",
+                    "All the places in the game are connected to other places.  ",
+                    "You can go from one place to another by entering commands like 'go east' ",
+                    "or 'go outside' or 'go door'.",
+                    "",
+                    "Finally, you can enter the commands 'save' and 'restore' ",
+                    "to save and load the current state of the game.",
+                    "",
+                    "There are other commands available.  Type 'help' to see a list."
+                ];
+                var instructions = instructionsAsLines.join("\n");
+                universe.messageEnqueue(instructions);
             }
             inventoryView(universe, world, place, command) {
                 var player = world.agentPlayer;

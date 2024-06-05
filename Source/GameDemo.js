@@ -22,7 +22,7 @@ var ThisCouldBeBetter;
                 var placeSouthernRoomName = "Southern Room";
                 var placeWesternRoomName = "Western Room";
                 var placeCenterRoom = TextAdventureEngine.Place.fromNameDescriptionScriptNameAndObjects(placeCenterRoomName, "This is the room you landed in when your captor threw you down here."
-                    + "  There are doors to the north, south, east, and west.", scriptsCustom.PlaceCenterRoomUpdate.name, [
+                    + "  There are doors to the north, south, east, and west.", scriptsCustom.PlaceCenterRoomUpdate, [
                     TextAdventureEngine.Emplacement.fromNamesAndDescriptions(["pool"], "The center of the room is occupied by a shallow pool of water.", "This is a shallow, dirty, foul-smelling pool of water."),
                     portal(["east"], portalDescription, placeEasternRoomName),
                     portal(["north"], portalDescription, placeNorthernRoomName),
