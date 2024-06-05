@@ -18,6 +18,15 @@ export class Script
 		return new Script(name, null);
 	}
 
+	static fromNameAndRun
+	(
+		name: string,
+		run: (u: Universe, w: World, p: Place, x:any, y: any) => void
+	): Script
+	{
+		return new Script(name, run);
+	}
+
 	run(u: Universe, w: World, p: Place, x: any, y: any): void
 	{
 		var run = this._run || w.scriptByName(this.name)._run;

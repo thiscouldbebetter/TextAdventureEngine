@@ -11,6 +11,9 @@ var ThisCouldBeBetter;
             static fromName(name) {
                 return new Script(name, null);
             }
+            static fromNameAndRun(name, run) {
+                return new Script(name, run);
+            }
             run(u, w, p, x, y) {
                 var run = this._run || w.scriptByName(this.name)._run;
                 run(u, w, p, x, y);
