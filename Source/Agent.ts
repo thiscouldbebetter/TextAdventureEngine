@@ -258,6 +258,22 @@ export class Agent
 
 	// States.
 
+	stateWithNameGetValue(stateName: string): any
+	{
+		return this.stateGroup.stateWithNameGetValue(stateName);
+	}
+
+	stateWithNameSetToTrue(stateName: string): Agent
+	{
+		return this.stateWithNameSetToValue(stateName, true);
+	}
+
+	stateWithNameSetToValue(stateName: string, value: any): Agent
+	{
+		this.stateGroup.stateWithNameSetToValue(stateName, value);
+		return this;
+	}
+
 	visible(): boolean { return true; }
 }
 

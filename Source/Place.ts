@@ -301,6 +301,11 @@ export class Place
 		return this.portals.filter(x => x.namesInclude(name) );
 	}
 
+	portalByPlaceDestinationName(name: string): Portal
+	{
+		return this.portals.find(x => x.placeDestinationName == name);
+	}
+
 	portalsVisible(): Portal[]
 	{
 		return this.portals.filter(x => x.visible() );

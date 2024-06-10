@@ -142,6 +142,16 @@ var ThisCouldBeBetter;
                 instanceAsObject.commands.forEach((x) => TextAdventureEngine.Command.prototypesSet(x));
             }
             // States.
+            stateWithNameGetValue(stateName) {
+                return this.stateGroup.stateWithNameGetValue(stateName);
+            }
+            stateWithNameSetToTrue(stateName) {
+                return this.stateWithNameSetToValue(stateName, true);
+            }
+            stateWithNameSetToValue(stateName, value) {
+                this.stateGroup.stateWithNameSetToValue(stateName, value);
+                return this;
+            }
             visible() { return true; }
         }
         TextAdventureEngine.Agent = Agent;

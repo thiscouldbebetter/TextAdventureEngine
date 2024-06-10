@@ -149,6 +149,9 @@ var ThisCouldBeBetter;
             portalsByName(name) {
                 return this.portals.filter(x => x.namesInclude(name));
             }
+            portalByPlaceDestinationName(name) {
+                return this.portals.find(x => x.placeDestinationName == name);
+            }
             portalsVisible() {
                 return this.portals.filter(x => x.visible());
             }
