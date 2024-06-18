@@ -69,6 +69,31 @@ export class StateGroup
 		instanceAsObject.states.forEach( (x: any) => State.prototypesSet(x) );
 	}
 
+	// Visibility.
+
+	static StateName_Visible = "Visible";
+
+	hide(): StateGroup
+	{
+		return this.visibleSet(false);
+	}
+
+	show(): StateGroup
+	{
+		return this.visibleSet(true);
+	}
+
+	visible(): boolean
+	{
+		return this.stateWithNameIsTrue(StateGroup.StateName_Visible);
+	}
+
+	visibleSet(value: boolean): StateGroup
+	{
+		return this.stateWithNameSetToValue(StateGroup.StateName_Visible, value);
+	}
+
+
 }
 
 }

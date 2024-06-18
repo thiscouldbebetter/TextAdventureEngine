@@ -152,7 +152,20 @@ var ThisCouldBeBetter;
                 this.stateGroup.stateWithNameSetToValue(stateName, value);
                 return this;
             }
-            visible() { return true; }
+            // States - Visibility.
+            hide() {
+                return this.visibleSet(false);
+            }
+            show() {
+                return this.visibleSet(true);
+            }
+            visible() {
+                return this.stateGroup.visible();
+            }
+            visibleSet(value) {
+                this.stateGroup.visibleSet(value);
+                return this;
+            }
         }
         TextAdventureEngine.Agent = Agent;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));

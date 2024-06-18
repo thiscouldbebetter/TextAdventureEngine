@@ -273,12 +273,13 @@ export class Emplacement
 
 	visible(): boolean
 	{
-		return this.stateWithNameIsTrue("Visible");
+		return this.stateGroup.visible();
 	}
 
 	visibleSet(value: boolean): Emplacement
 	{
-		return this.stateWithNameSetToValue("Visible", value);
+		this.stateGroup.visibleSet(value);
+		return this;
 	}
 }
 

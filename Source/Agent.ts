@@ -274,7 +274,28 @@ export class Agent
 		return this;
 	}
 
-	visible(): boolean { return true; }
+	// States - Visibility.
+
+	hide(): Agent
+	{
+		return this.visibleSet(false);
+	}
+
+	show(): Agent
+	{
+		return this.visibleSet(true);
+	}
+
+	visible(): boolean
+	{
+		return this.stateGroup.visible();
+	}
+
+	visibleSet(value: boolean): Agent
+	{
+		this.stateGroup.visibleSet(value);
+		return this;
+	}
 }
 
 }

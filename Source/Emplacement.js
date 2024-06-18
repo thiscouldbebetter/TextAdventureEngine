@@ -137,10 +137,11 @@ var ThisCouldBeBetter;
                 return this.visibleSet(true);
             }
             visible() {
-                return this.stateWithNameIsTrue("Visible");
+                return this.stateGroup.visible();
             }
             visibleSet(value) {
-                return this.stateWithNameSetToValue("Visible", value);
+                this.stateGroup.visibleSet(value);
+                return this;
             }
         }
         TextAdventureEngine.Emplacement = Emplacement;
