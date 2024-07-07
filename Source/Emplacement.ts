@@ -7,6 +7,7 @@ export class Emplacement
 	names: string[];
 	descriptionAsPartOfPlace: string;
 	descriptionWhenExamined: string;
+	_scriptUpdateForTurn: Script;
 	_scriptUse: Script;
 	stateGroup: StateGroup;
 	items: Item[];
@@ -17,6 +18,7 @@ export class Emplacement
 		names: string[],
 		descriptionAsPartOfPlace: string,
 		descriptionWhenExamined: string,
+		scriptUpdateForTurn: Script,
 		scriptUse: Script,
 		stateGroup: StateGroup,
 		items: Item[],
@@ -26,6 +28,7 @@ export class Emplacement
 		this.names = names;
 		this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
 		this.descriptionWhenExamined = descriptionWhenExamined;
+		this._scriptUpdateForTurn = scriptUpdateForTurn;
 		this._scriptUse = scriptUse;
 		this.stateGroup = stateGroup || new StateGroup([]);
 		this.items = items || [];
@@ -59,7 +62,7 @@ export class Emplacement
 			names,
 			descriptionAsPartOfPlace,
 			descriptionWhenExamined,
-			null, null, null, null
+			null, null, null, null, null
 		);
 	}
 
@@ -76,6 +79,7 @@ export class Emplacement
 			names,
 			descriptionAsPartOfPlace,
 			descriptionWhenExamined,
+			null, // scriptUpdateForTurn
 			Script.fromName(scriptUseName),
 			null, null, null
 		);
@@ -155,9 +159,21 @@ export class Emplacement
 		return this.names.indexOf(nameToMatch) >= 0;
 	}
 
+	scriptUpdateForTurnSet(value: Script): Emplacement
+	{
+		this._scriptUpdateForTurn = value;
+		return this;
+	}
+
 	scriptUse(): Script
 	{
 		return this._scriptUse;
+	}
+
+	scriptUseSet(value: Script): Emplacement
+	{
+		this._scriptUse = value;
+		return this;
 	}
 
 	use(universe: Universe, world: World, place: Place, target: any): void
@@ -178,7 +194,8 @@ export class Emplacement
 			this.names.map(x => x),
 			this.descriptionAsPartOfPlace,
 			this.descriptionWhenExamined,
-			this._scriptUse.clone(),
+			this._scriptUpdateForTurn == null ? null : this._scriptUpdateForTurn.clone(),
+			this._scriptUse == null ? null : this._scriptUse.clone(),
 			this.stateGroup.clone(),
 			this.items.map(x => x.clone() ),
 			this.commands.map(x => x.clone() )

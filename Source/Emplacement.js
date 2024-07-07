@@ -4,10 +4,11 @@ var ThisCouldBeBetter;
     var TextAdventureEngine;
     (function (TextAdventureEngine) {
         class Emplacement {
-            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUse, stateGroup, items, commands) {
+            constructor(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUpdateForTurn, scriptUse, stateGroup, items, commands) {
                 this.names = names;
                 this.descriptionAsPartOfPlace = descriptionAsPartOfPlace;
                 this.descriptionWhenExamined = descriptionWhenExamined;
+                this._scriptUpdateForTurn = scriptUpdateForTurn;
                 this._scriptUse = scriptUse;
                 this.stateGroup = stateGroup || new TextAdventureEngine.StateGroup([]);
                 this.items = items || [];
@@ -22,10 +23,11 @@ var ThisCouldBeBetter;
                 );
             }
             static fromNamesAndDescriptions(names, descriptionAsPartOfPlace, descriptionWhenExamined) {
-                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, null, null, null, null);
+                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, null, null, null, null, null);
             }
             static fromNamesDescriptionsAndScriptUseName(names, descriptionAsPartOfPlace, descriptionWhenExamined, scriptUseName) {
-                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, TextAdventureEngine.Script.fromName(scriptUseName), null, null, null);
+                return new Emplacement(names, descriptionAsPartOfPlace, descriptionWhenExamined, null, // scriptUpdateForTurn
+                TextAdventureEngine.Script.fromName(scriptUseName), null, null, null);
             }
             canBeUsed() {
                 return (this._scriptUse != null);
@@ -70,8 +72,16 @@ var ThisCouldBeBetter;
             namesInclude(nameToMatch) {
                 return this.names.indexOf(nameToMatch) >= 0;
             }
+            scriptUpdateForTurnSet(value) {
+                this._scriptUpdateForTurn = value;
+                return this;
+            }
             scriptUse() {
                 return this._scriptUse;
+            }
+            scriptUseSet(value) {
+                this._scriptUse = value;
+                return this;
             }
             use(universe, world, place, target) {
                 var scriptUse = this.scriptUse();
@@ -81,7 +91,7 @@ var ThisCouldBeBetter;
             }
             // Clone.
             clone() {
-                return new Emplacement(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptUse.clone(), this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
+                return new Emplacement(this.names.map(x => x), this.descriptionAsPartOfPlace, this.descriptionWhenExamined, this._scriptUpdateForTurn == null ? null : this._scriptUpdateForTurn.clone(), this._scriptUse == null ? null : this._scriptUse.clone(), this.stateGroup.clone(), this.items.map(x => x.clone()), this.commands.map(x => x.clone()));
             }
             // Serialization.
             static prototypesSet(instanceAsObject) {
