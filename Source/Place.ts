@@ -109,6 +109,14 @@ export class Place
 		);
 	}
 
+	adjacentTo(other: Place): boolean
+	{
+		var portalToOtherPlace =
+			this.portalByPlaceDestinationName(other.name);
+		var portalToOtherPlaceExists = (portalToOtherPlace != null);
+		return portalToOtherPlaceExists;
+	}
+
 	agentAdd(agent: Agent, world: World): void
 	{
 		this.agents.push(agent);
@@ -171,30 +179,31 @@ export class Place
 			var descriptionIncludingObjects =
 				this.descriptionIncludingObjects();
 			linesToWrite.push(descriptionIncludingObjects);
+			this.visit(); // hack
 		}
-
-		this.visit(); // hack
-
-		var objectArraysPresent =
-		[
-			this.emplacements,
-			this.items,
-			this.agents
-		];
-
-		for (var oa = 0; oa < objectArraysPresent.length; oa++)
+		else
 		{
-			var objects = objectArraysPresent[oa];
-			for (var i = 0; i < objects.length; i++)
+			var objectArraysPresent =
+			[
+				this.emplacements,
+				this.items,
+				this.agents
+			];
+
+			for (var oa = 0; oa < objectArraysPresent.length; oa++)
 			{
-				var objectToMention = objects[i];
-				var objectIsVisible = objectToMention.visible();
-				if (objectIsVisible)
+				var objects = objectArraysPresent[oa];
+				for (var i = 0; i < objects.length; i++)
 				{
-					var message = objectToMention.descriptionAsPartOfPlace;
-					if (message != null)
+					var objectToMention = objects[i];
+					var objectIsVisible = objectToMention.visible();
+					if (objectIsVisible)
 					{
-						linesToWrite.push(message);
+						var message = objectToMention.descriptionAsPartOfPlace;
+						if (message != null)
+						{
+							linesToWrite.push(message);
+						}
 					}
 				}
 			}

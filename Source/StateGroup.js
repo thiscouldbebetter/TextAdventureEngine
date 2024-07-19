@@ -44,21 +44,27 @@ var ThisCouldBeBetter;
                 Object.setPrototypeOf(instanceAsObject, StateGroup.prototype);
                 instanceAsObject.states.forEach((x) => TextAdventureEngine.State.prototypesSet(x));
             }
+            hidden() {
+                return this.stateWithNameIsTrue(StateGroup.StateName_Hidden);
+            }
+            hiddenSet(value) {
+                return this.stateWithNameSetToValue(StateGroup.StateName_Hidden, value);
+            }
             hide() {
-                return this.visibleSet(false);
+                return this.hiddenSet(true);
             }
             show() {
                 return this.visibleSet(true);
             }
             visible() {
-                return this.stateWithNameIsTrue(StateGroup.StateName_Visible);
+                return (this.hidden() == false);
             }
             visibleSet(value) {
-                return this.stateWithNameSetToValue(StateGroup.StateName_Visible, value);
+                return this.hiddenSet(value == false);
             }
         }
         // Visibility.
-        StateGroup.StateName_Visible = "Visible";
+        StateGroup.StateName_Hidden = "Hidden";
         TextAdventureEngine.StateGroup = StateGroup;
     })(TextAdventureEngine = ThisCouldBeBetter.TextAdventureEngine || (ThisCouldBeBetter.TextAdventureEngine = {}));
 })(ThisCouldBeBetter || (ThisCouldBeBetter = {}));

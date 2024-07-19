@@ -159,12 +159,18 @@ var ThisCouldBeBetter;
             show() {
                 return this.visibleSet(true);
             }
+            hidden() {
+                return this.stateGroup.hidden();
+            }
+            hiddenSet(value) {
+                this.stateGroup.hiddenSet(value);
+                return this;
+            }
             visible() {
-                return this.stateGroup.visible();
+                return (this.hidden() == false);
             }
             visibleSet(value) {
-                this.stateGroup.visibleSet(value);
-                return this;
+                return this.hiddenSet(value == false);
             }
         }
         TextAdventureEngine.Agent = Agent;

@@ -71,11 +71,21 @@ export class StateGroup
 
 	// Visibility.
 
-	static StateName_Visible = "Visible";
+	static StateName_Hidden = "Hidden";
+
+	hidden(): boolean
+	{
+		return this.stateWithNameIsTrue(StateGroup.StateName_Hidden);
+	}
+
+	hiddenSet(value: boolean): StateGroup
+	{
+		return this.stateWithNameSetToValue(StateGroup.StateName_Hidden, value);
+	}
 
 	hide(): StateGroup
 	{
-		return this.visibleSet(false);
+		return this.hiddenSet(true);
 	}
 
 	show(): StateGroup
@@ -85,15 +95,13 @@ export class StateGroup
 
 	visible(): boolean
 	{
-		return this.stateWithNameIsTrue(StateGroup.StateName_Visible);
+		return (this.hidden() == false);
 	}
 
 	visibleSet(value: boolean): StateGroup
 	{
-		return this.stateWithNameSetToValue(StateGroup.StateName_Visible, value);
+		return this.hiddenSet(value == false);
 	}
-
-
 }
 
 }

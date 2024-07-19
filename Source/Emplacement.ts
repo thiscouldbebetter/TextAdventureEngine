@@ -288,15 +288,25 @@ export class Emplacement
 		return this.visibleSet(true);
 	}
 
+	hidden(): boolean
+	{
+		return this.stateGroup.hidden();
+	}
+
+	hiddenSet(value: boolean): Emplacement
+	{
+		this.stateGroup.hiddenSet(value);
+		return this;
+	}
+
 	visible(): boolean
 	{
-		return this.stateGroup.visible();
+		return (this.hidden() == false);
 	}
 
 	visibleSet(value: boolean): Emplacement
 	{
-		this.stateGroup.visibleSet(value);
-		return this;
+		return this.hiddenSet(value == false);
 	}
 }
 

@@ -28,6 +28,11 @@ var ThisCouldBeBetter;
             static fromNameDescriptionScriptNameAndObjects(name, description, scriptUpdateForTurn, objects) {
                 return new Place(name, description, scriptUpdateForTurn, objects.filter(x => x.constructor.name == TextAdventureEngine.Portal.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Emplacement.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Item.name), objects.filter(x => x.constructor.name == TextAdventureEngine.Agent.name), null);
             }
+            adjacentTo(other) {
+                var portalToOtherPlace = this.portalByPlaceDestinationName(other.name);
+                var portalToOtherPlaceExists = (portalToOtherPlace != null);
+                return portalToOtherPlaceExists;
+            }
             agentAdd(agent, world) {
                 this.agents.push(agent);
                 var region = this.region(world);
@@ -65,22 +70,24 @@ var ThisCouldBeBetter;
                 if (hasBeenVisited == false) {
                     var descriptionIncludingObjects = this.descriptionIncludingObjects();
                     linesToWrite.push(descriptionIncludingObjects);
+                    this.visit(); // hack
                 }
-                this.visit(); // hack
-                var objectArraysPresent = [
-                    this.emplacements,
-                    this.items,
-                    this.agents
-                ];
-                for (var oa = 0; oa < objectArraysPresent.length; oa++) {
-                    var objects = objectArraysPresent[oa];
-                    for (var i = 0; i < objects.length; i++) {
-                        var objectToMention = objects[i];
-                        var objectIsVisible = objectToMention.visible();
-                        if (objectIsVisible) {
-                            var message = objectToMention.descriptionAsPartOfPlace;
-                            if (message != null) {
-                                linesToWrite.push(message);
+                else {
+                    var objectArraysPresent = [
+                        this.emplacements,
+                        this.items,
+                        this.agents
+                    ];
+                    for (var oa = 0; oa < objectArraysPresent.length; oa++) {
+                        var objects = objectArraysPresent[oa];
+                        for (var i = 0; i < objects.length; i++) {
+                            var objectToMention = objects[i];
+                            var objectIsVisible = objectToMention.visible();
+                            if (objectIsVisible) {
+                                var message = objectToMention.descriptionAsPartOfPlace;
+                                if (message != null) {
+                                    linesToWrite.push(message);
+                                }
                             }
                         }
                     }

@@ -286,16 +286,27 @@ export class Agent
 		return this.visibleSet(true);
 	}
 
+	hidden(): boolean
+	{
+		return this.stateGroup.hidden();
+	}
+
+	hiddenSet(value: boolean): Agent
+	{
+		this.stateGroup.hiddenSet(value);
+		return this;
+	}
+
 	visible(): boolean
 	{
-		return this.stateGroup.visible();
+		return (this.hidden() == false);
 	}
 
 	visibleSet(value: boolean): Agent
 	{
-		this.stateGroup.visibleSet(value);
-		return this;
+		return this.hiddenSet(value == false);
 	}
+
 }
 
 }
